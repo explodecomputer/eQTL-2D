@@ -1,0 +1,178 @@
+/*
+Contents:
+
+Container and body divs
+Side navigation
+Top navigation
+Text styles
+Other divs
+
+
+/*
+================================================================
+	Container and body divs
+================================================================
+*/
+
+body {
+	background: url('../images/farmer.png');
+}
+
+.container {
+	width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+}
+
+.wrapper {
+	margin-left: 180px;
+	padding-left: 0px;
+}
+
+#content {
+	margin-top: 0px;
+	margin-left: 0px;
+}
+
+/*
+================================================================
+	Side navigation
+================================================================
+*/
+
+#sidenav {
+	position: relative;
+	left: 0px;
+	width: 180px;
+}
+
+#sidenav nav {
+	top: 275px;
+	position: fixed;
+}
+
+#sidenav ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#sidenav ul li a {
+	text-decoration: none;
+}
+
+#sidenav ul li a:hover {
+	text-decoration: none;
+	color: orange;
+}
+
+#sidecurrent a {
+	color: orange;
+}
+
+
+/*
+================================================================
+	Top navigation
+================================================================
+*/
+
+#topnav {
+	padding: 15px 0px;
+	border-width: 1px 0px;
+	border-style: solid;
+	border-color: black;
+}
+
+#topnav ul {
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#topnav ul li {
+	display: inline;
+	padding: 0px 20px;
+}
+
+#topnav ul li a {
+	text-decoration: none;
+	color: purple;
+}
+#topnav ul li a:hover {
+	text-decoration: none;
+	color: orange;
+}
+
+#topnav .current a {
+	color: orange;
+}
+
+/*
+================================================================
+	Text styles
+================================================================
+*/
+
+
+p, a {
+	line-height: 200%;
+	font-family: 'Josefin Slab', serif;
+	font-weight: 400;
+	text-align: justify;
+}
+
+h1 {
+	font-family: 'Raleway', cursive;
+	text-transform: uppercase;
+	font-size: 68px;
+	text-align: center;
+}
+
+h2 {
+	font-family: 'Raleway', serif;
+/*	text-transform: uppercase;*/
+	font-weight: 700;
+	font-size: 48px;
+}
+
+h3 {
+	text-align: center;
+	font-family: 'Raleway', serif;
+	font-size: 12px;
+	margin-top: -40px;
+	margin-bottom: 40px;
+}
+
+/*
+================================================================
+	Other divs
+================================================================
+*/
+
+header {
+	position: fixed;
+	top: -10px;
+	width: 780px;
+	margin: 0px;
+	background: url('../images/farmer.png');
+}
+
+.entry {
+	padding-top: 250px;
+	margin-bottom: -250px;
+}
+
+footer {
+	margin: 0px;
+	margin-top: 300px;
+	padding: 50px;
+	background-color: #554E44;
+	color: white;
+}
+
+footer p {
+	text-align: right;
+}
