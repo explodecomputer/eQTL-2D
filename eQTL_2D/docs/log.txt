@@ -1,0 +1,68 @@
+Available data:
+
+500k SNPs on 900 related individuals
+18000 traits, of which 7000 have values for all individuals
+
+4 million imputed SNPs
+300 unrelateds
+
+1700 individuals with other phenotypes
+
+
+500k on 900 individuals will take ~4 hours on C2075
+
+----------------------------
+
+
+run analysis in v1 directory
+
+
+----------------------------
+
+
+data management
+
+currently all genotype data is separated by chromosomes in merlin format
+/hpscratch/wrayvisscher/GWAS/GWAS/GeneralRelease/Release6/linkage/GWAS_Adolescent_chr*.ped.gz
+
+filtered snp list is:
+/hpscratch/wrayvisscher/GWAS/GWAS/GeneralRelease/Release6/info/GWAS.SNPlist
+
+
+this needs to be converted into single binary plink file format.
+
+
+in the phenotype data there are 2 extra individuals - rows 829 and 860. they need to be removed
+
+first run makemapfiles.R:
+$ R --no-save < makemapfiles.R
+
+then run paste_genome2.sh:
+
+$ qsub submit.sh
+
+this is a 22 task job array
+
+then run 
+
+$ qsub submit2.sh
+
+this runs plink and pastes the analyses together using the merge file merge.txt
+
+-------------------------------------
+
+problem with individuals.
+
+probe_signal_N10.csv has 862 individuals (rows 829 and 860 are extra)
+ILMN_1720083.ped     has 860 individuals
+GWAS data            has ~6000 individuals - but missing 2 individuals present in ILMN_1720083.ped
+
+
+
+
+
+
+
+
+
+

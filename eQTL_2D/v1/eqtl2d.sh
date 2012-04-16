@@ -14,6 +14,7 @@ bimfile="../data/.bim"
 bedfile="../data/.bed"
 famfile="../data/.fam"
 phefile="../data/.pheno"
+ainvfile="../data/Ainv.RData"
 
 epigpu="../exe/epiGPU"
 
@@ -22,7 +23,7 @@ epigpu="../exe/epiGPU"
 # Correct phenotype for polygenic effects
 # This will make a file called ${famfile}${id}
 
-R --no-save --args ${phefile} ${famfile} ${id} < generate_famfile.R
+R --no-save --args ${phefile} ${famfile} ${ainvfile} ${id} < generate_famfile.R
 
 
 
