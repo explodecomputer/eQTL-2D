@@ -4,15 +4,17 @@
 
 library(pedigree)
 
-objfile <- commandArgs(T)[1] # contains Ainv, fam, phedat
+objfile <- commandArgs(T)[1] # fam, phedat
 id <- as.numeric(commandArgs(T)[4]
 
 
-phedat <- read.csv(phefile, header=F)
+# make pheno file for gcta (include covariates)
+# run gcta and read in residuals
+# make .fam file with residuals
+# exit
+# script will run epiGPU
 
 phen <- phedat[, id]
-
-pheres <- Ainv %*% y
 
 fam <- read.table(famfile, header=T)
 fam[, 6] <- pheres
