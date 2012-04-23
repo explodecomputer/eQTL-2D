@@ -1,64 +1,44 @@
-# creating static data objects Ainv, fam, phedat
-# remove IDs 8635101 and 8635102 (not present in genotype data)
 
 
-setwd("wrayvisscher/eQTL_2D/data/")
+# phenotype data is already corrected for age and sex. needs to be corrected for polygenic and covariates
 
-# Create Ainv
+#setwd("~/data/qimr/expression/")
+
+famdat <- read.table("clean_geno_final.fam", header=F)
+phendat <- read.table("probe_pheno_plink_final.txt", header=T)
+covdat <- read.table("covariates_plink_final.txt", header=F)
+
+phendat <- phendat[ phendat[, 2] %in% famdat[, 2], -c(1:2)]
+
+
+# calculate A matrix
 
 library(pedigree)
-ped <- read.table("ILMN_1720083.ped", header=T)
-dim(ped)
-remove <- c(8635101, 8635102)
-remove <- which(ped[,2] %in% remove)
-ped <- ped[-remove, ]
-dim(ped)
 
-fam <- data.frame(id=as.character(ped[,2]), dam=as.character(ped[,4]), sire=as.character(ped[,3]))
+fam <- data.frame(id=as.character(famdat[,2]), dam=as.character(famdat[,4]), sire=as.character(famdat[,3]))
 ord <- orderPed(fam)
-
-#fam1 <- fam[order(ord), ]
-#fam2 <- fam1[ord, ]
-#head(fam)
-#head(fam1)
-#head(fam2)
-
 fam <- fam[order(ord), ]
-makeAinv(fam) # writes to Ainv.txt
 
-Ai <- read.table("Ainv.txt")
-Ainv <- matrix(0,nrow = nrow(ped),ncol = nrow(ped))
-Ainv[as.matrix(Ai[,1:2])] <- Ai[,3]
-dd <- diag(Ainv)
-Ainv <- Ainv + t(Ainv)
-diag(Ainv) <- dd
-Ainv <- Ainv[ord,ord]
+makeA(fam, which=rep(T,nrow(fam))) # writes to A.txt
+A <- read.table("A.txt", header=F)
+A <- data.frame(A[,1], A[,2], 0, A[,3])
+write.table(A, "clean.grm", row=F, col=F, qu=F)
+unlink("A.txt")
+system("gzip clean.grm")
 
-#y <- rnorm(nrow(ped))
-#dim(y%*%Ainv2)
+ids <- famdat[ord, 1:2]
+write.table(ids, "clean.grm.id", row=F, col=F, qu=F)
 
 
-# Create phedat - matrix of phenotypes n x p
+save(famdat, phendat, file="clean_data_objects.RData")
 
-phedat <- read.csv("probe_signal_N10.csv", header=T) # remove rows 829 860
-phedat <- phedat[, -c(remove, 829, 860)]
-dim(phedat)
-
-missing_count <- apply(phedat, 1, function(x) sum(is.na(x)))
-#hist(missing_count)
-#table(missing_count)
-
-phedat <- phedat[missing_count == 0, ]
-dim(phedat)
-phedat <- t(matrix(unlist(phedat), nrow(phedat), ncol(phedat)))
+# for each analysis 
+## use existing covariates file
+## create new fam file (for epiGPU)
+## create new pheno file (for GCTA)
+## run gcta --reml
 
 
-# Create fam - first 6 columns of plink .ped file
-
-fam <- ped[, c(1, 2, 3, 4, 5, 8)]
 
 
-# save file
-
-save(fam, Ainv, phedat, file="eqtl2d_objects.RData")
 
