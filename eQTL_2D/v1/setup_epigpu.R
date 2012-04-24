@@ -3,12 +3,11 @@
 
 famfile <- commandArgs(T)[1]
 residfile <- commandArgs(T)[2]
-id <- as.numeric(commandArgs(T)[3]
 
-famdat <- read.table(fam, header=F)
-residdat <- read.table(residfile, header=?)
+famdat <- read.table(famfile, header=F)
+residdat <- read.table(residfile, header=F)
 
-famdat[,6] <- residdat[, ?]
+famdat[,6] <- residdat[, 6]
 
-write.table(famdat, file=paste(famfile, id, sep="."), row=F, col=F, qu=F)
+write.table(famdat, file=paste(residfile, "fam", sep="."), row=F, col=F, qu=F)
 
