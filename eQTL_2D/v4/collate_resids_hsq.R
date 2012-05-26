@@ -4,7 +4,12 @@ rootname <- commandArgs(T)[1]
 start <- as.numeric(commandArgs(T)[2])
 end <- as.numeric(commandArgs(T)[3])
 nid <- as.numeric(commandArgs(T)[4])
-savefile <- commandArgs(T)[5]
+object_file <- commandArgs(T)[5]
+savefile <- commandArgs(T)[6]
+
+load(object_file)
+probenames <- names(phendat)[-c(1:2)]
+ids <- phendat[,2]
 
 n <- length(start:end)
 
@@ -31,6 +36,9 @@ for(i in 1:n)
 	}
 }
 
+rownames(resphen) <- ids
+colnames(resphen) <- probenames[start:end]
+names(hsq) <- probenames[start:end]
 save(resphen, hsq, file=savefile)
 
 
