@@ -5,11 +5,16 @@ start <- as.numeric(commandArgs(T)[2])
 end <- as.numeric(commandArgs(T)[3])
 nid <- as.numeric(commandArgs(T)[4])
 object_file <- commandArgs(T)[5]
-savefile <- commandArgs(T)[6]
+probeinfo <- commandArgs(T)[6]
+savefile <- commandArgs(T)[7]
 
 load(object_file)
+probeinfo <- read.csv(probeinfo, header=T)
+
 probenames <- names(phendat)[-c(1:2)]
 ids <- phendat[,2]
+probeinfo <- subset(probeinfo, PROBE_ID %in% probenames)
+dim(probeinfo)
 
 n <- length(start:end)
 
@@ -39,6 +44,6 @@ for(i in 1:n)
 rownames(resphen) <- ids
 colnames(resphen) <- probenames[start:end]
 names(hsq) <- probenames[start:end]
-save(resphen, hsq, file=savefile)
+save(resphen, hsq, probeinfo, file=savefile)
 
 

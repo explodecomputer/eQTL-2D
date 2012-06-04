@@ -3,7 +3,7 @@
 
 datstat <- function(info, xmat, resphen)
 {
-    cat(nrow(info), "rows to be analysed\n")
+    cat(" ... ",nrow(info), "rows to be analysed\n")
     a <- array(0, nrow(info))
     g <- array(0, nrow(info))
     for(i in 1:nrow(info))
@@ -61,17 +61,17 @@ read.egu <- function(rootname, threshold)
 	}
 	cat("Missing: ", rootname)
 	return(data.frame(chr1=NA, chr2=NA, pos1=NA, pos2=NA,
-            snp1=NA, snp2=NA, pfull=NA, pint=NA, df1=NA, df2=NA, complete=complete))
+            snp1=NA, snp2=NA, pfull=NA, pint=NA, df1=NA, df2=NA, complete=2))
     }
 
     complete <- system(paste("grep -q \"# 25 x 25 :\" ", rootname, ".txt", sep=""))
 
     dat <- read.table(paste(rootname, ".txt", sep=""), skip=7, header=T)
-    dat <- subset(dat, df1 == 8)
+    dat <- subset(dat, df1 > 5)
     dat$pfull <- with(dat, -log10(pf(Fval, df1, df2, lower.tail=F)))
     dat$pint <- with(dat, -log10(pf(Fint, 4, df2, lower.tail=F)))
     dat <- subset(dat, pfull >= threshold | pint >= threshold)
-    dat <- subset(dat, (Chr1 != Chr2) | (abs(SNP1 - SNP2) > 50))
+    dat <- subset(dat, (Chr1 != Chr2) | (abs(SNP1 - SNP2) > 5))
 
     if(nrow(dat) == 0)
     {
