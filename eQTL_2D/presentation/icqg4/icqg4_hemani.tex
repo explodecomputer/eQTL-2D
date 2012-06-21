@@ -17,7 +17,8 @@
 \usepackage[normalem]{ulem}
 
 
-\title[Epistasis in GWAS]{2D or not 2D, that is the question}
+\title[Epistasis in GWAS]{2D or not 2D, that is the question\\
+{\footnotesize Should we be looking for epistasis in GWAS?}}
 \author{Gibran Hemani}
 \institute{The Roslin Institute, University of Edinburgh \\
 \vspace{.3cm}
@@ -78,14 +79,14 @@ ____________acknowledgements
 
 \begin{frame}{}
 \begin{itemize}
-\item Is there theoretical reason to presume epistasis might play an important role in complex traits?
-\item Is it computationally tractable in GWAS?
-\item Is it statistically tractable in GWAS?
-\item Anything detected empirically?
+\item \textbf{Simulations:} An evolutionary perspective on genetic variation
+\item \textbf{Computation:} Making epistatic searches possible
+\item \textbf{Thresholds:} What should we call `significant'?
+\item \textbf{Data:} What do we find empirically?
 \end{itemize}
 \end{frame}
 
-\section{Polymorphisms under selection}
+\section{Evolutionary simulations}
 \subsection{}
 
 \begin{frame}{Epistasis}
@@ -102,38 +103,35 @@ ____________acknowledgements
 \end{frame}
 
 \begin{frame}{}
-\begin{itemize}
-\item \textbf{Hypothesis:} Epistasis can maintain additive variance better than purely additive effects
-\item How can maintained additive variance be detected most effectively?
-\item What is the impact of low LD between causal variants and observed SNPs?
-\end{itemize}
+\textbf{Hypothesis:}\\ Epistasis can maintain additive variance better than purely additive effects
 \end{frame}
 
 
-\begin{frame}{Epistasis maintains common genetic variation}
+\begin{frame}{Epistasis maintains genetic variation}
 \begin{center}
-\includegraphics[width=10cm]{maps_freqs}
+\includegraphics[width=11cm]{maps_freqs}
 \end{center}
 \end{frame}
 
-\begin{frame}{Changes in variance under selection}
+\begin{frame}{Most of the variance is non-additive}
 \begin{center}
 \includegraphics[width=8cm]{sup_propadditive_det.png}
 \end{center}
 \end{frame}
 
-\begin{frame}{Power to detect evolutionarily persistant variants}
+\begin{frame}{Impact of LD on observed variance}
+\begin{center}
+\includegraphics[width=5cm]{gpmaps_ld.png} \\
+\end{center}
+\end{frame}
 
+
+\begin{frame}{With high LD, 2D searches are most powerful}
 \begin{columns}[c]
-
 \column{.7\textwidth}
-
 \includegraphics[width=8cm]{sup_heritbars_sim.png}
-
 \column{.3\textwidth}
-
 When LD between causal variants and observed SNPs is high, 2D scan is most powerful for 46/54 non-additive patterns
-
 \end{columns}
 \end{frame}
 
@@ -160,7 +158,7 @@ n(n-1) / 2 \nonumber
 \end{equation}
 500000 SNPs $\rightarrow$ 125 billion interactions \\
 \begin{itemize}
-\item PLINK performs 5000 tests per second $\rightarrow$ 3 years
+\item For 1000 individuals, PLINK performs 5000 tests per second $\rightarrow$ 3 years
 \item FastEpistasis performs 36000 tests per second $\rightarrow$ 5 months
 \item Optimised C code 125000 tests per second $\rightarrow$ 6 weeks
 \item Parallelised on 8-core CPU $\rightarrow$ 5 days
@@ -176,18 +174,9 @@ n(n-1) / 2 \nonumber
 
 
 \begin{frame}{Graphics Cards}
-\begin{itemize}
-\item Revenue of video game industry $>$ Hollywood film industry
-\item Better games require better hardware
-\begin{itemize}
-\item Finer pixels rendered faster
-\item Physics engines
-\item Easily obtained by having many simple cores
-\end{itemize}
-\item Consumer level graphics cards have hundreds of very simple cores
-\item Ideal for geometric parallelisation problems in science
-\item Use OpenCL API to communicate with graphics cards
-\end{itemize}
+\begin{center}
+\includegraphics[width=10cm]{gtx580}
+\end{center}
 \end{frame}
 
 
@@ -209,7 +198,7 @@ n(n-1) / 2 \nonumber
 \end{frame}
 
 
-\begin{frame}{Other epistasis software}
+\begin{frame}{Other optimised epistasis software}
 \begin{itemize}
 \item BiForce
 \item GLIDE
@@ -237,16 +226,9 @@ As the dimensionality of the search increases the background noise drowns out al
 \begin{itemize}
 \item SNPs are correlated $\rightarrow$ tests are not independent
 \item Bonferroni correction is overly stringent
+\item What is the correlation structure in a 2D search?
 \end{itemize}
 \end{frame}
-
-
-\begin{frame}{}
-\begin{center}
-What is the correlation structure in a 2D search?
-\end{center}
-\end{frame}
-
 
 
 \begin{frame}{Permutation analysis}
@@ -257,25 +239,9 @@ What is the \emph{effective} number of multiple tests that are being performed? 
 \end{frame}
 
 
-\begin{frame}{Epistatic permutations}
-\begin{itemize}
-\item How is the 2D threshold governed by:
-\begin{itemize}
-\item Number of SNPs being tested
-\item Number of individuals in the study?
-\end{itemize}
-\item Difficult computational challenge
-\begin{itemize}
-\item Requires cluster of GPUs...
-\item ...running for months!
-\end{itemize}
-\end{itemize}
-\end{frame}
-
-
 \begin{frame}{A general formula for 2D thresholds?}
 \begin{equation}
--\log_{10}(p_{T}) = a - \frac{a}{\beta_{1} N + \beta_{2} M} \nonumber
+-\log_{10}(p_{T}) = a - \frac{a}{f_{1}(N)+ f_{2}(M)} \nonumber
 \label{eqn:general_threshold}
 \end{equation}
 \begin{eqnarray}
@@ -293,13 +259,6 @@ where $t = 693138$ is the number of independent regions in the genome (Dudbridge
 
 \section{2D eQTL}
 \subsection{}
-
-\begin{frame}{Impact of LD on observed variance}
-\begin{center}
-\includegraphics[width=5cm]{gpmaps_ld.png} \\
-\end{center}
-\end{frame}
-
 
 \begin{frame}{Are epistatic effects controlling gene expression?}
 \begin{itemize}
@@ -361,22 +320,6 @@ where $t = 693138$ is the number of independent regions in the genome (Dudbridge
 \end{frame}
 
 
-
-\begin{frame}{Vandalising poetry}
-\emph{\sout{To be} \textcolor{red}{2D} or not \sout{to be} \textcolor{red}{2D}, that is the question \\
-Whether 'tis Nobler in the mind to suffer \\
-The Slings and Arrows of outrageous Fortune, \\
-Or to take Arms against a Sea of troubles} \\
-\hspace{1cm}{\tiny - William Shakespeare, 1623} \\
-\vspace{0.5in}
-\pause
-\emph{\sout{To be} \textcolor{red}{2D} or not \sout{to be} \textcolor{red}{2D} \\
-is not my dilemma, \\
-To break away from both worlds is not bravery} \\
-\hspace{1cm}{\tiny - Rumi, 13th century} \\
-\end{frame}
-
-
 \section*{}
 
 \begin{frame}{Acknowledgements}
@@ -392,7 +335,7 @@ PhD Funding:
 \item The Roslin Institute
 \item University of Edinburgh
 \item Biosciences KTN
-\item Monsanto / NCG
+\item Monsanto / Newsham Choice Genetics
 \end{itemize}
 PhD Supervisors:
 \begin{itemize}
