@@ -79,7 +79,8 @@ replicate <- function(
 	stopifnot(length(srow1) == 1)
 	stopifnot(length(srow2) == 1)
 
-	a <- anova(lm(probe[prow, ] ~ as.factor(gen[srow1, ])*as.factor(gen[srow2, ])))$P[1]
+	a <- anova(lm(probe[prow, ] ~ as.factor(gen[srow1, ]) + as.factor(gen[srow2, ]) + as.factor(gen[srow1, ]) : as.factor(gen[srow2, ])))$P[1]
+	print()
 	return(a)
 }
 
@@ -195,6 +196,56 @@ subset(snp, Name %in% c("rs10847601", "rs229670"))
 subset(bim, V2 %in% c("rs10847601", "rs229670"))
 
 
+
+datstat <- function(info, xmat, resphen)
+{
+	cat(" ... ",nrow(info), "rows to be analysed\n")
+	a <- array(0, nrow(info))
+	g <- array(0, nrow(info))
+	for(i in 1:nrow(info))
+	{
+	if(i %% (nrow(info) / 100) == 0) cat(i/(nrow(info)/100)," ")
+	l <- info[i,]
+	if(is.na(l$chr1)) {
+		g[i] <- NA
+		a[i] <- NA
+		next
+	}
+	mod <- anova(lm(resphen[,l$probeid] ~ xmat[,l$pos1] + xmat[,l$pos2] + as.factor(xmat[,l$pos1]) : as.factor(xmat[,l$pos2])))
+	g[i] <- sum(mod$Sum[1:3]) / mod$Sum[4]
+	a[i] <- sum(mod$Sum[1:2]) / sum(mod$Sum[1:3])
+
+	}
+	return(data.frame(g,a))
+}
+
+replicate_info <- function(
+	prinfo,
+	probe,
+	gen,
+	snp,
+	row
+) {
+	# Get the row name in probe
+	# Get the two SNP rows in gen
+
+	prow <- which(prinfo$PROBE_ID == row$probe[1])
+	stopifnot(length(prow) == 1)
+
+	srow1 <- which(snp$Name == row$snp1)
+	srow2 <- which(snp$Name == row$snp2)
+	stopifnot(length(srow1) == 1)
+	stopifnot(length(srow2) == 1)
+
+	mod <- anova(lm(probe[prow, ] ~ as.factor(gen[srow1, ]) + as.factor(gen[srow2, ]) + as.factor(gen[srow1, ]) : as.factor(gen[srow2, ])))
+	print(mod)
+	g <- sum(mod$Sum[1:3]) / mod$Sum[4]
+	a <- sum(mod$Sum[1:2]) / sum(mod$Sum[1:3])
+
+	print(a/g)
+}
+
+replicate_info(prinfo, probe, gen, snp, sigrep[3,])
 
 
 
