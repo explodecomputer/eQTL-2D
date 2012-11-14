@@ -3,7 +3,7 @@
 #$ -N epistasis
 #$ -cwd
 #$ -S /bin/bash
-#$ -t 1-5380
+#$ -t 3201
 #$ -o job_reports/
 #$ -e job_reports/
 

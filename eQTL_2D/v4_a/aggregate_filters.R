@@ -1,4 +1,6 @@
-nom <- paste("filtered", 1:5380, ".RData", sep="")
+rtdr <- commandArgs(T)[1]
+output <- commandArgs(T)[2]
+nom <- paste(rtdr, "filtered", 1:5380, ".RData", sep="")
 
 l <- list()
 j <- 1
@@ -15,6 +17,8 @@ for(i in 1:5380)
 library(plyr)
 ld <- rbind.fill(l)
 
+save(ld, file=output)
+q()
 
 
 head(ld)
