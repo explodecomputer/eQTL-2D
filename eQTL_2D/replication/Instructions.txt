@@ -1,0 +1,49 @@
+# Gib Hemani
+# Replication of epistatic signals
+
+################
+# REQUIREMENTS #
+################
+
+- plink binary
+- R/2.15.1
+- R/GenABEL package
+- Running in Mac/Linux
+
+1. Sample genotypes in binary plink format
+2. Sample expression signals, cleaned / standardised and in the following format:
+
+FID IID ILMN_xxxx ILMN_xxxx ILMN_xxxx ...
+f1  i1  x         x         x         ...
+f2  i2  x         x         x         ...
+f3  i3  x         x         x         ...
+.
+.
+.
+
+Please ensure that the family / individual IDs are all present in the .fam plink file.
+Please make sure that all expression signals have been normalised, e.g. are the residuals after fitting covariates / fixed effects (such as sex, batch, PCs etc)
+
+3. "SNP_pairs.RData" file that we will send to you. This contains all the top hits from our study.
+
+
+#########################
+# How to use the script #
+#########################
+
+Run the following command:
+
+R --no-save --args <plink exe> <binary plink file> <expression signal> SNP_pairs.RData replication.RData < epistasis_replication.R
+
+
+It will do the following things:
+
+1. Extract all the required SNPs from binary plink format and read it into 0/1/2 format
+2. Read in covariates and our SNP_pairs.RData file
+3. Read in all the probes requierd and rank transform them to normality
+4. For each significant pair in our dataset it will test for interactions in your dataset
+5. Save the results in a file called "replication.RData"
+
+
+
+
