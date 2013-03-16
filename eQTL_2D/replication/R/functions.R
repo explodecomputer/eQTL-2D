@@ -10,7 +10,9 @@
 #' @export
 CheckFiles <- function(plinkfile, probefile, intlistfile)
 {
-	stopifnot(file.exists(plinkfile))
+	stopifnot(file.exists(paste(plinkfile, ".bed", sep="")))
+	stopifnot(file.exists(paste(plinkfile, ".bim", sep="")))
+	stopifnot(file.exists(paste(plinkfile, ".fam", sep="")))
 	stopifnot(file.exists(probefile))
 	stopifnot(file.exists(intlistfile))
 }
@@ -59,7 +61,7 @@ LoadIntList <- function(intlistfile, plinkfile, probes)
 	sig1 <- subset(sig, snp1 %in% bim$V2 & snp2 %in% bim$V2)
 	dim2 <- nrow(sig)
 
-	cat(dim2, "out of", dim1, "interactions have SMPs in common with the replication data set\n")
+	cat(dim2, "out of", dim1, "interactions have SNPs in common with the replication data set\n")
 
 	sig2 <- subset(sig1, probename %in% repprobes)
 	return(sig2)
@@ -80,14 +82,12 @@ ExtractSNPs <- function(sig, plinkfile)
 	require(snpStats)
 	snplist <- with(sig, unique(c(as.character(snp1), as.character(snp2))))
 	rawdata <- read.plink(bed=plinkfile, select.snps=snplist)
-	geno <- apply(rawdata@.Data, 2, as.numeric)
+	geno <- apply(rawdata$genotypes@.Data, 2, as.numeric)
 	geno[geno==0] <- NA
 	geno <- geno - 1
 
-	fam <- read.table(paste(plinkfile, ".fam", sep=""), colClasses="character")
-	bim <- read.table(paste(plinkfile, ".bim", sep=""), colClasses="character")
-	rownames(geno) <- fam$V2
-	colnames(geno) <- bim$V2
+	rownames(geno) <- rawdata$fam$member
+	colnames(geno) <- rawdata$map$snp.name
 
 	return(geno)
 }
@@ -104,12 +104,11 @@ ExtractSNPs <- function(sig, plinkfile)
 #' @export
 DataChecks <- function(probes, geno)
 {
-	ids <- geno$ids
-	snps <- geno$snps
-	geno <- geno$geno
+	ids <- rownames(geno)
+	snps <- colnames(geno)
 
 	# Check IDs are all unique
-	stopifnot(!any(duplicated(out$ids)))
+	stopifnot(!any(duplicated(ids)))
 
 	# Check IDs are present in geno and probe data
 	common_ids <- ids[ids %in% rownames(probes)]
@@ -122,8 +121,10 @@ DataChecks <- function(probes, geno)
 	# reorder rows to match each other
 	index <- match(rownames(probes), rownames(geno))
 	geno <- geno[index, ]
+	ids <- ids[index]
 
 	stopifnot(all(rownames(geno) == rownames(probes)))
+	stopifnot(all(rownames(geno) == ids))
 
 	l <- list()
 	l$geno <- geno
@@ -149,18 +150,18 @@ DataChecks <- function(probes, geno)
 ReplicationTests <- function(geno, probes, sig, i)
 {
 	# Extract data
-	snp1 <- geno[colnames(geno) == sig$snp1]
-	snp2 <- geno[colnames(geno) == sig$snp2]
-	probe <- probes[colnames(probes) == sig$probename]
+	snp1 <- geno[, colnames(geno) == sig$snp1[i]]
+	snp2 <- geno[, colnames(geno) == sig$snp2[i]]
+	probe <- probes[, colnames(probes) == sig$probename[i]]
 
 	# Summary statistics
 	tab <- table(snp1 + 3*snp2)
 
-	sig$replication_p1[i] <- mean(snp1) / 2
-	sig$replication_p2[i] <- mean(snp2) / 2
+	sig$replication_p1[i] <- mean(snp1, na.rm=T) / 2
+	sig$replication_p2[i] <- mean(snp2, na.rm=T) / 2
 	sig$replication_r[i] <- cor(snp1, snp2, use="pair")
 	sig$replication_nclass[i] <- length(tab)
-	sig$replication_minclass[i] <- min(tab)
+	sig$replication_minclass[i] <- min(tab, na.rm=T)
 	sig$replication_nid[i] <- sum(!is.na(snp1) & !is.na(snp2))
 
 	# Statistical tests
@@ -202,7 +203,7 @@ RunReplication <- function(sig, checked)
 	for(i in 1:nrow(sig))
 	{
 		cat(i, "of", nrow(sig), "\n")
-		sig <- ReplicationTests(snp1, snp2, probe, sig, i)
+		sig <- ReplicationTests(geno, probes, sig, i)
 	}
 	return(sig)
 }

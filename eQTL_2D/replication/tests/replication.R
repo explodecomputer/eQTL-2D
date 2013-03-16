@@ -10,7 +10,7 @@ probefile   <- args[2]
 intlistfile <- args[3]
 outfile     <- "replication.RData"
 
-source("functions.R")
+source("../R/functions.R")
 
 CheckFiles(plinkfile, probefile, intlistfile)
 probes  <- ReadProbeFile(probefile)
