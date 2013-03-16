@@ -2,16 +2,14 @@
 #'
 #' Makes sure that all the files required for the replication are present
 #'
-#' @param plink Path to \code{plink} executable
 #' @param plinkfile Path to binary plinkfile (excluding any suffixes)
 #' @param probefile Path to file with expression probe data
 #' @param intlistfile Path to the \code{.RData} file that has all the target SNPs for replication
 #'
 #' @return Exits with an error if any files are missing
 #' @export
-CheckFiles <- function(plink, plinkfile, probefile, intlistfile)
+CheckFiles <- function(plinkfile, probefile, intlistfile)
 {
-	stopifnot(file.exists(plink))
 	stopifnot(file.exists(plinkfile))
 	stopifnot(file.exists(probefile))
 	stopifnot(file.exists(intlistfile))
@@ -73,7 +71,6 @@ LoadIntList <- function(intlistfile, plinkfile, probes)
 #' Extracts all SNPs present in interaction list and reads in as 0/1/2 format matrix
 #'
 #' @param sig Output from \link{LoadIntList}
-#' @param plink Path to \code{plink} executable
 #' @param plinkfile Path to binary plinkfile (excluding any suffixes)
 #'
 #' @return Returns \code{matrix} of genotype data

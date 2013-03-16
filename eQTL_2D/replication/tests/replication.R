@@ -5,18 +5,17 @@
 # R --no-save --args /path/to/plink /path/to/binary_plink_data /path/to/probe_data.txt /path/to/interaction_list.RData < replication.R
 
 args        <- commandArgs(T)
-plink       <- args[1]
-plinkfile   <- args[2]
-probefile   <- args[3]
-intlistfile <- args[4]
+plinkfile   <- args[1]
+probefile   <- args[2]
+intlistfile <- args[3]
 outfile     <- "replication.RData"
 
 source("functions.R")
 
-CheckFiles(plink, plinkfile, probefile, intlistfile)
+CheckFiles(plinkfile, probefile, intlistfile)
 probes  <- ReadProbeFile(probefile)
 sig     <- LoadIntList(intlistfile, plinkfile, probes)
-geno    <- ExtractSNPs(sig, plink, plinkfile)
+geno    <- ExtractSNPs(sig, plinkfile)
 checked <- DataChecks(probes, geno)
 newsig  <- RunReplication(sig, checked)
 
