@@ -1,0 +1,9 @@
+Package: EpistasisReplication
+Title: Replicate Episatic Signals
+Description: Workflow for replicating epistasis from expression data
+Version: 0.1
+Author: Gibran Hemani
+Maintainer: Gibran Hemani <g.hemani@uq.edu.au>
+License: GPL
+Collate:
+    'functions.R'

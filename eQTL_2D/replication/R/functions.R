@@ -4,17 +4,17 @@
 #'
 #' @param plink Path to \code{plink} executable
 #' @param plinkfile Path to binary plinkfile (excluding any suffixes)
-#' @probefile Path to file with expression probe data
-#' @ourfile Path to the \code{.RData} file that has all the target SNPs for replication
+#' @param probefile Path to file with expression probe data
+#' @param intlistfile Path to the \code{.RData} file that has all the target SNPs for replication
 #'
 #' @return Exits with an error if any files are missing
 #' @export
-CheckFiles <- function(plink, plinkfile, probefile, ourfile)
+CheckFiles <- function(plink, plinkfile, probefile, intlistfile)
 {
 	stopifnot(file.exists(plink))
 	stopifnot(file.exists(plinkfile))
 	stopifnot(file.exists(probefile))
-	stopifnot(file.exists(ourfile))
+	stopifnot(file.exists(intlistfile))
 }
 
 
@@ -22,9 +22,9 @@ CheckFiles <- function(plink, plinkfile, probefile, ourfile)
 #'
 #' The probefile will be a plain text file, whitespace separated, with rows representing IDs and columns representing probes. The columns should be formatted as follows:
 #' \describe{
-#'  \item{\code{FID}} {Family ID (first row must be \code{FID})}
-#'  \item{\code{IID}} {Individual ID column. All IID entries must be unique (first row must be \code{IID})}
-#'  \item{\code{ILMN_xxxx}, \code{ILMN_xxxx} etc} {The rest of the columns are all the probes available in the set. Headers for the remaining columns must be the probe IDs.}
+#'  \item{\code{FID}}{Family ID (first row must be \code{FID})}
+#'  \item{\code{IID}}{Individual ID column. All IID entries must be unique (first row must be \code{IID})}
+#'  \item{\code{ILMN_xxxx}, \code{ILMN_xxxx} etc}{The rest of the columns are all the probes available in the set. Headers for the remaining columns must be the probe IDs.}}
 #'
 #' @param probefile Path to file with expression probe data
 #'
@@ -43,13 +43,13 @@ ReadProbeFile <- function(probefile)
 #'
 #' Loads the list of interactions (\code{.RData} file), and returns the subset which has SNPs and probes in common with the replication dataset
 #'
-#' @ourfile Path to the \code{.RData} file that has all the target SNPs for replication
+#' @param intlistfile Path to the \code{.RData} file that has all the target SNPs for replication
 #'
 #' @return Returns \code{data.frame}
 #' @export
-LoadOurfile <- function(ourfile, plinkfile, probes)
+LoadIntList <- function(intlistfile, plinkfile, probes)
 {
-	load(ourfile)
+	load(intlistfile)
 	
 	# Check overlap between SNPs in sig and replication data
 	bim <- read.table(paste(plinkfile, ".bim", sep=""))
@@ -68,84 +68,20 @@ LoadOurfile <- function(ourfile, plinkfile, probes)
 }
 
 
-#' Read plink data format
-#'
-#' Takes plink plain text format (\code{.ped} and \code{.map} files) and converts to 0/1/2 matrix, rows correspond to individuals and columns correspond to SNPs.
-#'
-#' @param pedfile Path to plink \code{.ped} file
-#' @param mapfile Path to plink \code{.map} file
-#'
-#' @return Returns \code{matrix} of genotype data
-#' @export
-PlinkTo012 <- function(pedfile, mapfile)
-{
-	pformat <- read.table(pedfile, header=FALSE, colClasses="character")
-	map <- read.table(mapfile, header=FALSE, colClasses=c("character", "character", "numeric", "numeric"))
-	ids <- pformat[, 1:6]
-	nid <- nrow(ids)
-	pformat <- pformat[, -c(1:6)]
-	index <- seq(1, ncol(pformat), 2)
-	geno <- matrix(0, nid, length(index))
-	for(i in 1:length(index))
-	{
-		snp <- index[, c(index[i], index[i]+1)]
-		x <- array(NA, nid)
-		snp[snp == "0"] <- NA
-		alleles <- names(sort(table(snp)))
-		i0 <- snp[,1] == alleles[1] & snp[,2] == alleles[1]
-		i2 <- snp[,1] == alleles[2] & snp[,2] == alleles[2]
-		i1 <- (snp[,1] == alleles[1] & snp[,2] == alleles[2]) | (snp[,1] == alleles[2] & snp[,2] == alleles[1])
-		x[i0] <- 0
-		x[i1] <- 1
-		x[i2] <- 2
-		geno[, i] <- x
-	}
-	colnames(geno) <- map$V2
-	rownames(geno) <- ids$V2
-	return(geno)
-}
-
-
 #' Read in SNPs required for replication
 #'
 #' Extracts all SNPs present in interaction list and reads in as 0/1/2 format matrix
 #'
-#' @param sig Output from \link{LoadOurFile}
+#' @param sig Output from \link{LoadIntList}
 #' @param plink Path to \code{plink} executable
 #' @param plinkfile Path to binary plinkfile (excluding any suffixes)
 #'
 #' @return Returns \code{matrix} of genotype data
 #' @export
-ExtractSNPs <- function(sig, plink, plinkfile)
-{
-	# List of SNPs to extract from plink
-	snplist <- with(sig, unique(c(as.character(snp1), as.character(snp2))
-	write.table(snplist, file="snplist.txt", row=F, col=F, qu=F)
-
-	# Extract to plink format
-	cmd <- paste(plink, " --noweb --bfile ", plinkfile, " --extract snplist.txt --recode --out ", plinkfile, sep="")
-	stat <- system(cmd, intern=FALSE)
-	stopifnot(stat==0)
-
-	geno <- PlinkTo012(paste(plinkfile, ".ped", sep=""), paste(plinkfile, ".map", sep=""))
-	return(geno)
-}
-
-
-#' Read in SNPs required for replication
-#'
-#' Extracts all SNPs present in interaction list and reads in as 0/1/2 format matrix
-#'
-#' @param sig Output from \link{LoadOurFile}
-#' @param plink Path to \code{plink} executable
-#' @param plinkfile Path to binary plinkfile (excluding any suffixes)
-#'
-#' @return Returns \code{matrix} of genotype data
-#' @export
-ExtractSNPs2 <- function(sig, plinkfile)
+ExtractSNPs <- function(sig, plinkfile)
 {
 	require(snpStats)
-	snplist <- with(sig, unique(c(as.character(snp1), as.character(snp2))
+	snplist <- with(sig, unique(c(as.character(snp1), as.character(snp2))))
 	rawdata <- read.plink(bed=plinkfile, select.snps=snplist)
 	geno <- apply(rawdata@.Data, 2, as.numeric)
 	geno[geno==0] <- NA
@@ -208,7 +144,7 @@ DataChecks <- function(probes, geno)
 #'
 #' @param geno \code{matrix} of genotype data
 #' @param probes \code{data.frame} of probes
-#' @param sig Output from \link{LoadOurFile}
+#' @param sig Output from \link{LoadIntList}
 #' @param i Which row of \code{sig} to run the analysis on
 #'
 #' @return Returns \code{data.frame} with row \code{i} complete
@@ -247,7 +183,7 @@ ReplicationTests <- function(geno, probes, sig, i)
 #'
 #' Test all SNP pairs in interaction list in replication dataset.
 #'
-#' @param sig Output from \link{LoadOurFile}
+#' @param sig Output from \link{LoadIntList}
 #' @param checked Output from \link{DataChecks}
 #'
 #' @return Returns \code{data.frame} with new columns for results from replication data
