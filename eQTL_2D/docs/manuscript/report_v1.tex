@@ -1,0 +1,109 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX: Epistatic control of gene expression
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Edit the title below to update the display in My Documents
+%\title{Epistatic control of gene expression}
+%
+%%% Preamble
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}	% Article class of KOMA-script with 11pt font and a4 format
+\usepackage[T1]{fontenc}
+\usepackage{fourier}
+
+\usepackage[english]{babel}											% English language/hyphenation
+\usepackage[protrusion=true,expansion=true]{microtype}				% Better typography
+\usepackage{amsmath,amsfonts,amsthm}								% Math packages
+\usepackage[pdftex]{graphicx}										% Enable pdflatex
+\usepackage{url}
+
+
+%%% Custom sectioning (sectsty package)
+\usepackage{sectsty}												% Custom sectioning (see below)
+\allsectionsfont{\centering \normalfont\scshape}					% Change font of al section commands
+
+
+%%% Custom headers/footers (fancyhdr package)
+\usepackage{fancyhdr}		
+\pagestyle{fancyplain}
+\fancyhead{}														% No page header
+\fancyfoot[L]{}														% Empty 
+\fancyfoot[C]{}														% Empty
+\fancyfoot[R]{\thepage}												% Pagenumbering
+\renewcommand{\headrulewidth}{0pt}									% Remove header underlines
+\renewcommand{\footrulewidth}{0pt}									% Remove footer underlines
+\setlength{\headheight}{13.6pt}
+
+
+%%% Equation and float numbering
+\numberwithin{equation}{section}									% Equationnumbering: section.eq#
+\numberwithin{figure}{section}										% Figurenumbering: section.fig#
+\numberwithin{table}{section}										% Tablenumbering: section.tab#
+
+
+%%% Maketitle metadata
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} 					% Horizontal rule
+
+\title{
+		%\vspace{-1in} 	
+		\usefont{OT1}{bch}{b}{n}
+		\normalfont \normalsize \textsc{University of Queensland} \\ [25pt]
+		\horrule{0.5pt} \\[0.4cm]
+		\huge Epistatic control of gene expression in Humans\\[0.3cm]
+        \huge *** Report V1 *** \\
+		\horrule{2pt} \\[0.5cm]
+}
+\author{
+		\normalfont 								\normalsize
+        Joseph Powell\\[-3pt]		\normalsize
+        Gibran Hemani\\[0.2cm]		\normalsize
+		\today
+}
+\date{}
+
+
+%%% Begin document
+\begin{document}
+\maketitle
+\section{Introduction}
+In humans expression quantitative trait loci (eQTL) have been extensively studied for their effects on transcript levels as well as their underlying effects on complex phenotypes such as disease susceptability. To date most studies have analysed SNPs independently and estimated the genotypic effect on mean expression levels assuming an additive mode of inheritance. However, epistasis (gene by gene interactions) is thought to play an important role in the control of gene expression principally through the interaction of transcription factors and the intra-cellular effects of proteins on gene regulation.
+
+[add short paragraph outlining the types of analysis for epistasis - leading to the conclusions that 2D is the best...]
+
+Recently we have shown that whilst most genetic variance for gene expression is likely to act in an additive manner, for many probes there exists significant non-additive genetic varaiance. [Gib: can you add something on the 'appearence of additive variance' in our system?]. The importance of epistasis for control of gene expression is largely unknown and has genrally not been studied in human populations. It is likely that this is due in part to the considerable compuation demands of running a 2D scan on 1000's of probes as well as a restrivive study-wide multiple testing burden.
+
+[we can add a short paragraph outlining the cool work that Gib has done.]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Methods}
+
+Data
+
+
+\cite{pmid22563384}
+
+
+
+\begin{align} 
+	\begin{split}
+	(x+y)^3 	&= (x+y)^2(x+y)\\
+					&=(x^2+2xy+y^2)(x+y)\\
+					&=(x^3+2x^2y+xy^2) + (x^2y+2xy^2+y^3)\\
+					&=x^3+3x^2y+3xy^2+y^3
+	\end{split}					
+\end{align}
+
+
+
+
+
+%%% Refs
+\bibliographystyle{plain}
+\bibliography{report_v1_refs}
+
+
+%%% End document
+\end{document}
