@@ -9,7 +9,7 @@ read.egu <- function(rootname, threshold)
 		if(file.exists(paste(rootname, ".txt.gz", sep="")))
 		{
 			system(paste("gunzip", paste(rootname, ".txt.gz", sep="")))
-			read.egu(rootname, threshold, test)
+			read.egu(rootname, threshold)
 		}
 		cat("Missing: ", rootname)
 		return(data.frame(chr1=NA, chr2=NA, pos1=NA, pos2=NA,
@@ -152,7 +152,6 @@ output <- commandArgs(T)[9]
 # if probe has no values then single row with NA 
 
 # Read in geno / pheno info
-load(genofile)
 load(phenfile)
 
 # Read in epiqpu output
@@ -170,6 +169,7 @@ res$probegene <- probeinfo$ILMN_GENE[i]
 hsq <- read.hsq(paste(roothsq, i, sep=""))
 res$probehsq <- hsq
 
+load(genofile)
 
 # Filter based on 8df, minimum number of individuals is 5
 res <- subset(res, df1 == 8)

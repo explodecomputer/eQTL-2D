@@ -9,7 +9,7 @@ read.egu <- function(rootname, threshold)
 		if(file.exists(paste(rootname, ".txt.gz", sep="")))
 		{
 			system(paste("gunzip", paste(rootname, ".txt.gz", sep="")))
-			read.egu(rootname, threshold, test)
+			read.egu(rootname, threshold)
 		}
 		cat("Missing: ", rootname)
 		return(data.frame(chr1=NA, chr2=NA, pos1=NA, pos2=NA,
@@ -19,6 +19,7 @@ read.egu <- function(rootname, threshold)
 	complete <- system(paste("grep -q \"# 25 x 25 :\" ", rootname, ".txt", sep=""))
 
 	dat <- read.table(paste(rootname, ".txt", sep=""), skip=7, header=T)
+        cat(nrow(dat), "lines read\n")
 	dat <- subset(dat, df1 > 5)
 	dat$pfull <- with(dat, -log10(pf(Fval, df1, df2, lower.tail=F)))
 	dat$pint <- with(dat, -log10(pf(Fint, 4, df2, lower.tail=F)))
@@ -153,7 +154,6 @@ snplistfile <- commandArgs(T)[10]
 # if probe has no values then single row with NA 
 
 # Read in geno / pheno info
-load(genofile)
 load(phenfile)
 
 # Read in list of additive SNPs
@@ -164,6 +164,8 @@ names(snplist) <- c("SNP", "probename")
 # Read in epiqpu output
 res <- read.egu(paste(rootres, i, sep=""), threshold)
 dim(res)
+head(res)
+
 if(nrow(res) == 0) q()
 
 # Add probe information
@@ -187,6 +189,8 @@ if(nrow(snplist) != 0)
 	if(nrow(res) == 0) q()
 }
 
+
+load(genofile)
 
 # Filter based on 8df, minimum number of individuals is 5
 res <- subset(res, df1 == 8)

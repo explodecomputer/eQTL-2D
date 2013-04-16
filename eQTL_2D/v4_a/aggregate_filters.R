@@ -1,14 +1,25 @@
 rtdr <- commandArgs(T)[1]
 output <- commandArgs(T)[2]
 nom <- paste(rtdr, "filtered", 1:5380, ".RData", sep="")
+nom2 <- paste(rtdr, "filtered_2_", 1:1959, ".RData", sep="")
 
 l <- list()
 j <- 1
-for(i in 1:5380)
+for(i in 1:length(nom))
 {
 	if(file.exists(nom[i])){
 		cat(i, "\n")
 		load(nom[i])
+		l[[j]] <- res
+		j <- j+1
+	}
+}
+
+for(i in 1:length(nom2))
+{
+	if(file.exists(nom2[i])){
+		cat(i, "\n")
+		load(nom2[i])
 		l[[j]] <- res
 		j <- j+1
 	}
