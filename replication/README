@@ -26,7 +26,9 @@ f3  i3  x         x         x         ...
 .
 .
 
-3. "SNP_pairs.RData" file that we will send to you. This contains the top hits from our study.
+A note on normalisation: We have corrected the expression probe values for sex, age, chip, chip position, day of processing, and a polygenic component because these are family data. We then rank transformed the residuals to normality, and used these as phenotypes. We did not use principle components as this is liable to remove genetic effects.
+
+3. "interaction_list.RData" file that is included in replication/run. This contains the top hits from our data.
 
 
 #########################
@@ -35,14 +37,14 @@ f3  i3  x         x         x         ...
 
 Run the following command:
 
-cd tests
-R --no-save --args /path/to/plink /path/to/binary_plink_data /path/to/probe_data.txt /path/to/interaction_list.RData < replication.R
+cd replication/run
+R --no-save --args /path/to/plink/executable /path/to/binary_plink_data /path/to/probe_data.txt interaction_list.RData < replication.R
 
 It will do the following things:
 
 1. Extract all the required SNPs from binary plink file
-2. Read in all the probes requierd and rank transform them to normality
-4. For each significant pair in our dataset it will test for interactions in your dataset
+2. Read in all the probes required and rank transform them to normality
+4. For each significant pair in our dataset it will perform a test for interaction in your dataset
 5. Save the results in a file called "replication.RData"
 
-
+Once it is complete, please just send us the "replication.RData" file.

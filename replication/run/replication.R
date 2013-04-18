@@ -2,7 +2,8 @@
 # Replicate epistatic signals
 
 # To run, e.g.:
-# R --no-save --args /path/to/plink /path/to/binary_plink_data /path/to/probe_data.txt /path/to/interaction_list.RData < replication.R
+# cd replication/run
+# R --no-save --args /path/to/plink/executable /path/to/binary_plink_data /path/to/probe_data.txt interaction_list.RData < replication.R
 
 args        <- commandArgs(T)
 plinkfile   <- args[1]
