@@ -80,21 +80,65 @@ Recently we have shown that whilst most genetic variance for gene expression is 
 
 \section{Methods}
 
-Data
+\subsection{Discovery data}
+
+The Brisbane Systems Genetics Study (BSGS) comprises 862 Individuals of European descent from 274 independent families \cite{pmid22563384}. DNA samples from each individual were genotyped on the Illumina 610-Quad Beadchip by the Scientific Services Division at deCODE Genetics Iceland. Full details of genotyping procedures are given in Medland et al. \cite{Medland2009} Standard QC filters were applied and the remaining 528,509 SNPs were carried forward further analysis. 
+
+Gene expression profiles were generated from whole blood collected with PAXgene TM tubes (QIAGEN, Valencia, CA) using Illumina HT12-v4.0 bead arrays. The Illumina HT-12 v4.0 chip contains 47,323 probes, although some probes are not assigned to RefSeq genes. We removed any probes that did not match the following criteria: contained a SNP within the probe sequence with MAF > 0.05 within 1000 genomes data; did not map to a listed ref-seq gene; were not significantly expressed (based on a detection $p$-value < 0.05) in 100\% of samples. After this stringent QC ~7000 [need to get exact number] probes remained for 2d-eqtl mapping. 
+
+\subsection{normalisation}
+
+Gene expression profiles were normalised and batch effects removed with the following procedures; Raw background expression were removed for each sample. Expression levels were then adjusted using Quantile and log2 transformation to standardise distribution between samples.To avoid inflation of the test statistic due to polygenic effects the following linear model was used to correct for batch and polygeneic effects;  
+
+\begin{equation}
+y = \mu + c + p + s + a + g + e
+\label{eq:lm}
+\end{equation}
+where $\mu$ is the population mean expression levels, $c$, $p$, $s$ and $a$ are vectors of chip, chip position, sex and generation respectivly. $g$ is a random additive polygenic effect with a variance covariance matrix 
 
 
-\cite{pmid22563384}
+\begin{equation}
+G_{ijk} = \left \{ 
+\begin{array}{ll}
+\sigma _a ^2 + \sigma _e ^2&        j = k \\ 
+2\phi _{ijk} \sigma _a ^2& 			j \neq k \\
+\end{array} \right.
+\end{equation}
+
+The parameters $\sigma _a ^a$ and $\sigma _e ^2$ are variance components for additive background genetic and environmental effects respectively. Here, we are using family based pedigree information rather than SNP based IDB to account for relationships between individuals and so $\phi _{ijk}$ is the kinship coefficient between individuals $j$ and $k$. The residual, $e$, from equation \ref{eq:lm} are assumed to follow a multivariate normal distribution with a mean of zero. These residuals are corrected for batch, sex, generation and polygentic effects. Residuals were standardised to Z-scores uning a inverse-normal transformation and used as the adjusted phenotype for the pairise epistasis scan. 
+
+\subsection{exhaustive 2d-eQTL analysis}
+We used epi-GPU software to perform an exhaustive scan for pairwise interactions, such that each SNP is tested against all other SNPs for statistical association with the expression values for each of the ~7000 probes. For each SNP-pair there are 9 possible genotype classes. We treat each genotype class as a fixed effect and fit an 8 d.f. $F$-test to test the following hypotheses:
+
+\begin{equation}
+H _0 : \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \mu) ^2 = 0; 
+\end{equation}
+
+\begin{equation}
+H _1 : \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \mu) ^2 > 0; 
+\label{eq:8df}
+\end{equation}
+
+where $\mu$ is the mean expression level and $x _{ij}$ is the pairwise genotype class mean for genotype $i$ at SNP 1 and genotype $j$ at locus B. This type of test does not parameterisze for specific types of epistasis, rather it tests for the joint genetic effects at two loci. This has been demonstrated to be statistically more efficient thwhen searching for a wide range of epistatic patterns (add refs), although will include any marginal effects of SNPs. \\[0.2cm]
+ 
+The complete exhaustive scan for 7,000 probes comprises of $\sim$9.8$e^{14}$ $F$-tests. Due to the very large number of tests [plus nature of epistasis ....] we used a highly conservative series of filtering steps to identify study-wide significant epistasis associations to follow forward for replication analysis. Initially a significance threshold of $-log10$ 15.5. This threshold is the studywide significance threshold determined by the number of independent tests for a 2D scan for a single probe / the number of probes analysed. This is likely to be conservative as this threshold assumes independance between probes. Following filtering on this threshold only SNP pairs with all 9 genotype classes and minium genotype class size > 5 individuals were kept. We then calculated the linkage disequilibrium between SNPs in a pair and removed any pairs with $r^2$ > 0.1. We also removed any pairs containing SNPs for which single marker additive or dominace effects had been identifyed in previous work (Powell et al. in Press). Sentinal SNP pairs we retained from epistasis eQTL 'peaks' comprising of multiple sets of pair-wise SNPs. At this stage $\sim$13,000 SNP pairs remained and were tested for the contribution of marginal and interaction terms by testing the 8d.f. \ref{eq:8df} verses a 4 d.f. model parameterizing for interaction terms only:
+
+\begin{equation}
+H _0: \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \bar x _i - \bar x _j + \mu) ^2 = 0;
+\end{equation}
+
+\begin{equation}
+H _1: \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \bar x _i - \bar x _j + \mu) ^2 > 0;
+\label{eq:4df}
+\end{equation}
+
+where $\bar x _i (\bar x _j)$ is the marginal class mean for genotype $i (j)$ at SNP A (B). Significance of interaction terms was determined using a bonferroni threshold of $0.05 / 13000 = 3.8e^{-6}$ 
 
 
+\subsection{replication}  
 
-\begin{align} 
-	\begin{split}
-	(x+y)^3 	&= (x+y)^2(x+y)\\
-					&=(x^2+2xy+y^2)(x+y)\\
-					&=(x^3+2x^2y+xy^2) + (x^2y+2xy^2+y^3)\\
-					&=x^3+3x^2y+3xy^2+y^3
-	\end{split}					
-\end{align}
+\subsection{simulation}
+
 
 
 
