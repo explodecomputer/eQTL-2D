@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  21 APR 2013 22:50
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  23 APR 2013 21:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -640,15 +640,30 @@ Underfull \hbox (badness 10000) in paragraph at lines 122--123
 
  []
 
-(./report_v1.bbl [3]) [4] (./report_v1.aux) ) 
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 147--148
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 149--151
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 152--154
+
+ []
+
+(./report_v1.bbl [4]) [5] (./report_v1.aux) ) 
 Here is how much of TeX's memory you used:
- 6607 strings out of 493488
- 100056 string characters out of 3141326
+ 6628 strings out of 493488
+ 100273 string characters out of 3141326
  198159 words of memory out of 3000000
- 9592 multiletter control sequences out of 15000+200000
- 104507 words of font info for 208 fonts, out of 3000000 for 9000
+ 9593 multiletter control sequences out of 15000+200000
+ 105857 words of font info for 223 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 47i,10n,47p,1377b,306s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 47i,10n,47p,1382b,306s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2012/texmf-dis
 t/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2012/texmf-dist/fonts/type1/p
 ublic/fourier/fourier-mex.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/p
@@ -656,10 +671,10 @@ ublic/fourier/fourier-mlit.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/
 public/fourier/fourier-ms.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/a
 dobe/utopia/putr8a.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/adobe/ut
 opia/putri8a.pfb>
-Output written on report_v1.pdf (4 pages, 55623 bytes).
+Output written on report_v1.pdf (5 pages, 59706 bytes).
 PDF statistics:
- 38 PDF objects out of 1000 (max. 8388607)
- 26 compressed objects within 1 object stream
+ 41 PDF objects out of 1000 (max. 8388607)
+ 28 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  43009 words of extra memory for PDF output out of 51595 (max. 10000000)
 

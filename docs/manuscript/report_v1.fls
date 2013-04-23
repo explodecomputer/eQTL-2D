@@ -1,4 +1,4 @@
-PWD /Volumes/group_wrayvisscher-1/josephP/Projects/Genomics/Expression_main/Epistasis/eQTL-2D/docs/manuscript
+PWD /Volumes/group_wrayvisscher/josephP/Projects/Genomics/Expression_main/Epistasis/eQTL-2D/docs/manuscript
 INPUT /usr/local/texlive/2012/texmf.cnf
 INPUT /usr/local/texlive/2012/texmf/web2c/texmf.cnf
 INPUT /usr/local/texlive/2012/texmf-var/web2c/pdftex/pdflatex.fmt
@@ -231,12 +231,12 @@ INPUT /usr/local/texlive/2012/texmf-dist/fonts/tfm/public/fourier/futr8r.tfm
 INPUT /usr/local/texlive/2012/texmf-dist/fonts/tfm/public/fourier/futri8r.tfm
 INPUT /usr/local/texlive/2012/texmf-dist/fonts/vf/public/fourier/futr8t.vf
 INPUT /usr/local/texlive/2012/texmf-dist/fonts/tfm/public/fourier/fourier-alt.tfm
-INPUT report_v1.bbl
-INPUT report_v1.bbl
-INPUT /usr/local/texlive/2012/texmf-dist/fonts/tfm/public/fourier/futri8t.tfm
 INPUT /usr/local/texlive/2012/texmf-dist/fonts/vf/public/fourier/futsy.vf
 INPUT /usr/local/texlive/2012/texmf-dist/fonts/tfm/public/fourier/fourier-ms.tfm
 INPUT /usr/local/texlive/2012/texmf-dist/fonts/tfm/public/fourier/fourier-mcl.tfm
+INPUT report_v1.bbl
+INPUT report_v1.bbl
+INPUT /usr/local/texlive/2012/texmf-dist/fonts/tfm/public/fourier/futri8t.tfm
 INPUT /usr/local/texlive/2012/texmf-dist/fonts/vf/public/fourier/futri8t.vf
 INPUT /usr/local/texlive/2012/texmf-dist/fonts/tfm/public/fourier/fourier-alt-ita.tfm
 INPUT report_v1.aux
