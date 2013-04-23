@@ -1,11 +1,12 @@
 #!/bin/bash
 
-#$ -N epistasis
+#$ -N epistasis2
 #$ -cwd
 #$ -S /bin/bash
 #$ -t 1-1959
 #$ -o job_reports/
 #$ -e job_reports/
+#$ -l h_vmem=5G
 
 if [ -n "${1}" ]; then
   echo "${1}"
