@@ -104,7 +104,8 @@ imputed_geno_snps <- epi_scan_out[i1,]
 # Max p-value
 filter <- which(epi_scan_out$nclass==9 & as.numeric(as.matrix(epi_scan_out$minclass))>4)
 epi_scan_out <- epi_scan_out[filter,]
-epi_scan_maxp <- epi_scan_out[which.max(epi_scan_out$intP),]
+epi_scan_maxp <- epi_scan_out[which.max(as.numeric(as.matrix(epi_scan_out$intP))),]
+
 
 
 #=======================================================#
@@ -137,6 +138,7 @@ save(pick_out, geno_impute_snp1_cor, geno_impute_snp2_cor, epi_geno_out, imputed
 
 # relevent data
 save(pick_out, block1, block2, pheno, epi_scan_out, file=paste(outdir, "data_", type, "_sim_", n, ".RData", sep=""))
+
 
 
 

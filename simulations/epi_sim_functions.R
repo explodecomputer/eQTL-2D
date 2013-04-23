@@ -29,7 +29,7 @@ snp_pick.fun  <- function(
 
 		
 	# select SNPs according to type
-	if(type=="cis-cis") {
+	if(type=="cis_cis") {
 		# make the geno snp selection panel
 		index <- which(geno_info$chr==probe$CHROMOSOME_NEW & geno_info$position > probe$PROBE_START-1000000 & geno_info$position < probe$PROBE_START+1000000)
 		snp_selection <- geno_info[index,]
@@ -39,7 +39,7 @@ snp_pick.fun  <- function(
 		return(out)
 	}
 
-	if(type=="cis-trans") {
+	if(type=="cis_trans") {
 		# make the geno snp selection panel
 		index <- which(geno_info$chr==probe$CHROMOSOME_NEW & geno_info$position > probe$PROBE_START-1000000 & geno_info$position < probe$PROBE_START+1000000)
 		snp_selection_cis <- geno_info[index,]
@@ -54,7 +54,7 @@ snp_pick.fun  <- function(
 		
 	}
 
-	if(type=="trans-trans") {
+	if(type=="trans_trans") {
 		# make the geno snp selection panel
 		index <- which(geno_info$chr==probe$CHROMOSOME_NEW & geno_info$position > probe$PROBE_START-1000000 & geno_info$position < probe$PROBE_START+1000000)
 		snp_selection <- geno_info[-index,]
@@ -120,7 +120,7 @@ epi_scan.fun <- function(
 	out <- array(NA, c(ncol(block1)*ncol(block2), 9))
 	c <- 0
 
-	for(i in 1:10){#ncol(block1)) {
+	for(i in 1:ncol(block1)) {
 		snpi <- block1[,i]
 
 		for(k in 1:ncol(block2)) {
@@ -223,6 +223,7 @@ epi_geno.fun <- function(
 	return(out)
 
 }
+
 
 
 
