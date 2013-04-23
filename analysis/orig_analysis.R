@@ -33,7 +33,7 @@ sig$type[with(sig, chr1 != probechr & chr2 != probechr)] <- "trans-trans"
 # trans-trans: 24
 
 
-with(sig, tapply(pfull, type, mean))
+with(sig, tapply(propG, type, mean))
 library(ggplot2)
 
 ggplot(sig, aes(x=propG)) + geom_histogram() + facet_grid(.~type)

@@ -68,11 +68,11 @@
 \section{Introduction}
 In humans expression quantitative trait loci (eQTL) have been extensively studied for their effects on transcript levels as well as their underlying effects on complex phenotypes such as disease susceptibility. To date most studies have analysed SNPs independently and estimated the genotypic effect on mean expression levels assuming an additive mode of inheritance. However, epistasis (gene by gene interactions) is thought to play an important role in the control of gene expression principally through the interaction of transcription factors and the intra-cellular effects of proteins on gene regulation.
 
-[add short paragraph outlining the types of analysis for epistasis - leading to the conclusions that 2D is the best...]
+The detection of epistasis is significantly hampered by power issues. For example, there is a greater dependency on linkage disequilibrium (LD) between causal variants and observed SNPs in order to capture non-additive variance, and this problem is exacerbated further with epistasis because there must be high LD at all interacting loci. Another obstacle comes from the dependence on a much larger sample size in order to detect similar effect sizes compared to additive effects, because of the increased number of parameters in statistical tests for interaction terms, and the increased multiple testing correction for testing combinations of SNPs. Indeed, most examples of epistasis in humans come from candidate gene studies where multiple testing does not have a detrimental effect. 
 
-Recently we have shown that whilst most genetic variance for gene expression is likely to act in an additive manner, for many probes there exists significant non-additive genetic variance. [Gib: can you add something on the 'appearance of additive variance' in our system?]. The importance of epistasis for control of gene expression is largely unknown and has generally not been studied in human populations. It is likely that this is due in part to the considerable computation demands of running a 2D scan on 1000's of probes as well as a restrictive study-wide multiple testing burden.
+Many approaches exist to detect epistasis, many of them are highly parametric, searching for a particular pattern of epistasis or only amongst SNPs with large marginal effects. However, it can be argued that the many patterns of epistasis will go undetected if the search is over-parameterised, and it has been shown that using a test that is agnostic of the epistatic pattern in an exhaustive manner can detect signals that would otherwise go undetected. One method to overcome the problem of excessive multiple testing is to search for interactions in traits, such as gene expression, that are likely to have very large effects, thus improving the power of the study.
 
-[we can add a short paragraph outlining the cool work that Gib has done.]
+Recently we have shown that whilst most genetic variance for gene expression is likely to act in an additive manner, for many probes there exists significant non-additive genetic variance. The importance of epistasis for control of gene expression is largely unknown and has generally not been studied in human populations. It is likely that this is due in part to the considerable computation demands of running a 2D scan on 1000's of probes as well as a restrictive study-wide multiple testing burden. Due to modelling limitations, estimating the genetic variance due to non-additive genetic effects, and epistasis in particular, is often intractable. Thus, searching for epistatic effects directly may serve as a first step in quantifying the contribution of epistasis to complex traits.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -163,7 +163,74 @@ The Rotterdam Study is a large population based cohort collected to investigate 
 
 \subsection{2D Scan}
 
+We performed exhaustive two-dimensional searches on 7339 expression probes, identifying 432 significant pairwise interactions on 218 probes. We decomposed the genotype-phenotype map into parametric variance components and observed that there was no enrichment for any particular epistatic variance component amongst the significant SNPs (Table \ref{tab:vc}), demonstrating that a search that is agnostic of the pattern of epistasis is likely to detect things that would otherwise be missed. The majority of significant interactions were found to have a `cis-trans' effect (Table \ref{tab:type}; \emph{i.e.} one SNP was on the same chromosome as the probe while the other was on a different chromosome). Of the 218 probes, 78 had more than one significant interaction (Figure \ref{fig:circos})
+
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rlr}
+		\hline
+		& Interaction type & Freq \\ 
+		\hline
+		1 & cis-cis &  32 \\ 
+		2 & cis-trans & 388 \\ 
+		3 & trans-trans &  12 \\ 
+		\hline
+	\end{tabular}
+	\label{tab:type}
+\end{table}
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rlr}
+		\hline
+		& Main epistatic effect & Freq \\ 
+		\hline
+		1 & A x A &  99 \\ 
+		2 & A x D &  93 \\ 
+		3 & D x A & 117 \\ 
+		4 & D x D & 123 \\ 
+		\hline
+	\end{tabular}
+	\label{tab:vc}
+\end{table}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/3dplots}
+	\caption{Genotype-phenotype maps for the nine most significant interactions.}
+	\label{fig:3dplots}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/circos}
+	\caption{Genomic maps for 39 probes that have two or more significant interactions. The red dot denotes the chromosome where the probe resides and arcs denote interacting SNP pairs.}
+	\label{fig:circos}
+\end{figure}
+
+We attempted replication of the signals in an independent dataset [Greg Gibson - 139 individuals, 185 out of 432 interactions had both SNPs in common in the two datasets]. We observed no significant $p$-values after adjusting for multiple testing (lowest $p$-value$=0.0099$ in replication dataset, threshold set at $0.05/185=0.0003$). We tested for enrichment of $p$-values but there was no evidence of departure from the null hypothesis of no effects (Figure \ref{fig:gg_replication}). 
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/replication_qqplot}
+	\caption{Q-Q plot for interaction $p$-values (4 degrees of freedom) for 185 interactions that had SNPs in common in the replication dataset.}
+	\label{fig:gg_replication}
+\end{figure}
+
+
+
 \subsection{Additive vs non-additive}
+
+This study has focused on identifying statistical interactions, however all significant interactions exhibit relatively large additive genetic effects (Figure \ref{fig:proportion_additive}).
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/proportion_additive}
+	\caption{Proportion of genetic variance attributed to additive and non-additive effects, ranked in order of total genetic variance explained by the interacting SNP pair.}
+	\label{fig:proportion_additive}
+\end{figure}
+
 
 \subsection{Fine Mapping}
 
