@@ -213,15 +213,6 @@ We performed exhaustive two-dimensional searches on 7339 expression probes, iden
 	\label{fig:circos}
 \end{figure}
 
-We attempted replication of the signals in an independent dataset [Greg Gibson - 139 individuals, 185 out of 432 interactions had both SNPs in common in the two datasets]. We observed no significant $p$-values after adjusting for multiple testing (lowest $p$-value$=0.0099$ in replication dataset, threshold set at $0.05/185=0.0003$). We tested for enrichment of $p$-values but there was no evidence of departure from the null hypothesis of no effects (Figure \ref{fig:gg_replication}). 
-
-\begin{figure}[p]
-	\centering
-	\includegraphics[width=15cm]{images/replication_qqplot}
-	\caption{Q-Q plot for interaction $p$-values (4 degrees of freedom) for 185 interactions that had SNPs in common in the replication dataset.}
-	\label{fig:gg_replication}
-\end{figure}
-
 
 
 \subsection{Additive vs non-additive}
@@ -234,6 +225,122 @@ This study has focused on identifying statistical interactions, however all sign
 	\caption{Proportion of genetic variance attributed to additive and non-additive effects, ranked in order of total genetic variance explained by the interacting SNP pair.}
 	\label{fig:proportion_additive}
 \end{figure}
+
+
+
+\subsection{Replication}
+
+
+We attempted replication of the signals in an independent dataset [Greg Gibson - 139 individuals, 185 out of 432 interactions had both SNPs in common in the two datasets]. We observed no significant $p$-values after adjusting for multiple testing (lowest $p$-value$=0.0099$ in replication dataset, threshold set at $0.05/185=0.0003$). We tested for enrichment of $p$-values but there was no evidence of departure from the null hypothesis of no effects (Figure \ref{fig:gg_replication}). 
+
+Replication in Fehrmann and EGCUT
+
+Of the 432 probe by SNP pair associations supplied to the replication group(s) 387 and 391 were present at the desired criteria in Fehrmenn and EGCUT respectively.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rrrr}
+	\hline
+	& & Fehrmann & EGCUT \\
+	\hline
+	P value & Expected & Observed & Observed \\
+	\hline	  
+	0.1 & 38 & 51 & 67 \\
+	0.05 & 19 & 35 & 44 \\
+	0.01 & 4 & 22 & 26 \\
+	0.001 & <1 & 14 & 22 \\
+	0.0001 & ~0 & 7 & 17 \\
+	\hline
+	\end{tabular}
+\end{table}
+
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrllrlrrrrr}
+  \hline
+chr1 & chr2 & pos1 & pos2 & snp1 & snp2 & probechr & probegene & snpcor & replication\_pnest & replication\_r & replication\_nclass & replication\_minclass \\ 
+  \hline
+19 &  19 & 483171 & 483155 & rs807491 & rs7254601 &  19 & TMEM149 & 0.02 & 81.55 & 0.05 &   9 &  16 \\ 
+19 &  19 & 481151 & 481145 & rs873870 & rs7252981 &  19 & ATP13A1 & -0.26 & 48.72 & -0.34 &   9 &  12 \\ 
+11 &  11 & 345268 & 345257 & rs7930237 & rs556895 &  11 & CTSC & -0.11 & 18.76 & 0.09 &   9 &   8 \\ 
+10 &  10 & 317649 & 317615 & rs2395095 & rs10824092 &  10 & ADK & 0.12 & 18.33 & 0.10 &   9 &  13 \\ 
+8 &   8 & 277063 & 277044 & rs2123758 & rs3889129 &   8 & NAPRT1 & 0.23 & 15.12 & 0.18 &   9 &  34 \\ 
+3 &   3 & 110710 & 110699 & rs16864367 & rs13069559 &   3 & MBNL1 & 0.29 & 10.30 & 0.23 &   9 &   9 \\ 
+14 &   3 & 416822 & 110699 & rs2614467 & rs13069559 &   3 & MBNL1 & -0.02 & 4.13 & 0.03 &   9 &  12 \\ 
+19 &   8 & 483165 & 252775 & rs8106959 & rs1843357 &  19 & TMEM149 & 0.02 & 3.72 & -0.00 &   9 &  10 \\ 
+19 &   3 & 483165 & 117001 & rs8106959 & rs10937361 &  19 & TMEM149 & 0.01 & 3.61 & -0.00 &   9 &  12 \\ 
+8 &   3 & 257325 & 117283 & rs8180944 & rs4553956 &   8 & HMBOX1 & 0.05 & 3.38 & -0.05 &   9 &   4 \\ 
+19 &   1 & 483165 & 38950 & rs8106959 & rs914940 &  19 & TMEM149 & 0.04 & 3.36 & -0.05 &   9 &   8 \\ 
+19 &   2 & 483165 & 80806 & rs8106959 & rs6718480 &  19 & TMEM149 & 0.02 & 3.31 & -0.02 &   9 &  10 \\ 
+19 &   6 & 483165 & 216524 & rs8106959 & rs6926382 &  19 & TMEM149 & -0.05 & 3.06 & -0.03 &   9 &  12 \\ 
+19 &  14 & 483165 & 414535 & rs8106959 & rs17719594 &  19 & TMEM149 & 0.04 & 3.06 & 0.02 &   9 &  12 \\ 
+5 &   3 & 155373 & 110699 & rs7710738 & rs13069559 &   3 & MBNL1 & 0.10 & 2.55 & -0.03 &   9 &   9 \\ 
+19 &  12 & 483165 & 379273 & rs8106959 & rs1401098 &  19 & TMEM149 & -0.01 & 2.41 & 0.04 &   9 &  11 \\ 
+17 &  15 & 450341 & 430903 & rs1533031 & rs12591171 &  17 & XAF1 & -0.04 & 2.38 & -0.03 &   9 &   9 \\ 
+14 &   8 & 406922 & 265704 & rs7152284 & rs2896452 &   8 & C8ORF59 & 0.02 & 2.18 & 0.07 &   9 &  17 \\ 
+19 &   5 & 483884 & 178750 & rs4803481 & rs2421050 &  19 & CEACAM21 & 0.07 & 2.16 & -0.02 &   9 &   9 \\ 
+7 &   1 & 242078 & 11854 & rs12532999 & rs12065581 &   1 & GPR177 & -0.08 & 2.13 & 0.04 &   9 &  10 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrllrlrrrrr}
+  \hline
+chr1 & chr2 & pos1 & pos2 & snp1 & snp2 & probechr & probegene & snpcor & replication\_pnest & replication\_r & replication\_nclass & replication\_minclass \\ 
+  \hline
+19 &  19 & 483171 & 483155 & rs807491 & rs7254601 &  19 & TMEM149 & 0.02 & 45.78 & -0.13 &   9 &   3 \\ 
+19 &  19 & 481151 & 481145 & rs873870 & rs7252981 &  19 & ATP13A1 & -0.26 & 42.37 & 0.37 &   9 &   3 \\ 
+10 &  10 & 317649 & 317615 & rs2395095 & rs10824092 &  10 & ADK & 0.12 & 21.21 & -0.04 &   9 &  11 \\ 
+3 &   3 & 110710 & 110699 & rs16864367 & rs13069559 &   3 & MBNL1 & 0.29 & 20.36 & 0.18 &   9 &   4 \\ 
+8 &   8 & 277063 & 277044 & rs2123758 & rs3889129 &   8 & NAPRT1 & 0.23 & 16.08 & 0.01 &   9 &  29 \\ 
+11 &  11 & 345268 & 345257 & rs7930237 & rs556895 &  11 & CTSC & -0.11 & 15.06 & 0.19 &   9 &   2 \\ 
+19 &   4 & 483165 & 137487 & rs8106959 & rs2351458 &  19 & TMEM149 & 0.03 & 9.61 & -0.02 &   9 &   4 \\ 
+19 &   6 & 483165 & 216524 & rs8106959 & rs6926382 &  19 & TMEM149 & -0.05 & 8.80 & -0.03 &   9 &   6 \\ 
+5 &   3 & 155373 & 110699 & rs7710738 & rs13069559 &   3 & MBNL1 & 0.10 & 7.89 & 0.05 &   9 &   4 \\ 
+19 &   1 & 483165 & 38950 & rs8106959 & rs914940 &  19 & TMEM149 & 0.04 & 6.96 & 0.01 &   9 &   3 \\ 
+17 &   3 & 450326 & 110699 & rs218671 & rs13069559 &   3 & MBNL1 & -0.03 & 5.82 & 0.00 &   9 &   4 \\ 
+6 &   3 & 207083 & 110699 & rs2030926 & rs13069559 &   3 & MBNL1 & 0.05 & 5.80 & -0.00 &   9 &   1 \\ 
+19 &  13 & 483165 & 380931 & rs8106959 & rs9509428 &  19 & TMEM149 & -0.01 & 5.75 & -0.01 &   9 &   2 \\ 
+7 &   3 & 236869 & 110699 & rs11981513 & rs13069559 &   3 & MBNL1 & 0.02 & 5.36 & 0.00 &   9 &   5 \\ 
+19 &   2 & 483165 & 80806 & rs8106959 & rs6718480 &  19 & TMEM149 & 0.02 & 5.15 & -0.07 &   9 &   1 \\ 
+4 &   3 & 126893 & 110699 & rs4392535 & rs13069559 &   3 & MBNL1 & 0.02 & 4.33 & -0.02 &   9 &   1 \\ 
+8 &   3 & 248082 & 110699 & rs4735830 & rs13069559 &   3 & MBNL1 & 0.03 & 4.21 & -0.05 &   9 &   4 \\ 
+19 &  11 & 483165 & 353621 & rs8106959 & rs471728 &  19 & TMEM149 & 0.04 & 3.62 & 0.04 &   9 &   4 \\ 
+19 &   8 & 483165 & 252775 & rs8106959 & rs1843357 &  19 & TMEM149 & 0.02 & 3.33 & -0.04 &   9 &   2 \\ 
+19 &  17 & 483165 & 462278 & rs8106959 & rs7213338 &  19 & TMEM149 & 0.04 & 3.14 & 0.04 &   9 &   7 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/replication_qqplot}
+	\caption{Q-Q plot for interaction $p$-values (4 degrees of freedom) for 185 interactions that had SNPs in common in the replication dataset.}
+	\label{fig:gg_replication}
+\end{figure}
+
+
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/EGCUT_vs_Fehrmann_all}
+	\caption{-log10 pvalues for all snp / probe pairs in Fehrnmann and EGCUT}
+	\label{fig:repl_match}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/EGCUT_vs_Fehrmann_pval10}
+	\caption{-log10 pvalues for all snp / probe pairs with -log10 p values less than 10 in Fehrnmann and EGCUT datasets}
+	\label{fig:repl_match10}
+\end{figure}
+
+
 
 
 \subsection{Fine Mapping}
