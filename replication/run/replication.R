@@ -18,6 +18,11 @@ probes  <- ReadProbeFile(probefile)
 sig     <- LoadIntList(intlistfile, plinkfile, probes)
 geno    <- ExtractSNPs(sig, plinkfile)
 checked <- DataChecks(probes, geno)
-newsig  <- RunReplication(sig, checked)
+l       <- RunReplication(sig, checked)
 
-save(newsig, file=outfile)
+newsig <- l$sig
+gcm    <- l$gcm
+gcs    <- l$gcs
+mod    <- l$mod
+
+save(newsig, gcm, gcs, mod, file=outfile)

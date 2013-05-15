@@ -149,6 +149,7 @@ DataChecks <- function(probes, geno)
 #' @export
 ReplicationTests <- function(geno, probes, sig, i)
 {
+	require(noia)
 	# Extract data
 	snp1 <- geno[, colnames(geno) == sig$snp1[i]]
 	snp2 <- geno[, colnames(geno) == sig$snp2[i]]
@@ -156,6 +157,9 @@ ReplicationTests <- function(geno, probes, sig, i)
 
 	# Summary statistics
 	tab <- table(snp1 + 3*snp2)
+	gcm <- tapply(probe, list(snp1, snp2), function(x) { mean(x, na.rm=T)})
+	gcs <- table(snp1, snp2)
+	mod <- linearRegression(probe, cbind(snp1, snp2)+1)
 
 	sig$replication_p1[i] <- mean(snp1, na.rm=T) / 2
 	sig$replication_p2[i] <- mean(snp2, na.rm=T) / 2
@@ -173,7 +177,13 @@ ReplicationTests <- function(geno, probes, sig, i)
 	sig$replication_pfull[i] <- -log10(pf(fulltest[1], fulltest[2], fulltest[3], low=FALSE))
 	sig$replication_pnest[i] <- -log10(inttest$P[2])
 
-	return(sig)
+	l <- list()
+	l$sig <- sig
+	l$gcm <- gcm
+	l$gcs <- gcs
+	l$mod <- mod
+
+	return(l)
 }
 
 
@@ -200,10 +210,25 @@ RunReplication <- function(sig, checked)
 	geno <- checked$geno
 	probes <- checked$probes
 
+	gcm <- list()
+	gcs <- list()
+	mod <- list()
+
 	for(i in 1:nrow(sig))
 	{
 		cat(i, "of", nrow(sig), "\n")
-		sig <- ReplicationTests(geno, probes, sig, i)
+		out <- ReplicationTests(geno, probes, sig, i)
+		sig <- out$sig
+		gcm[[i]] <- out$gcm
+		gcs[[i]] <- out$gcs
+		mod[[i]] <- out$mod
 	}
-	return(sig)
+
+	l <- list()
+	l$sig <- sig
+	l$gcm <- gcm
+	l$gcs <- gcs
+	l$mod <- mod
+
+	return(l)
 }
