@@ -6,6 +6,7 @@
 #$ -t 1-5280
 #$ -o job_reports/
 #$ -e job_reports/
+#$ -l h_vmem=4G
 
 
 set -e
@@ -18,17 +19,16 @@ fi
 i=${SGE_TASK_ID}
 
 
-rootdir="/hpscratch/wrayvisscher/gib/git/wrayvisscher/eQTL_2D/"
-resdir="${rootdir}v4/results/result"
-hsqdir="${rootdir}v4/scratch/resphen"
+rootdir="/hpscratch/wrayvisscher/gib/git/eQTL-2D/"
+resdir="${rootdir}run/results/result"
+hsqdir="${rootdir}run/scratch/resphen"
 phendat="${rootdir}data/residuals.RData"
 genodat="${rootdir}data/geno.RData"
-threshold=15.38
+threshold=14.5
 maxrsq=0.1
-output="${rootdir}v4_a/filtered_by_nonmarginal/filtered"
+output="${rootdir}filtering/filtered_by_nonmarginal/filtered"
 minclass=5
-snplistfile="Full_Merlin_out_NLP_8.txt"
-domlistfile="dom.txt"
+snplistfile="${rootdir}filtering/marginal_lists/marginal_list.RData"
 
-R --no-save --args ${i} ${resdir} ${hsqdir} ${phendat} ${genodat} ${threshold} ${maxrsq} ${minclass} ${output} ${snplistfile} ${domlistfile} < filter_raw_nonmarginal.R
+R --no-save --args ${i} ${resdir} ${hsqdir} ${phendat} ${genodat} ${threshold} ${maxrsq} ${minclass} ${output} ${snplistfile} < filter_raw_nonmarginal.R
 

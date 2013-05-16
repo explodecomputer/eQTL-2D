@@ -148,7 +148,6 @@ maxrsq <- as.numeric(commandArgs(T)[7])
 minclass <- as.numeric(commandArgs(T)[8])
 output <- commandArgs(T)[9]
 snplistfile <- commandArgs(T)[10]
-domlistfile <- commandArgs(T)[11]
 
 
 # probe | probe number | hsq | complete | chr1 | chr2 | pos1 | pos2 | snp1 | snp2 | Pfull | Pint | df1 | df2 
@@ -156,27 +155,8 @@ domlistfile <- commandArgs(T)[11]
 
 # Read in geno / pheno info
 load(phenfile)
-
-# Read in list of additive SNPs
-snplist <- read.table(snplistfile, colClasses=c(NULL, "character", NULL, NULL, "character", NULL, NULL, NULL, NULL, NULL, NULL))
-snplist <- subset(snplist, select=c(V2, V6))
-names(snplist) <- c("SNP", "probename")
-
-domlist <- read.table(domlistfile, he=T)
-domlist <- subset(domlist, select=c(SNP, V10))
-names(domlist) <- c("SNP", "probename")
-domlist$SNP <- as.character(domlist$SNP)
-domlist$probename <- as.character(domlist$probename)
-
-domlist$nom <- with(domlist, paste(SNP, probename))
-snplist$nom <- with(snplist, paste(SNP, probename))
-
-marlist <- rbind(snplist, domlist)
-dim(marlist)
-marlist <- marlist[!duplicated(marlist$nom), ]
-dim(marlist)
-
-snplist <- marlist
+load(snplistfile)
+dim(marginal_list)
 
 # Read in epiqpu output
 res <- read.egu(paste(rootres, i, sep=""), threshold)
@@ -195,11 +175,11 @@ res$probehsq <- hsq
 
 # Filter so that any SNPs in snplist for a particular probe are removed
 
-snplist <- subset(snplist, probename == probeinfo$PROBE_ID[i])
-dim(snplist)
-if(nrow(snplist) != 0)
+marginal_list <- subset(marginal_list, probename == probeinfo$PROBE_ID[i])
+dim(marginal_list)
+if(nrow(marginal_list) != 0)
 {
-	res <- subset(res, ! (snp1 %in% snplist$SNP | snp2 %in% snplist$SNP) )
+	res <- subset(res, ! (snp1 %in% marginal_list$snp | snp2 %in% marginal_list$snp) )
 	dim(res)
 	if(nrow(res) == 0) q()
 }
