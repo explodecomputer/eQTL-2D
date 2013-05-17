@@ -3,12 +3,14 @@
 
 
 # Read in RData files
+library(reshape2)
+library(ggplot2)
 
-load("~/repo/eQTL-2D/replication/results/EGCUT_replication.RData")
+load("EGCUT_replication.RData")
 newsig$id <- with(newsig, paste(probename, snp1, snp2))
 EGCUT <- newsig
 
-load("~/repo/eQTL-2D/replication/results/FehrmannHT12v3_replication.RData")
+load("FehrmannHT12v3_replication.RData")
 newsig$id <- with(newsig, paste(probename, snp1, snp2))
 Feh <- subset(newsig, select=-c(chr1, chr2, pos1, pos2, snp1, snp2, complete, probeid, probename, probechr, probegene, probehsq, minclasssize, snpcor, propG, propA, pnest, pfull, pint))
 rm(newsig)
@@ -35,21 +37,65 @@ panel.cor <- function(x, y, digits=2, prefix="", cex.cor)
 
 
 
-temp <- subset(rep, select=c(pnest, replication_pnest_EGCUT, replication_pnest_Feh))
-names(temp) <- c("BSGS", "EGCUT", "Fehrmann")
-pdf("pnest_rep_pvals.pdf")
-pairs(temp, lower.panel=panel.smooth, upper.panel=panel.cor, main="Interaction p-values in 3 datasets (4df)")
+temp1 <- subset(rep, select=c(pnest, replication_pnest_EGCUT, replication_pnest_Feh))
+names(temp1) <- c("BSGS", "EGCUT", "Fehrmann")
+pdf("../../docs/manuscript/images/pnest_rep_pvals.pdf")
+pairs(temp1, lower.panel=panel.smooth, upper.panel=panel.cor, main="Interaction p-values in 3 datasets (4df)")
 dev.off()
 
-temp <- subset(rep, select=c(pfull, replication_pfull_EGCUT, replication_pfull_Feh))
-names(temp) <- c("BSGS", "EGCUT", "Fehrmann")
-pdf("pfull_rep_pvals.pdf")
-pairs(temp, lower.panel=panel.smooth, upper.panel=panel.cor, main="Full genetic p-values in 3 datasets (8df)")
+temp2 <- subset(rep, select=c(pfull, replication_pfull_EGCUT, replication_pfull_Feh))
+names(temp2) <- c("BSGS", "EGCUT", "Fehrmann")
+pdf("../../docs/manuscript/images/pfull_rep_pvals.pdf")
+pairs(temp2, lower.panel=panel.smooth, upper.panel=panel.cor, main="Full genetic p-values in 3 datasets (8df)")
 dev.off()
 
 
 # QQ plots
 
+conf.int <- function(n, alpha)
+{
+	k <- c(1:n)
+	lower <- -log10(qbeta(alpha/2,k,n+1-k))
+	upper <- -log10(qbeta((1-alpha/2),k,n+1-k))
+	expect <- -log10((k-0.5)/n)
+	return(data.frame(expect, lower, upper))
+
+	# ggplot(conf.int(30000), aes(x=expect)) + geom_ribbon(aes(ymin=lower, ymax=upper))
+}
+
+head(temp1)
+a <- melt(temp1)
+a$pval <- 10^-a$value
+
+conf <- conf.int(nrow(temp1), 0.05)
+head(conf)
+
+b <- a[order(a$variable, a$value, decreasing=T), ]
+head(b)
+table(b$variable)
+dim(conf)
+
+b <- data.frame(b, rbind(conf, conf, conf))
+
+head(b)
+
+ggplot(b) +
+	geom_ribbon(aes(x=expect, ymin=lower, ymax=upper), colour="white", alpha=0.5) +
+	geom_abline(intercept=0, slope=1) +
+	geom_point(aes(x=expect, y=value)) +
+	facet_grid(variable ~ .)
+
+
+index <- 1:50
+index <- c(index, index+nrow(temp1), index+nrow(temp1)*2)
+
+
+ggplot(subset(b, variable != "BSGS")[-index, ]) +
+	geom_ribbon(aes(x=expect, ymin=lower, ymax=upper), colour="white", alpha=0.5) +
+	geom_abline(intercept=0, slope=1) +
+	geom_point(aes(x=expect, y=value)) +
+	facet_grid(variable ~ .)
+ggsave("../../docs/manuscript/images/qqplot_replication.pdf")
 
 
 

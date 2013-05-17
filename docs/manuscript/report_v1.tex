@@ -16,7 +16,8 @@
 \usepackage{amsmath,amsfonts,amsthm}								% Math packages
 \usepackage[pdftex]{graphicx}										% Enable pdflatex
 \usepackage{url}
-
+\usepackage{rotating}
+\usepackage{natbib}
 
 %%% Custom sectioning (sectsty package)
 \usepackage{sectsty}												% Custom sectioning (see below)
@@ -82,7 +83,7 @@ Recently we have shown that whilst most genetic variance for gene expression is 
 
 \subsection{Discovery data}
 
-The Brisbane Systems Genetics Study (BSGS) comprises 862 Individuals of European descent from 274 independent families \cite{pmid22563384}. DNA samples from each individual were genotyped on the Illumina 610-Quad Beadchip by the Scientific Services Division at deCODE Genetics Iceland. Full details of genotyping procedures are given in Medland et al. \cite{Medland2009} Standard QC filters were applied and the remaining 528,509 SNPs were carried forward further analysis. 
+The Brisbane Systems Genetics Study (BSGS) comprises 862 Individuals of European descent from 274 independent families \citep{pmid22563384}. DNA samples from each individual were genotyped on the Illumina 610-Quad Beadchip by the Scientific Services Division at deCODE Genetics Iceland. Full details of genotyping procedures are given in Medland et al. \citep{Medland2009} Standard QC filters were applied and the remaining 528,509 SNPs were carried forward further analysis. 
 
 Gene expression profiles were generated from whole blood collected with PAXgene TM tubes (QIAGEN, Valencia, CA) using Illumina HT12-v4.0 bead arrays. The Illumina HT-12 v4.0 chip contains 47,323 probes, although some probes are not assigned to RefSeq genes. We removed any probes that did not match the following criteria: contained a SNP within the probe sequence with MAF > 0.05 within 1000 genomes data; did not map to a listed ref-seq gene; were not significantly expressed (based on a detection $p$-value < 0.05) in 100\% of samples. After this stringent QC ~7000 [need to get exact number] probes remained for 2d-eqtl mapping. 
 
@@ -255,11 +256,12 @@ Of the 432 probe by SNP pair associations supplied to the replication group(s) 3
 \end{table}
 
 
-\begin{table}[ht]
+\begin{sidewaystable}[ht]
 \centering
+{\footnotesize
 \begin{tabular}{rrrrrllrlrrrrr}
   \hline
-chr1 & chr2 & pos1 & pos2 & snp1 & snp2 & probechr & probegene & snpcor & replication\_pnest & replication\_r & replication\_nclass & replication\_minclass \\ 
+chr1 & chr2 & pos1 & pos2 & snp1 & snp2 & probechr & probegene & snpcor & rep\_pnest & rep\_r & rep\_nclass & rep\_minclass \\ 
   \hline
 19 &  19 & 483171 & 483155 & rs807491 & rs7254601 &  19 & TMEM149 & 0.02 & 81.55 & 0.05 &   9 &  16 \\ 
 19 &  19 & 481151 & 481145 & rs873870 & rs7252981 &  19 & ATP13A1 & -0.26 & 48.72 & -0.34 &   9 &  12 \\ 
@@ -283,14 +285,15 @@ chr1 & chr2 & pos1 & pos2 & snp1 & snp2 & probechr & probegene & snpcor & replic
 7 &   1 & 242078 & 11854 & rs12532999 & rs12065581 &   1 & GPR177 & -0.08 & 2.13 & 0.04 &   9 &  10 \\ 
    \hline
 \end{tabular}
-\end{table}
+}
+\end{sidewaystable}
 
-
-\begin{table}[ht]
+\begin{sidewaystable}[ht]
 \centering
+{\footnotesize
 \begin{tabular}{rrrrrllrlrrrrr}
   \hline
-chr1 & chr2 & pos1 & pos2 & snp1 & snp2 & probechr & probegene & snpcor & replication\_pnest & replication\_r & replication\_nclass & replication\_minclass \\ 
+chr1 & chr2 & pos1 & pos2 & snp1 & snp2 & probechr & probegene & snpcor & rep\_pnest & rep\_r & replication\_nclass & rep\_minclass \\ 
   \hline
 19 &  19 & 483171 & 483155 & rs807491 & rs7254601 &  19 & TMEM149 & 0.02 & 45.78 & -0.13 &   9 &   3 \\ 
 19 &  19 & 481151 & 481145 & rs873870 & rs7252981 &  19 & ATP13A1 & -0.26 & 42.37 & 0.37 &   9 &   3 \\ 
@@ -314,8 +317,8 @@ chr1 & chr2 & pos1 & pos2 & snp1 & snp2 & probechr & probegene & snpcor & replic
 19 &  17 & 483165 & 462278 & rs8106959 & rs7213338 &  19 & TMEM149 & 0.04 & 3.14 & 0.04 &   9 &   7 \\ 
    \hline
 \end{tabular}
-\end{table}
-
+}
+\end{sidewaystable}
 
 \begin{figure}[p]
 	\centering
@@ -341,6 +344,51 @@ chr1 & chr2 & pos1 & pos2 & snp1 & snp2 & probechr & probegene & snpcor & replic
 \end{figure}
 
 
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/pfull_rep_pvals}
+	\caption{8df pvals for 391 interactions}
+	\label{fig:cor_8df}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/pnest_rep_pvals}
+	\caption{4df pvals for 391 interactions}
+	\label{fig:cor_4df}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/qqplot_replication}
+	\caption{QQ plot excluding 50 largest pvals which really distort the plot}
+	\label{fig:cor_8df}
+\end{figure}
+
+% color_epi_snps.pdf
+% EpiSNPs_cell_type_spec_for_top_tissues.pdf
+% EpiSNPs_H3K4me3_Overlap.pdf
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/color_epi_snps}
+	\caption{Global view of all interactions}
+	\label{fig:cor_8df}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/EpiSNPs_H3K4me3_Overlap}
+	\caption{}
+	\label{fig:cor_8df}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=15cm]{images/EpiSNPs_cell_type_spec_for_top_tissues}
+	\caption{}
+	\label{fig:cor_8df}
+\end{figure}
 
 
 \subsection{Fine Mapping}
