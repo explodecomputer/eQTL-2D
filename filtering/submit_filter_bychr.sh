@@ -3,9 +3,13 @@
 #$ -N epistasis
 #$ -cwd
 #$ -S /bin/bash
-#$ -t 1-1959
+#$ -t 1-7339
 #$ -o job_reports/
 #$ -e job_reports/
+#$ -l h_vmem=10G
+
+
+set -e
 
 if [ -n "${1}" ]; then
   echo "${1}"
@@ -14,14 +18,15 @@ fi
 
 i=${SGE_TASK_ID}
 
-rootdir="/hpscratch/wrayvisscher/gib/git/wrayvisscher/eQTL_2D/"
-resdir="${rootdir}v4/results/result_2_"
-hsqdir="${rootdir}v4/scratch/resphen_2_"
-phendat="${rootdir}data/residuals2.RData"
+
+rootdir="/hpscratch/wrayvisscher/gib/git/eQTL-2D/"
+resdir="${rootdir}run/results/result"
+hsqdir="${rootdir}run/scratch/resphen"
+phendat="${rootdir}data/residuals.RData"
 genodat="${rootdir}data/geno.RData"
-threshold=15.38
+threshold=13
 maxrsq=0.1
-output="${rootdir}v4_a/filtered_by_chr/filtered_2_"
+output="${rootdir}filtering/filtered_by_chr/filtered"
 minclass=5
 
 R --no-save --args ${i} ${resdir} ${hsqdir} ${phendat} ${genodat} ${threshold} ${maxrsq} ${minclass} ${output} < filter_raw_bychr.R
