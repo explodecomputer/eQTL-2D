@@ -6,11 +6,6 @@ read.egu <- function(rootname, threshold)
 {
 	if(!file.exists(paste(rootname, ".txt.gz", sep="")))
 	{
-		if(file.exists(paste(rootname, ".txt", sep="")))
-		{
-			system(paste("gzip", paste(rootname, ".txt", sep="")))
-			read.egu(rootname, threshold)
-		}
 		cat("Missing: ", rootname)
 		return(data.frame(chr1=NA, chr2=NA, pos1=NA, pos2=NA,
 			snp1=NA, snp2=NA, pfull=NA, pint=NA, df1=NA, df2=NA, complete=2))

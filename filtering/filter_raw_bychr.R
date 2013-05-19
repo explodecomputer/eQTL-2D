@@ -4,21 +4,17 @@
 
 read.egu <- function(rootname, threshold)
 {
-	if(!file.exists(paste(rootname, ".txt", sep="")))
+	if(!file.exists(paste(rootname, ".txt.gz", sep="")))
 	{
-		if(file.exists(paste(rootname, ".txt.gz", sep="")))
-		{
-			system(paste("gunzip", paste(rootname, ".txt.gz", sep="")))
-			read.egu(rootname, threshold)
-		}
 		cat("Missing: ", rootname)
 		return(data.frame(chr1=NA, chr2=NA, pos1=NA, pos2=NA,
 			snp1=NA, snp2=NA, pfull=NA, pint=NA, df1=NA, df2=NA, complete=2))
 	}
 
-	complete <- system(paste("grep -q \"# 25 x 25 :\" ", rootname, ".txt", sep=""))
+	complete <- system(paste("zgrep -q \"# 25 x 25 :\" ", rootname, ".txt.gz", sep=""))
 
-	dat <- read.table(paste(rootname, ".txt", sep=""), skip=7, header=T)
+	dat <- read.table(paste(rootname, ".txt.gz", sep=""), skip=7, header=T)
+	cat(nrow(dat), "lines read\n")
 	dat <- subset(dat, df1 > 5)
 	dat$pfull <- with(dat, -log10(pf(Fval, df1, df2, lower.tail=F)))
 	dat$pint <- with(dat, -log10(pf(Fint, 4, df2, lower.tail=F)))
