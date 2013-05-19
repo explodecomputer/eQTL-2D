@@ -1,0 +1,16 @@
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+\title{Analysis of initial replication results}
+
+\begin{document}
+\maketitle
+
+\section{First look}
+
+<<read_summary, eval=TRUE, echo=FALSE, warning=FALSE, cache=TRUE>>=
+source("~/repo/eQTL-2D/replication/results/summary_script.R")
+@
+
+
+
+
+\end{document}
