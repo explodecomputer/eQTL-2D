@@ -13,7 +13,7 @@ read.egu <- function(rootname, threshold)
 
 	complete <- system(paste("zgrep -q \"# 25 x 25 :\" ", rootname, ".txt.gz", sep=""))
 
-	dat <- read.table(paste(rootname, ".txt.gz", sep=""), skip=7, header=T)
+	dat <- read.table(paste(rootname, ".txt.gz", sep=""), skip=7, header=T, colClasses=c("numeric", "character", "numeric", "numeric", "character", "numeric", "numeric", "numeric", "numeric", "numeric"))
 	cat(nrow(dat), "lines read\n")
 	dat <- subset(dat, df1 > 5)
 	dat$pfull <- with(dat, -log10(pf(Fval, df1, df2, lower.tail=F)))

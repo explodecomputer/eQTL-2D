@@ -3,10 +3,10 @@
 #$ -N nonmarsig
 #$ -cwd
 #$ -S /bin/bash
-#$ -t 500-7339
+#$ -t 1-7339
 #$ -o job_reports/
 #$ -e job_reports/
-#$ -l h_vmem=10G
+#$ -l h_vmem=5G
 
 
 set -e
