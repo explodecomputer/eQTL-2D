@@ -21,7 +21,6 @@ i=${SGE_TASK_ID}
 
 rootdir="/hpscratch/wrayvisscher/gib/git/eQTL-2D/"
 resdir="${rootdir}run/results/result"
-hsqdir="${rootdir}run/scratch/resphen"
 phendat="${rootdir}data/residuals_all.RData"
 genodat="${rootdir}data/geno.RData"
 threshold=13
@@ -31,5 +30,5 @@ output="${rootdir}filtering/filtered_by_nonmarginal_sig/filtered"
 minclass=5
 snplistfile="${rootdir}filtering/marginal_lists/marginal_list.RData"
 
-R --no-save --args ${i} ${resdir} ${hsqdir} ${phendat} ${genodat} ${threshold} ${maxrsq} ${minclass} ${output} ${snplistfile} ${threshold2} < filter_raw_nonmarginal_sig.R
+R --no-save --args ${i} ${resdir} ${phendat} ${genodat} ${threshold} ${maxrsq} ${minclass} ${output} ${snplistfile} ${threshold2} < filter_rdata_nonmarginal_sig.R
 
