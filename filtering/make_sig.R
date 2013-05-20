@@ -25,5 +25,18 @@ SentinalSnp <- function(dat)
 sig <- SentinalSnp(sig)
 dim(sig)
 
+removeFactors <- function(x)
+{
+	nom <- names(x)
+	l <- nom[lapply(x, class)=="factor"]
+	for(i in 1:length(l))
+	{
+		x[[l[i]]] <- as.character(x[[l[i]]])
+	}
+	return(x)
+}
+
+sig <- removeFactors(sig)
+
 save(sig, file=outfile)
 

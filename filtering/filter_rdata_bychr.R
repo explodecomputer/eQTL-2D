@@ -92,6 +92,12 @@ dim(res)
 if(nrow(res) == 1 & is.na(res$df1[1])) q()
 
 
+# Filter on threshold
+res <- subset(res, pfull > threshold)
+dim(res)
+if(nrow(res) == 0) q()
+
+
 # Remove non-autosomes
 res <- subset(res, chr1 %in% 1:22 & chr2 %in% 1:22)
 dim(res)

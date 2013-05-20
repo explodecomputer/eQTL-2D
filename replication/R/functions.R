@@ -138,7 +138,7 @@ DataChecks <- function(probes, geno)
 
 #' Replication statistical tests
 #'
-#' Calculates allele frequencies, correlation between SNPs, class sizes
+#' Calculates allele frequencies, correlation between SNPs, class sizes, variance components
 #'
 #' @param geno \code{matrix} of genotype data
 #' @param probes \code{data.frame} of probes

@@ -7,6 +7,7 @@
 
 - R64 2.15.1
 - snpStats (Bioconductor library)
+- R/noia (available on CRAN)
 - Running in Mac/Linux
 
 
@@ -38,7 +39,7 @@ A note on normalisation: We have corrected the expression probe values for sex, 
 Run the following command:
 
 cd replication/run
-R --no-save --args /path/to/binary_plink_data /path/to/probe_data.txt interaction_list.RData < replication.R
+R --no-save --args /path/to/binary_plink_data /path/to/probe_data.txt interaction_list2.RData < replication.R
 
 It will do the following things:
 
