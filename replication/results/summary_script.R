@@ -4,7 +4,7 @@
 library(reshape2)
 library(ggplot2)
 library(VennDiagram)
-
+library(xtable)
 
 
 #'<brief desc>
@@ -134,161 +134,57 @@ plotCor <- function(ud, m=NULL)
 }
 
 
-
-# Load Data
-
-bsgs <- ReadOrig("~/repo/eQTL-2D/replication/run/interactions_list.RData", "sig", "BSGS")
-egcut <- ReadRep("~/repo/eQTL-2D/replication/results/EGCUT_replication.RData", "newsig", "EGCUT")
-fehr <- ReadRep("~/repo/eQTL-2D/replication/results/FehrmannHT12v3_replication.RData", "newsig", "Ferhmann")
-
-
-# Q-Q confidence intervals
-egcut <- qqDat(egcut, 0.05)
-fehr <- qqDat(fehr, 0.05)
-
-
-# Bonferroni corrected significant replication
-egcut_b <- subset(egcut, pnest > -log10(0.05 / nrow(egcut)))
-fehr_b <- subset(fehr, pnest > -log10(0.05 / nrow(fehr)))
-
-
-# FDR corrected significant replication
-egcut_f <- subset(egcut, pnest > upper)
-fehr_f <- subset(fehr, pnest > upper)
-
-
-# Q-Q plot
-
-# Show bonferroni correction
-dat1 <- rbind(fehr, egcut)
-dat1$ex <- FALSE
-dat1$ex[dat1$pnest > -log10(0.05/(nrow(dat1)/2))] <- TRUE
-
-qqplot1 <- ggplot(dat1) +
-	geom_ribbon(aes(x=expect, ymin=lower, ymax=upper), colour="white", alpha=0.5) +
-	geom_abline(intercept=0, slope=1) +
-	geom_point(aes(x=expect, y=pnest, colour=ex)) +
-	geom_hline(yintercept=-log10(0.05/(nrow(dat1)/2)), linetype="dotted") +
-	facet_grid(. ~ set) +
-	labs(colour="Above 5% Bonferroni?", y="Observed", x="Expected")
-
-
-# Show FDR correction
-dat2 <- rbind(fehr[-c(1:20), ], egcut[-c(1:20), ])
-dat2$ex <- FALSE
-dat2$ex[dat2$pnest > dat2$upper] <- TRUE
-
-qqplot2 <- ggplot(dat2) +
-	geom_ribbon(aes(x=expect, ymin=lower, ymax=upper), colour="white", alpha=0.5) +
-	geom_abline(intercept=0, slope=1) +
-	geom_point(aes(x=expect, y=pnest, colour=ex), size=1.5) +
-	facet_grid(. ~ set) +
-	labs(colour="Above FDR 5% CI?", y="Observed", x="Expected")
-
-
-
-# Characterise overlap
-# Significant in only Fehr, Significant in only EGCUT, Significant in both
-
-# Make venn diagram
-
-
-bonf.venn <- draw.triple.venn(
-	area1 = nrow(bsgs),
-	area2 = nrow(fehr_b),
-	area3 = nrow(egcut_b),
-	n12   = sum(fehr_b$code %in% bsgs$code),
-	n23  = sum(egcut_b$code %in% fehr_b$code),
-	n13  = sum(egcut_b$code %in% bsgs$code),
-	n123 = sum(egcut_b$code %in% fehr_b$code),
-	category=c("BSGS", "Fehrmann", "EGCUT"),
-	fill = c("blue", "red", "green"),
-	alpha=c(0.1, 0.1, 0.1),
-	lty = "blank",
-	cex = 2,
-	cat.cex = 2,
-	cat.col = c("blue", "red", "green"),
-	ind=FALSE
-)
-
-fdr.venn <- draw.triple.venn(
-	area1 = nrow(bsgs),
-	area2 = nrow(fehr_f),
-	area3 = nrow(egcut_f),
-	n12   = sum(fehr_f$code %in% bsgs$code),
-	n23  = sum(egcut_f$code %in% fehr_f$code),
-	n13  = sum(egcut_f$code %in% bsgs$code),
-	n123 = sum(egcut_f$code %in% fehr_f$code),
-	category=c("BSGS", "Fehrmann", "EGCUT"),
-	fill = c("blue", "red", "green"),
-	alpha=c(0.1, 0.1, 0.1),
-	lty = "blank",
-	cex = 2,
-	cat.cex = 2,
-	cat.col = c("blue", "red", "green"),
-	ind=FALSE
-)
-
-
-# Plot correlations of pfull and pnest
-
-pfull_all <- uniteData(bsgs, egcut, fehr, pval="pfull")
-pfull_f <- uniteData(bsgs, egcut_f, fehr_f, pval="pfull")
-pnest_all <- uniteData(bsgs, egcut, fehr, pval="pnest")
-pnest_f <- uniteData(bsgs, egcut_f, fehr_f, pval="pnest")
-
-plotCor(pfull_all)
-dev.new()
-plotCor(pfull_f)
-
-plotCor(pnest_all)
-dev.new()
-plotCor(pnest_f)
-
-
-
-# List of top interactions
-
-makeBonfTable <- function(fehr, egcut, marginal_list)
+makeBonfTable <- function(fehr, egcut, marginal_list, top)
 {
-	f <- fehr[order(fehr$pnest, decreasing=TRUE), ][1:20, ]
-	e <- egcut[order(egcut$pnest, decreasing=TRUE), ][1:20, ]
+	# Choose the top 20 SNPs based on pnest from each set
+	f <- fehr[order(fehr$pnest, decreasing=TRUE), ][1:top, ]
+	e <- egcut[order(egcut$pnest, decreasing=TRUE), ][1:top, ]
 
-	fe <- rbind(f,e)
-	fe$set[duplicated(fe$code)] <- "a"
-	fe <- fe[order(fe$set), ]
-	fe <- subset(fe, !duplicated(code))
-	fe$set[fe$set=="a"] <- "Fehrmann + EGCUT"
-	fe <- fe[order(fe$probegene, fe$set), ]
-	fe$pg <- with(fe, paste(probegene, " (chr", probechr, ")", sep=""))
-	fe$s1 <- with(fe, paste(snp1, " (chr", chr1, ")", sep=""))
-	fe$s2 <- with(fe, paste(snp2, " (chr", chr2, ")", sep=""))
+	# Show the Bonferroni significant replications
+	index <- f$pnest > -log10(0.05/nrow(fehr))
+	f$set2 <- f$set
+	f$set2[index] <- paste(f$set[index], "*", sep="")
+	index <- e$pnest > -log10(0.05/nrow(fehr))
+	e$set2 <- e$set
+	e$set2[index] <- paste(e$set[index], "*", sep="")
+
+	# Find the interactions common to both SNP sets
+	index <- f$code %in% e$code
+	nom <- f$code[index]
+	f1 <- subset(f, code %in% nom)
+	e1 <- subset(e, code %in% nom)
+	f1 <- f1[order(f1$code), ]
+	e1 <- e1[order(e1$code), ]
+	f1$set2 <- paste(f1$set2, "+", e1$set2)
+	fe <- rbind(f1, subset(e, ! code %in% nom), subset(f, ! code %in% nom))
+
+	# Characterise the cis/trans types
 	fe$type <- "cis-cis"
 	fe$type[fe$chr1 == fe$probechr & fe$chr2 != fe$probechr] <- "cis-trans"
 	fe$type[fe$chr2 == fe$probechr & fe$chr1 != fe$probechr] <- "trans-cis"
 	fe$type[fe$chr2 != fe$probechr & fe$chr1 != fe$probechr] <- "trans-trans"
 
 
+	# Characterise new SNPs vs known SNPs
+	fe$code1 <- paste(fe$snp1, fe$probename)
+	fe$code2 <- paste(fe$snp2, fe$probename)
+	marginal_list$code <- paste(marginal_list$snp, marginal_list$probename)
+	fe$margins <- "known-known"
+	fe$margins[fe$code1 %in% marginal_list$code & ! fe$code2 %in% marginal_list$code] <- "known-new"
+	fe$margins[! fe$code1 %in% marginal_list$code & fe$code2 %in% marginal_list$code] <- "new-known"
+	fe$margins[! fe$code1 %in% marginal_list$code & ! fe$code2 %in% marginal_list$code] <- "new-new"
 
-	fe <- subset(fe, select=c(pg, s1, s2, set, type))
 
+	# Tidy up the table
+	fe$pg <- with(fe, paste(probegene, " (chr", probechr, ")", sep=""))
+	fe$s1 <- with(fe, paste(snp1, " (chr", chr1, ")", sep=""))
+	fe$s2 <- with(fe, paste(snp2, " (chr", chr2, ")", sep=""))
+
+	fe <- subset(fe, select=c(pg, s1, s2, set2, type, margins))
+	fe <- fe[order(fe$pg, fe$set2), ]
+	names(fe) <- c("Probe gene", "SNP1", "SNP2", "Replication", "Type", "Previous associations")
+
+	return(fe)
 }
-
-
-
-# Which SNPs are novel / have previously known marginal effects
-
-
-# Which circles replicate
-
-
-
-
-
-
-
-
-
-
 
 
