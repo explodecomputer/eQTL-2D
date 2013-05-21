@@ -140,9 +140,9 @@ qqPlot <- function(pval)
 	return(ret)
 }
 
-
-
-
+a <- with(newsig, qqPlot(10^-replication_pnest))
+plot(observed ~ expected, data=a[-c(1:20),])
+abline(a=0, b=1)
 maf <- apply(xmat, 2, function(x) {
 	sum(x, na.rm=T) / (2*length(x))
 })

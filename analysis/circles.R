@@ -261,6 +261,31 @@ bsgs <- replicationOverlap(bsgs, fehr, egcut)
 sig <- probesWithRep(bsgs)
 
 
+# Get VC
+bsgs$probeid <- match(bsgs$probename, colnames(resphen))
+sig <- getVcBreakdown(bsgs, xmat, resphen)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###########
+###########
+# Circles
+
+
+
 gr <- makeGr()
 index <- table(sig$probename)
 sig_mult <- subset(sig, probename %in% names(index)[index > 12])
@@ -279,6 +304,34 @@ a <- dlply(sig_mult, .(probename), .progress="text", function(x)
 plot(a[[1]])
 
 multiplot(plotlist=a, cols=6)
+
+
+
+
+
+
+
+
+
+
+
+###########################
+###########################
+
+
+
+
+fe$code1 <- paste(fe$snp1, fe$probename)
+fe$code2 <- paste(fe$snp2, fe$probename)
+marginal_list$code <- paste(marginal_list$snp, marginal_list$probename)
+fe$margins <- "known-known"
+fe$margins[fe$code1 %in% marginal_list$code & ! fe$code2 %in% marginal_list$code] <- "known-new"
+fe$margins[! fe$code1 %in% marginal_list$code & fe$code2 %in% marginal_list$code] <- "new-known"
+fe$margins[! fe$code1 %in% marginal_list$code & ! fe$code2 %in% marginal_list$code] <- "new-new"
+
+
+
+
 
 
 
