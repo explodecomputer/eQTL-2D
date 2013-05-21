@@ -122,8 +122,7 @@ plot3D <- function(res, geno, phen, z=45)
 		xlab="SNP1", ylab="SNP2", zlab="y",
 		default.scales=list(arrows=F),
 		screen = list(z = z, x = -60, y = 3),
-		main = paste(
-			"p1=", round(res$maf1,2), " - p2=", round(res$maf2,2), " - ", res$vc, " - ", res$type, sep="")
+		main = paste(res$chr1, res$chr2)
 	)
 	return(list(a,b,p))
 }
@@ -240,3 +239,62 @@ plot(a, xlim=c(0, max(a)), ylim=c(0, max(a)), main="Replication p-values")
 abline(a=0, b=1)
 dev.off()
 
+
+
+
+# Plot the Bonferroni significant probes
+
+sig$probeid <- match(sig$probename, colnames(resphen))
+
+a <- subset(bsgs, probegene == "TMEM149")
+
+l <- list()
+for(i in 1:nrow(a))
+{
+	l[[i]] <- plot3D(a[i,], xmat, resphen)[[3]]
+}
+
+
+b <- subset(bsgs, probegene == "MBNL1")
+
+l2 <- list()
+for(i in 1:nrow(b))
+{
+	l2[[i]] <- plot3D(a[i,], xmat, resphen)[[3]]
+}
+
+pdf("~/repo/eQTL-2D/analysis/TMEM149.pdf", width=15, height=15)
+do.call(grid.arrange, l)
+dev.off()
+
+pdf("~/repo/eQTL-2D/analysis/MBNL1.pdf", width=15, height=15)
+do.call(grid.arrange, l2)
+dev.off()
+
+
+
+sig2 <- subset(sig, rep == "Bonf")
+sig2$probeid <- match(sig2$probename, colnames(resphen))
+grid.arrange(
+	plot3D(sig2[4,], xmat, resphen)[[3]],
+	plot3D(sig2[5,], xmat, resphen)[[3]],
+	plot3D(sig2[6,], xmat, resphen)[[3]],
+	plot3D(sig2[7,], xmat, resphen)[[3]],
+	plot3D(sig2[8,], xmat, resphen)[[3]],
+	plot3D(sig2[9,], xmat, resphen)[[3]],
+	ncol=3
+)
+
+
+
+grid.arrange(
+	plot3D(sig2[10,], xmat, resphen)[[3]],
+	plot3D(sig2[11,], xmat, resphen)[[3]],
+	plot3D(sig2[12,], xmat, resphen)[[3]],
+	plot3D(sig2[13,], xmat, resphen)[[3]],
+	plot3D(sig2[14,], xmat, resphen)[[3]],
+	plot3D(sig2[15,], xmat, resphen)[[3]],
+	plot3D(sig2[16,], xmat, resphen)[[3]],
+	plot3D(sig2[17,], xmat, resphen)[[3]],
+	ncol=3
+)

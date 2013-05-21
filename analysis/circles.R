@@ -140,6 +140,21 @@ replicationOverlap <- function(bsgs, fehr, egcut)
 	return(bsgs)
 }
 
+newAssoc <- function(sig, marginal_list)
+{
+	sig$code1 <- paste(sig$snp1, sig$probename)
+	sig$code2 <- paste(sig$snp2, sig$probename)
+	marginal_list$code <- paste(marginal_list$snp, marginal_list$probename)
+	sig$known1 <- "known"
+	sig$known1[! sig$code1 %in% marginal_list$code] <- "new"
+	sig$known2 <- "known"
+	sig$known2[! sig$code2 %in% marginal_list$code] <- "new"
+
+	sig <- subset(sig, select=-c(code1, code2))
+	return(sig)
+}
+
+
 
 probesWithRep <- function(bsgs)
 {
@@ -232,6 +247,7 @@ plotCircos <- function(gr, links, dot)
 
 
 bim <- read.table("~/repo/eQTL-2D/data/clean_geno_final.bim", colClasses=c("character", "character", "numeric", "numeric", "character", "character"))
+load("~/repo/eQTL-2D/filtering/marginal_lists/marginal_list.RData")
 bsgs <- ReadOrig(
 	"~/repo/eQTL-2D/replication/run/interactions_list.RData",
 	"sig",
@@ -265,11 +281,10 @@ sig <- probesWithRep(bsgs)
 bsgs$probeid <- match(bsgs$probename, colnames(resphen))
 sig <- getVcBreakdown(bsgs, xmat, resphen)
 
+sig <- newAssoc(sig, marginal_list)
+sig <- subset(sig, select=c(snp1, chr1, position1, pos1, known1, snp2, chr2, position2, pos2, known2, probename, probegene, probechr, pfull, pnest, rep, sets, a., d., .a, .d, aa, ad, da, dd))
 
-
-
-
-
+save(sig, file="~/repo/eQTL-2D/analysis/interaction_list_summary.RData")
 
 
 
@@ -318,16 +333,6 @@ multiplot(plotlist=a, cols=6)
 ###########################
 ###########################
 
-
-
-
-fe$code1 <- paste(fe$snp1, fe$probename)
-fe$code2 <- paste(fe$snp2, fe$probename)
-marginal_list$code <- paste(marginal_list$snp, marginal_list$probename)
-fe$margins <- "known-known"
-fe$margins[fe$code1 %in% marginal_list$code & ! fe$code2 %in% marginal_list$code] <- "known-new"
-fe$margins[! fe$code1 %in% marginal_list$code & fe$code2 %in% marginal_list$code] <- "new-known"
-fe$margins[! fe$code1 %in% marginal_list$code & ! fe$code2 %in% marginal_list$code] <- "new-new"
 
 
 
