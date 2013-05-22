@@ -1,67 +1,3 @@
-# Make list of SNPs with
-SNP position
-SNP chromosome
-SNP gene
-original interaction tests
-replication interaction tests
-previous associations
-probe gene
-
-
-replicationOverlap <- function(bsgs, fehr, egcut)
-{
-	# Make a variable that indicates level of replication
-	# - not present
-	# - no replication
-	# - 5% FDR in one
-	# - 5% FDR in two
-	# - Bonferroni in one
-	# - Bonferroni in two
-
-	egcut$bonf <- FALSE
-	egcut$bonf[egcut$pnest > -log10(0.05/nrow(egcut))] <- TRUE
-	fehr$bonf <- FALSE
-	fehr$bonf[fehr$pnest > -log10(0.05/nrow(fehr))] <- TRUE
-
-	egcut$fdr <- FALSE
-	egcut$fdr[egcut$pnest > egcut$upper] <- TRUE
-	fehr$fdr <- FALSE
-	fehr$fdr[fehr$pnest > fehr$upper] <- TRUE
-
-
-	bsgs$rep <- "None"
-	bsgs$sets <- 0
-
-	# FDR in one
-
-	bsgs$rep[bsgs$code %in% egcut$code[egcut$fdr] | bsgs$code %in% fehr$code[fehr$fdr]] <- "FDR"
-	bsgs$sets[bsgs$code %in% egcut$code[egcut$fdr] | bsgs$code %in% fehr$code[fehr$fdr]] <- 1
-	bsgs$sets[bsgs$code %in% egcut$code[egcut$fdr] & bsgs$code %in% fehr$code[fehr$fdr]] <- 2
-
-	bsgs$rep[bsgs$code %in% egcut$code[egcut$bonf] | bsgs$code %in% fehr$code[fehr$bonf]] <- "Bonf"
-	bsgs$sets[bsgs$code %in% egcut$code[egcut$bonf] | bsgs$code %in% fehr$code[fehr$bonf]] <- 1
-	bsgs$sets[bsgs$code %in% egcut$code[egcut$bonf] & bsgs$code %in% fehr$code[fehr$bonf]] <- 2
-
-	table(bsgs$rep, bsgs$sets)
-	return(bsgs)
-}
-
-newAssoc <- function(sig, marginal_list)
-{
-	sig$code1 <- paste(sig$snp1, sig$probename)
-	sig$code2 <- paste(sig$snp2, sig$probename)
-	marginal_list$code <- paste(marginal_list$snp, marginal_list$probename)
-	sig$known1 <- "known"
-	sig$known1[! sig$code1 %in% marginal_list$code] <- "new"
-	sig$known2 <- "known"
-	sig$known2[! sig$code2 %in% marginal_list$code] <- "new"
-
-	sig <- subset(sig, select=-c(code1, code2))
-	return(sig)
-}
-
-
-
 ReadOrig <- function(filename, objname, setname)
 {
 	load(filename)
@@ -72,6 +8,7 @@ ReadOrig <- function(filename, objname, setname)
 	sig$code <- with(sig, paste(probename, snp1, snp2))
 	return(sig)
 }
+
 
 ReadRep <- function(filename, objname, setname)
 {
@@ -92,6 +29,7 @@ ReadRep <- function(filename, objname, setname)
 	return(sig)
 }
 
+
 posData <- function(sig, bim)
 {
 	sig$position1 <- bim$V4[sig$pos1]
@@ -103,6 +41,7 @@ posData <- function(sig, bim)
 	return(sig)
 }
 
+
 confInt <- function(n, alpha)
 {
 	k <- c(1:n)
@@ -112,6 +51,7 @@ confInt <- function(n, alpha)
 	return(data.frame(expect, lower, upper))
 }
 
+
 qqDat <- function(sig, alpha)
 {
 	sig <- sig[order(sig$pnest, decreasing=T), ]
@@ -119,6 +59,7 @@ qqDat <- function(sig, alpha)
 	sig <- data.frame(sig, ci)
 	return(sig)
 }
+
 
 varianceComponents <- function(sig, geno, phen, loud=FALSE)
 {
@@ -137,6 +78,7 @@ varianceComponents <- function(sig, geno, phen, loud=FALSE)
 
 	return(nom)
 }
+
 
 varianceComponentsBreakdown <- function(sig, geno, phen, loud=FALSE)
 {
@@ -165,10 +107,38 @@ getVcBreakdown <- function(sig, geno, phen)
 }
 
 
-mergeBsgeRep <- function(bsgs, egcut, fehr)
+mergeBsgsRep <- function(bsgs, fehr, egcut)
 {
+	f <- subset(fehr, select=c(code, pfull, pnest, upper))
+	names(f) <- c("code", "pfull_fehr", "pnest_fehr", "upper_fehr")
+	e <- subset(egcut, select=c(code, pfull, pnest, upper))
+	names(e) <- c("code", "pfull_egcut", "pnest_egcut", "upper_egcut")
 
+	bsgs <- merge(bsgs, f, by="code", all.x=T)
+	bsgs <- merge(bsgs, e, by="code", all.x=T)
+	return(bsgs)
 }
+
+
+marginalSnpAssociations <- function(bsgs, marginal_list, threshold, probeinfo)
+{
+	m <- subset(marginal_list, pval < threshold)
+	m <- m[order(m$pval, decreasing=FALSE), ]
+	m <- subset(m, !duplicated(m$snp))
+
+	i1 <- match(bsgs$snp1, m$snp)
+	p1 <- m$probename[i1]
+	g1 <- as.character(probeinfo$ILMN_GENE[match(p1, probeinfo$PROBE_ID)])
+	bsgs$marginal_gene1 <- g1
+
+	i2 <- match(bsgs$snp2, m$snp)
+	p2 <- m$probename[i2]
+	g2 <- as.character(probeinfo$ILMN_GENE[match(p2, probeinfo$PROBE_ID)])
+	bsgs$marginal_gene2 <- g2
+
+	return(bsgs)
+}
+
 
 load("~/repo/eQTL-2D/data/residuals_all.RData")
 load("~/repo/eQTL-2D/data/clean_geno_final.RData")
@@ -203,21 +173,15 @@ head(fehr)
 bsgs$probeid <- match(bsgs$probename, colnames(resphen))
 bsgs <- getVcBreakdown(bsgs, xmat, resphen)
 
-# Get 
+# Get replication pvals
+bsgs <- mergeBsgsRep(bsgs, fehr, egcut)
 
+# Get associations for marginal SNPs
+bsgs <- marginalSnpAssociations(bsgs, marginal_list, 1e-10, probeinfo)
 
+sig <- bsgs
 
-
-
-bsgs <- replicationOverlap(bsgs, fehr, egcut)
-sig <- probesWithRep(bsgs)
-
-
-
-sig <- newAssoc(sig, marginal_list)
-sig <- subset(sig, select=c(snp1, chr1, position1, pos1, known1, snp2, chr2, position2, pos2, known2, probename, probegene, probechr, pfull, pnest, rep, sets, a., d., .a, .d, aa, ad, da, dd))
-
-save(sig, file="~/repo/eQTL-2D/analysis/interaction_list_summary.RData")
+save(sig, file="~/repo/eQTL-2D/analysis/replication_summary.RData")
 
 
 
