@@ -246,33 +246,6 @@ dev.off()
 
 sig$probeid <- match(sig$probename, colnames(resphen))
 
-a <- subset(bsgs, probegene == "TMEM149")
-
-l <- list()
-for(i in 1:nrow(a))
-{
-	l[[i]] <- plot3D(a[i,], xmat, resphen)[[3]]
-}
-
-
-b <- subset(bsgs, probegene == "MBNL1")
-
-l2 <- list()
-for(i in 1:nrow(b))
-{
-	l2[[i]] <- plot3D(a[i,], xmat, resphen)[[3]]
-}
-
-pdf("~/repo/eQTL-2D/analysis/TMEM149.pdf", width=15, height=15)
-do.call(grid.arrange, l)
-dev.off()
-
-pdf("~/repo/eQTL-2D/analysis/MBNL1.pdf", width=15, height=15)
-do.call(grid.arrange, l2)
-dev.off()
-
-
-
 sig2 <- subset(sig, rep == "Bonf")
 sig2$probeid <- match(sig2$probename, colnames(resphen))
 grid.arrange(

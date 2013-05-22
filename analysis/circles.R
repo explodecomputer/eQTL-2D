@@ -102,79 +102,6 @@ qqDat <- function(sig, alpha)
 	return(sig)
 }
 
-replicationOverlap <- function(bsgs, fehr, egcut)
-{
-	# Make a variable that indicates level of replication
-	# - not present
-	# - no replication
-	# - 5% FDR in one
-	# - 5% FDR in two
-	# - Bonferroni in one
-	# - Bonferroni in two
-
-	egcut$bonf <- FALSE
-	egcut$bonf[egcut$pnest > -log10(0.05/nrow(egcut))] <- TRUE
-	fehr$bonf <- FALSE
-	fehr$bonf[fehr$pnest > -log10(0.05/nrow(fehr))] <- TRUE
-
-	egcut$fdr <- FALSE
-	egcut$fdr[egcut$pnest > egcut$upper] <- TRUE
-	fehr$fdr <- FALSE
-	fehr$fdr[fehr$pnest > fehr$upper] <- TRUE
-
-
-	bsgs$rep <- "None"
-	bsgs$sets <- 0
-
-	# FDR in one
-
-	bsgs$rep[bsgs$code %in% egcut$code[egcut$fdr] | bsgs$code %in% fehr$code[fehr$fdr]] <- "FDR"
-	bsgs$sets[bsgs$code %in% egcut$code[egcut$fdr] | bsgs$code %in% fehr$code[fehr$fdr]] <- 1
-	bsgs$sets[bsgs$code %in% egcut$code[egcut$fdr] & bsgs$code %in% fehr$code[fehr$fdr]] <- 2
-
-	bsgs$rep[bsgs$code %in% egcut$code[egcut$bonf] | bsgs$code %in% fehr$code[fehr$bonf]] <- "Bonf"
-	bsgs$sets[bsgs$code %in% egcut$code[egcut$bonf] | bsgs$code %in% fehr$code[fehr$bonf]] <- 1
-	bsgs$sets[bsgs$code %in% egcut$code[egcut$bonf] & bsgs$code %in% fehr$code[fehr$bonf]] <- 2
-
-	table(bsgs$rep, bsgs$sets)
-	return(bsgs)
-}
-
-newAssoc <- function(sig, marginal_list)
-{
-	sig$code1 <- paste(sig$snp1, sig$probename)
-	sig$code2 <- paste(sig$snp2, sig$probename)
-	marginal_list$code <- paste(marginal_list$snp, marginal_list$probename)
-	sig$known1 <- "known"
-	sig$known1[! sig$code1 %in% marginal_list$code] <- "new"
-	sig$known2 <- "known"
-	sig$known2[! sig$code2 %in% marginal_list$code] <- "new"
-
-	sig <- subset(sig, select=-c(code1, code2))
-	return(sig)
-}
-
-
-
-probesWithRep <- function(bsgs)
-{
-	tab <- with(bsgs, table(probename, sets==0))
-	index <- tab[,1] == 0 & tab[,2] != 0
-	nom <- rownames(tab)[index]
-	a <- subset(bsgs, ! probename %in% nom)
-
-	tab <- with(bsgs, table(probename, sets==1 & rep=="FDR"))
-	index <- tab[,1] == 0 & tab[,2] != 0
-	nom <- rownames(tab)[index]
-	a <- subset(a, ! probename %in% nom)
-	dim(a)
-
-	table(bsgs$rep, bsgs$sets)
-	table(a$rep, a$sets)
-
-	length(unique(a$probename))
-	return(a)
-}
 
 makeGr <- function()
 {
@@ -245,66 +172,20 @@ plotCircos <- function(gr, links, dot)
 }
 
 
-
-bim <- read.table("~/repo/eQTL-2D/data/clean_geno_final.bim", colClasses=c("character", "character", "numeric", "numeric", "character", "character"))
-load("~/repo/eQTL-2D/filtering/marginal_lists/marginal_list.RData")
-bsgs <- ReadOrig(
-	"~/repo/eQTL-2D/replication/run/interactions_list.RData",
-	"sig",
-	"BSGS"
-)
-egcut <- ReadRep(
-	"~/repo/eQTL-2D/replication/results/EGCUT_replication.RData",
-	"newsig",
-	"EGCUT"
-)
-fehr <- ReadRep(
-	"~/repo/eQTL-2D/replication/results/FehrmannHT12v3_replication.RData",
-	"newsig",
-	"Ferhmann"
-)
-
-bsgs <- posData(bsgs, bim)
-fehr <- posData(fehr, bim)
-egcut <- posData(egcut, bim)
-egcut <- qqDat(egcut, 0.05)
-fehr <- qqDat(fehr, 0.05)
-head(bsgs)
-head(egcut)
-head(fehr)
-
-bsgs <- replicationOverlap(bsgs, fehr, egcut)
-sig <- probesWithRep(bsgs)
+#=================================================================================================#
+#=================================================================================================#
 
 
-# Get VC
-bsgs$probeid <- match(bsgs$probename, colnames(resphen))
-sig <- getVcBreakdown(bsgs, xmat, resphen)
+# Load data 
 
-sig <- newAssoc(sig, marginal_list)
-sig <- subset(sig, select=c(snp1, chr1, position1, pos1, known1, snp2, chr2, position2, pos2, known2, probename, probegene, probechr, pfull, pnest, rep, sets, a., d., .a, .d, aa, ad, da, dd))
-
-save(sig, file="~/repo/eQTL-2D/analysis/interaction_list_summary.RData")
+load("~/repo/eQTL-2D/analysis/replication_summary.RData")
 
 
-
-
-
-
-
-
-
-
-###########
-###########
-# Circles
-
-
+# Circles 
 
 gr <- makeGr()
 index <- table(sig$probename)
 sig_mult <- subset(sig, probename %in% names(index)[index > 12])
-
 
 
 a <- dlply(sig_mult, .(probename), .progress="text", function(x)
@@ -318,25 +199,5 @@ a <- dlply(sig_mult, .(probename), .progress="text", function(x)
 
 plot(a[[1]])
 
-multiplot(plotlist=a, cols=6)
-
-
-
-
-
-
-
-
-
-
-
-###########################
-###########################
-
-
-
-
-
-
-
+multiplot(plotlist=a, cols=2)
 
