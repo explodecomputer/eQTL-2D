@@ -29,6 +29,7 @@ plot3D <- function(res, geno, phen, z=45)
 
 
 
+
 load("~/repo/eQTL-2D/analysis/replication_summary.RData")
 
 a <- subset(sig, probegene == "TMEM149")

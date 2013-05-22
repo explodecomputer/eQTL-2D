@@ -44,65 +44,6 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL)
 	}
 }
 
-ReadOrig <- function(filename, objname, setname)
-{
-	load(filename)
-	sig <- get(objname)
-
-	sig <- subset(sig, select=c(chr1, chr2, snp1, snp2, pos1, pos2, probename, probegene, probechr, pfull, pnest))
-	sig$set <- setname
-	sig$code <- with(sig, paste(probename, snp1, snp2))
-	return(sig)
-}
-
-ReadRep <- function(filename, objname, setname)
-{
-	load(filename)
-	sig <- get(objname)
-
-	a <- sum(sig$replication_r^2 > 0.1)
-	# cat(a, "pairs with high LD\n")
-
-	b <- sum(sig$replication_nclass != 9)
-	# cat(b, "pairs with < 9 classes\n")
-
-	sig <- subset(sig, replication_r^2 < 0.1 & replication_nclass == 9, select=c(chr1, chr2, snp1, snp2, pos1, pos2, probename, probegene, probechr, replication_pfull, replication_pnest))
-
-	names(sig) <- c("chr1", "chr2", "snp1", "snp2", "pos1", "pos2", "probename", "probegene", "probechr", "pfull", "pnest")
-	sig$set <- setname
-	sig$code <- with(sig, paste(probename, snp1, snp2))
-	return(sig)
-}
-
-posData <- function(sig, bim)
-{
-	sig$position1 <- bim$V4[sig$pos1]
-	sig$position2 <- bim$V4[sig$pos2]
-	sig$snp1 <- as.character(sig$snp1)
-	sig$snp2 <- as.character(sig$snp2)
-	sig$probename <- as.character(sig$probename)
-	sig$probegene <- as.character(sig$probegene)
-	return(sig)
-}
-
-confInt <- function(n, alpha)
-{
-	k <- c(1:n)
-	upper <- -log10(qbeta(alpha/2,k,n+1-k))
-	lower <- -log10(qbeta((1-alpha/2),k,n+1-k))
-	expect <- -log10((k-0.5)/n)
-	return(data.frame(expect, lower, upper))
-}
-
-qqDat <- function(sig, alpha)
-{
-	sig <- sig[order(sig$pnest, decreasing=T), ]
-	ci <- confInt(nrow(sig), alpha)
-	sig <- data.frame(sig, ci)
-	return(sig)
-}
-
-
 makeGr <- function()
 {
 	data("hg19Ideogram", package = "biovizBase")
@@ -126,20 +67,16 @@ makeLinks <- function(x, gr)
 {
 	links1 <- GRanges(
 		seqnames = x$chr1,
-		IRanges(start = x$position1, width=1)
+		IRanges(start = x$position1, width=1),
+		seqinfo = seqinfo(gr)
 	)
 	links2 <- GRanges(
 		seqnames = x$chr2,
-		IRanges(start = x$position2, width=1)
+		IRanges(start = x$position2, width=1),
+		seqinfo = seqinfo(gr)
 	)
-	links1 <- c(gr, links1)
-	links1 <- links1[-c(1:22)]
-	links2 <- c(gr, links2)
-	links2 <- links2[-c(1:22)]
-
 	values(links1)$links2 <- links2
-
-
+	values(links1)$col <- x$rep
 	return(links1)
 }
 
@@ -164,11 +101,23 @@ plotCircos <- function(gr, links, dot)
 {
 	a <- ggplot() + 
 		layout_circle(gr, geom = "ideo", radius = 6, trackWidth = 1) +
-		layout_circle(links, geom = "link", linked.to = "links2", radius = 3.5, trackwidth = 1) +
+		layout_circle(links, geom = "link", linked.to = "links2", radius = 3.5, trackwidth = 1, aes(colour=col)) +
 		layout_circle(dot, geom = "point", radius = 6, trackwidth = 1, colour="red", size=3, aes(y = score)) +
-		layout_circle(dot, geom = "text", radius = 7, trackWidth = 1, colour = "black", size=2.5, aes(label = gene))
+		layout_circle(dot, geom = "text", radius = 7, trackWidth = 1, colour = "black", size=2.5, aes(label = gene)) +
+		scale_colour_manual(values=c("light grey", "blue", "red"), drop = FALSE) +
+		theme(legend.position="false")
 
 	return(a)
+}
+
+
+linkColour <- function(sig)
+{
+	sig$rep <- 0
+	sig$rep[sig$pnest_fehr > sig$upper_fehr | sig$pnest_egcut > sig$upper_egcut] <- 1
+	sig$rep[sig$pnest_fehr > sig$upper_fehr & sig$pnest_egcut > sig$upper_egcut] <- 2
+	sig$rep <- as.factor(sig$rep)
+	return(sig)
 }
 
 
@@ -179,14 +128,16 @@ plotCircos <- function(gr, links, dot)
 # Load data 
 
 load("~/repo/eQTL-2D/analysis/replication_summary.RData")
-
+sig <- linkColour(sig)
 
 # Circles 
 
 gr <- makeGr()
 index <- table(sig$probename)
-sig_mult <- subset(sig, probename %in% names(index)[index > 12])
+sig_mult <- subset(sig, probename %in% names(index)[index > 2])
 
+sig_mult <- subset(sig, probegene == "MBNL1")
+links <- makeLinks(sig_mult[1:13,], gr)
 
 a <- dlply(sig_mult, .(probename), .progress="text", function(x)
 {
@@ -199,5 +150,7 @@ a <- dlply(sig_mult, .(probename), .progress="text", function(x)
 
 plot(a[[1]])
 
-multiplot(plotlist=a, cols=2)
+pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication.pdf", width=25, height=15)
+multiplot(plotlist=a, cols=6)
+dev.off()
 
