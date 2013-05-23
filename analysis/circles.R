@@ -180,12 +180,10 @@ a$col[a$col == 1] <- "black"
 a$col[a$col == 2] <- "black"
 
 pdf(file="~/repo/eQTL-2D/analysis/images/hairballs_all.pdf")
-qgraph(a, esize=2, edge.color=a$thickness, label.cex=0, vsize=0.2, arrows=
-	FALSE)
+qgraph(a, esize=1, edge.color=a$thickness, label.cex=0, vsize=0.2, arrows=FALSE)
 dev.off()
-
 pdf(file="~/repo/eQTL-2D/analysis/images/hairballs_rep.pdf")
-qgraph(a, esize=2, edge.color=a$col, label.cex=0, vsize=0.2, arrows=FALSE)
+qgraph(a, esize=1, color=a$col, edge.color=a$col, label.cex=0, vsize=0.2, arrows=FALSE)
 dev.off()
 
 # Are there SNP pairs that affect more than one probe?
