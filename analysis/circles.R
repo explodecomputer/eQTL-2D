@@ -3,7 +3,7 @@ library(grid)
 library(gridExtra)
 library(plyr)
 library(GenomicRanges)
-
+library(qgraph)
 
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL)
 {
@@ -121,6 +121,20 @@ linkColour <- function(sig)
 }
 
 
+multipleSnps <- function(sig)
+{
+	a <- subset(sig, select=c(snp1, snp2))
+	b <- data.frame(t(apply(a, 1, sort)))
+	names(b) <- c("snpa", "snpb")
+	sig <- cbind(sig, b)
+	sig$code2 <- with(sig, paste(snpa, snpb))
+	tab <- table(sig$code2)
+	nom <- names(tab)[tab>1]
+	s <- subset(sig, code2 %in% nom)
+	s <- s[order(s$code2), ]
+}
+
+
 #=================================================================================================#
 #=================================================================================================#
 
@@ -154,3 +168,27 @@ pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication.pdf", width=25, hei
 multiplot(plotlist=a, cols=6)
 dev.off()
 
+
+
+# More circles
+a <- subset(sig, select=c(snp1, snp2))
+names(a) <- c("from", "to")
+a$thickness <- 1
+a$col <- as.character(sig$rep)
+a$col[a$col == 0] <- "white"
+a$col[a$col == 1] <- "black"
+a$col[a$col == 2] <- "black"
+
+pdf(file="~/repo/eQTL-2D/analysis/images/hairballs_all.pdf")
+qgraph(a, esize=2, edge.color=a$thickness, label.cex=0, vsize=0.2, arrows=
+	FALSE)
+dev.off()
+
+pdf(file="~/repo/eQTL-2D/analysis/images/hairballs_rep.pdf")
+qgraph(a, esize=2, edge.color=a$col, label.cex=0, vsize=0.2, arrows=FALSE)
+dev.off()
+
+# Are there SNP pairs that affect more than one probe?
+m <- multipleSnps(sig)
+
+# in all cases this is because the different probes tag the same gene
