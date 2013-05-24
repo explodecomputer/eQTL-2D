@@ -1,3 +1,6 @@
+library(noia)
+library(plyr)
+
 ReadOrig <- function(filename, objname, setname)
 {
 	load(filename)
@@ -142,6 +145,7 @@ marginalSnpAssociations <- function(bsgs, marginal_list, threshold, probeinfo)
 
 load("~/repo/eQTL-2D/data/residuals_all.RData")
 load("~/repo/eQTL-2D/data/clean_geno_final.RData")
+load("~/repo/eQTL-2D/data/probeinfo_all.RData")
 bim <- read.table("~/repo/eQTL-2D/data/clean_geno_final.bim", colClasses=c("character", "character", "numeric", "numeric", "character", "character"))
 load("~/repo/eQTL-2D/filtering/marginal_lists/marginal_list.RData")
 bsgs <- ReadOrig(
@@ -177,7 +181,7 @@ bsgs <- getVcBreakdown(bsgs, xmat, resphen)
 bsgs <- mergeBsgsRep(bsgs, fehr, egcut)
 
 # Get associations for marginal SNPs
-bsgs <- marginalSnpAssociations(bsgs, marginal_list, 1e-10, probeinfo)
+bsgs <- marginalSnpAssociations(bsgs, marginal_list, 1e-2, probeinfo_all)
 
 sig <- bsgs
 
