@@ -1,0 +1,8 @@
+
+
+Hundreds of significant pairwise interactions controlling gene expression replicate in two independent studies
+
+The proportion of the variance that is due to interactions is generally smaller than additive. There is an ascertainment bias in that there are no genetic interactions strong enough to be detected on their own, and large additive effects are required to push them above the threshold
+
+There are several examples of gene expression being controlled by a cis-SNP which in turn is modulated by multiple trans-SNPs. The effects are consistent 
+

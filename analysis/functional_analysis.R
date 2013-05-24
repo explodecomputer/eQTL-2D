@@ -6,10 +6,12 @@ library(reshape2)
 library(plyr)
 
 
-plot3d <- function(res, geno, phen, z=45)
+plot3d <- function(res, geno, phen, z=-45)
 {
 	a <- tapply(phen[,res$probeid], list(geno[,res$pos1], geno[, res$pos2]), function(x) mean(x, na.rm=T))
+	a <- a - min(a, na.rm=T)
 	b <- table(geno[,res$pos1], geno[, res$pos2])
+	print(b)
 	p <- cloud(
 		a, 
 		panel.3d.cloud=panel.3dbars, 
@@ -24,6 +26,20 @@ plot3d <- function(res, geno, phen, z=45)
 	return(list(a,b,p))
 }
 
+plot3dGp <- function(gp, title="", snp1="SNP1", snp2="SNP2", z=-45)
+{
+	p <- cloud(
+		gp, 
+		panel.3d.cloud=panel.3dbars, 
+		col="black", 
+		col.facet=c("#e5f5e0", "#A1D99B", "#31A354"), 
+		xbase=0.6, ybase=0.6,
+		xlab=snp1, ylab=snp2, zlab="y",
+		default.scales=list(arrows=F),
+		screen = list(z = z, x = -60, y = 3),
+		main = title
+	)
+}
 
 plot3dProbe <- function(res, pg, geno, phen, z=45)
 {
@@ -31,7 +47,49 @@ plot3dProbe <- function(res, pg, geno, phen, z=45)
 	l <- list()
 	for(i in 1:nrow(a))
 	{
-		l[[i]] <- plot3d(a[i,], xmat, resphen)[[3]]
+		l[[i]] <- plot3d(a[i,], xmat, resphen, z)[[3]]
+	}
+	do.call(grid.arrange, l)
+}
+
+subSigPg <- function(pg, s=sig)
+{
+	return(subset(s, probegene==pg))
+}
+
+# A better way to plot these 3D graphs
+
+plot3dHairballs <- function(sig, pg, cissnp, resphen, xmat, bim, z=45)
+{
+	# make table of mean phenotypes
+	# AA cis vs 1:nalleles trans
+	# Aa cis vs 1:nalleles trans
+	# aa cis vs 1:nalleles trans
+
+	s <- subset(sig, probegene==pg)
+	pn <- s$probename[1]
+	snps <- unique(c(s$snp1, s$snp2))
+	stopifnot(cissnp %in% snps)
+	tsnps <- snps[! snps %in% cissnp]
+	x1 <- xmat[, match(cissnp, bim$V2)]
+	x <- xmat[, match(tsnps, bim$V2)]
+	y <- resphen[, match(pn, colnames(resphen))]
+
+	temp1 <- subset(s, select=c(snp1, chr1))
+	temp2 <- subset(s, select=c(snp2, chr2))
+	names(temp1) <- names(temp2) <- c("snp", "chr")
+	chrkey <- rbind(temp1, temp2)
+	chrkey <- subset(chrkey, !duplicated(snp))
+
+	l <- list()
+	for(i in 1:ncol(x))
+	{
+		print(table(x1, x[,i]))
+		gp <- tapply(y, list(x1, x[,i]), function(x) mean(x, na.rm=T))
+		gp <- gp - min(gp, na.rm=T)
+		print(gp)
+		title <- paste(s$probegene[1], "chr", subset(chrkey, snp == cissnp)$chr, "x", subset(chrkey, snp == tsnps[i])$chr)
+		l[[i]] <- plot3dGp(gp, title, cissnp, tsnps[i], z)
 	}
 	do.call(grid.arrange, l)
 }
@@ -46,20 +104,20 @@ load("~/repo/eQTL-2D/data/residuals_all.RData")
 load("~/repo/eQTL-2D/data/clean_geno_final.RData")
 
 
-pdf("~/repo/eQTL-2D/analysis/images/TMEM149.pdf", width=15, height=15)
-plot3dProbe(sig, "TMEM149", xmat, resphen)
+pdf("~/repo/eQTL-2D/analysis/images/TMEM149.pdf", width=20, height=20)
+plot3dHairballs(sig, "TMEM149", "rs8106959", resphen, xmat, bim, z=-45)
 dev.off()
 
-pdf("~/repo/eQTL-2D/analysis/images/MBNL1.pdf", width=15, height=15)
-plot3dProbe(sig, "MBNL1", xmat, resphen)
+pdf("~/repo/eQTL-2D/analysis/images/MBNL1.pdf", width=20, height=20)
+plot3dHairballs(sig, "MBNL1", "rs13069559", resphen, xmat, bim, z=-45)
 dev.off()
 
-pdf("~/repo/eQTL-2D/analysis/images/CAST.pdf", width=15, height=15)
-plot3dProbe(sig, "CAST", xmat, resphen)
+pdf("~/repo/eQTL-2D/analysis/images/CAST.pdf", width=20, height=20)
+plot3dHairballs(sig, "CAST", "rs7733671", resphen, xmat, bim, z=45)
 dev.off()
 
-pdf("~/repo/eQTL-2D/analysis/images/TRAPPC5.pdf", width=15, height=15)
-plot3dProbe(sig, "TRAPPC5", xmat, resphen)
+pdf("~/repo/eQTL-2D/analysis/images/TRAPPC5.pdf", width=20, height=20)
+plot3dHairballs(sig, "TRAPPC5", "rs17159840", resphen, xmat, bim, z=45)
 dev.off()
 
 pdf("~/repo/eQTL-2D/analysis/images/HMBOX1.pdf", width=15, height=15)
@@ -67,8 +125,13 @@ plot3dProbe(sig, "HMBOX1", xmat, resphen)
 dev.off()
 
 pdf("~/repo/eQTL-2D/analysis/images/NAPRT1.pdf", width=15, height=15)
-plot3dProbe(sig, "NAPRT1", xmat, resphen)
+plot3dHairballs(sig, "NAPRT1", "rs2123758", resphen, xmat, bim, z=-45)
 dev.off()
+
+pdf("~/repo/eQTL-2D/analysis/images/ADK.pdf", width=15, height=15)
+plot3dProbe(sig, "ADK", xmat, resphen)
+dev.off()
+
 
 
 #=================================================================================================#
@@ -196,8 +259,73 @@ ggplot(a, aes(x=Var2, y=value)) + geom_line() + facet_grid(Var1 ~ .) + geom_erro
 
 
 
+#=================================================================================================#
+#=================================================================================================#
+
+sigb <- subset(sig, pnest_egcut > -log10(0.05/380) | pnest_fehr > -log10(0.05/380))
+
+# Let's look at ADK
+
+pdf("~/repo/eQTL-2D/analysis/images/ADK.pdf", width=15, height=15)
+plot3dProbe(sig, "ADK", xmat, resphen, z=45)
+dev.off()
+
+# both SNPs close together on chromosome 10
+# first in an intron of a 5' gene of ADK called VCL
+# Second in the last intron of ADK
+
+# ADK = adenosine kinase, expressed everywhere
+# VCL = Vinculin - expressed in muscle tissue
+
+# VCL snp is probably modifying promotor activity for ADK
 
 
+load("~/repo/eQTL-2D/data/probeinfo_all.RData")
+load("~/repo/eQTL-2D/filtering/marginal_lists/marginal_list.RData")
+temp <- subset(probeinfo_all, select=c(PROBE_ID, ILMN_GENE))
+
+marginal_list <- merge(marginal_list, temp, by.x="probename", by.y="PROBE_ID", all.x=T)
+subset(marginal_list, snp %in% c("rs2395095", "rs10824092"))
+
+# Both have an additive effect on ADK
+
+
+
+
+#=================================================================================================#
+#=================================================================================================#
+
+# CTSC
+plot3dProbe(sig, "CTSC", xmat, resphen, z=135)
+
+
+
+
+
+
+#=================================================================================================#
+#=================================================================================================#
+
+
+
+# Distribution of additive vs non-additive variance
+
+sig$varA <- sig$.a + sig$a.
+sig$varD <- sig$.d + sig$d.
+sig$varI <- sig$aa + sig$ad + sig$da + sig$dd
+prop <- subset(sig, select=c(varA, varI, varD))
+prop <- prop[order(prop$varA+prop$varI+prop$varD, decreasing=T),]
+prop$index <- 1:nrow(prop)
+prop <- melt(prop, id=c("index"))
+prop <- prop[nrow(prop):1, ]
+prop$variable <- factor(prop$variable, levels=c("varI", "varD", "varA"))
+levels(prop$variable) <- c("Interaction", "Dominance", "Additive")
+ggplot(prop, aes(y=value, x=index)) + 
+	geom_bar(stat="identity", width=1, size=0.0, colour="black", aes(fill=variable)) +
+	scale_fill_brewer("Proportion of phenotypic variance") +
+	ylab("Phenotypic variance") +
+	coord_flip() 
+ggsave("~/repo/eQTL-2D/analysis/images/proportion_additive.pdf", width=10, height=10)
 
 
 
