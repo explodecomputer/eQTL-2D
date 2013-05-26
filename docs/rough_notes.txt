@@ -1,0 +1,17 @@
+Abstract
+
+Epistasis, the interaction between genetic variants, has been shown to be widespread in artificial gene manipulation and selection studies in several organisms, and at the evolutionary scale of speciation. However there is very little evidence that it exists amongst natural polymorphisms affecting complex traits in humans. We performed an exhaustive search for pairwise interactions controlling the level of expression in 7339 genes in whole blood in a sample of 842 European individuals. We identified 432 significant pairwise interactions in 218 different expression traits, and replicated 274 of the interactions in at least one independent data set at the 5% FDR level, and 64 in two independent data sets. Of the 145 expression traits that have replicating significant interactions, 50 are under the control of more than one epistatic pair. Several genes are controlled by multiple trans effects that modulate the effect of a cis-acting eQTL, for example TMEM149 is controlled by an additive effect at rs8106959 which itself is controlled by trans-SNPs on 20 different chromosomes, with nearly identical genotype phenotype maps for each cis-trans interaction. This study presents the first strong evidence for the widespread existence of epistasis among natural polymorphisms in humans.
+
+
+Key points
+
+- Hundreds of significant pairwise interactions controlling gene expression replicate in two independent studies
+
+- The proportion of the variance that is due to interactions is generally smaller than additive. There is an ascertainment bias in that there are no genetic interactions strong enough to be detected on their own, and large additive effects are required to push them above the threshold
+
+- There are several examples of gene expression being controlled by a cis-SNP which in turn is modulated by multiple trans-SNPs. The effects are consistent 
+
+
+
+
+
