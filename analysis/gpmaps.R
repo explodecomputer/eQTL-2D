@@ -5,7 +5,24 @@ library(ggplot2)
 library(reshape2)
 library(plyr)
 
-plot3dHairballsRep <- function(sig, pg, cissnp, z=45)
+
+plot3dGp <- function(gp, title="", snp1="SNP1", snp2="SNP2", z=-45)
+{
+	p <- cloud(
+		gp, 
+		panel.3d.cloud=panel.3dbars, 
+		col="black", 
+		col.facet=c("#e5f5e0", "#A1D99B", "#31A354"), 
+		xbase=0.6, ybase=0.6,
+		xlab=snp1, ylab=snp2, zlab="y",
+		default.scales=list(arrows=F),
+		screen = list(z = z, x = -60, y = 3),
+		main = title
+	)
+}
+
+
+plot3dHairballsRep <- function(sig, pg, cissnp, cohort, z=45)
 {
 	# make table of mean phenotypes
 	# AA cis vs 1:nalleles trans
@@ -13,13 +30,11 @@ plot3dHairballsRep <- function(sig, pg, cissnp, z=45)
 	# aa cis vs 1:nalleles trans
 
 	s <- subset(sig, probegene==pg)
-	pn <- s$probename[1]
 	snps <- unique(c(s$snp1, s$snp2))
 	stopifnot(cissnp %in% snps)
 	tsnps <- snps[! snps %in% cissnp]
-	x1 <- xmat[, match(cissnp, bim$V2)]
-	x <- xmat[, match(tsnps, bim$V2)]
-	y <- resphen[, match(pn, colnames(resphen))]
+
+	# transpose the GP map for all where the cis snp is snp2
 
 	temp1 <- subset(s, select=c(snp1, chr1))
 	temp2 <- subset(s, select=c(snp2, chr2))
@@ -27,20 +42,50 @@ plot3dHairballsRep <- function(sig, pg, cissnp, z=45)
 	chrkey <- rbind(temp1, temp2)
 	chrkey <- subset(chrkey, !duplicated(snp))
 
+	nom <- paste("gcm", cohort, sep="")
+
 	l <- list()
-	for(i in 1:ncol(x))
+	for(i in 1:nrow(s))
 	{
-		print(table(x1, x[,i]))
-		gp <- tapply(y, list(x1, x[,i]), function(x) mean(x, na.rm=T))
+		print(gp <- s[[nom]][[i]])
+		snp1 <- cissnp
+		snp2 <- s$snp2[i]
+
+		if(s$snp1[i] != cissnp)
+		{
+			gp <- t(gp)
+			snp2 <- s$snp1[i]
+		}
 		gp <- gp - min(gp, na.rm=T)
-		print(gp)
-		title <- paste(s$probegene[1], "chr", subset(chrkey, snp == cissnp)$chr, "x", subset(chrkey, snp == tsnps[i])$chr)
-		l[[i]] <- plot3dGp(gp, title, cissnp, tsnps[i], z)
+
+		title <- paste(s$probegene[1], "chr", subset(chrkey, snp == cissnp)$chr, "x", subset(chrkey, snp == snp2)$chr)
+		l[[i]] <- plot3dGp(gp, title, cissnp, snp2, z)
 	}
 	do.call(grid.arrange, l)
 }
 
 
-load("~/repo/eQTL-2D/analysis/replication2_summary.RData")
+
+load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
+
+plot3dHairballsRep(sig, "TMEM149", "rs8106959", "", z=45)
+plot3dHairballsRep(sig, "TMEM149", "rs8106959", "_egcut", z=45)
+plot3dHairballsRep(sig, "TMEM149", "rs8106959", "_fehr", z=45)
+
+plot3dHairballsRep(sig, "MBNL1", "rs13069559", "", z=-45)
+plot3dHairballsRep(sig, "MBNL1", "rs13069559", "_egcut", z=-45)
+plot3dHairballsRep(sig, "MBNL1", "rs13069559", "_fehr", z=-45)
+
+adk <- subset(sig, probegene=="ADK")[1,]
+
+par(mfrow=c(2,2))
+print(plot3dGp(adk$gcm[[1]], z=45))
+print(plot3dGp(adk$gcm_fehr[[1]], z=45))
+print(plot3dGp(adk$gcm_egcut[[1]], z=45))
+
+
+
+
+
 
 
