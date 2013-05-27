@@ -327,11 +327,3 @@ ggplot(prop, aes(y=value, x=index)) +
 	coord_flip() 
 ggsave("~/repo/eQTL-2D/analysis/images/proportion_additive.pdf", width=10, height=10)
 
-
-
-
-
-
-
-
-

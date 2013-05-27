@@ -141,8 +141,9 @@ multipleSnps <- function(sig)
 
 # Load data 
 
-load("~/repo/eQTL-2D/analysis/replication_summary.RData")
+load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
 sig <- linkColour(sig)
+sig <- subset(sig, filter != 3)
 
 # Circles 
 
@@ -150,8 +151,8 @@ gr <- makeGr()
 index <- table(sig$probename)
 sig_mult <- subset(sig, probename %in% names(index)[index > 2])
 
-sig_mult <- subset(sig, probegene == "MBNL1")
-links <- makeLinks(sig_mult[1:13,], gr)
+# sig_mult <- subset(sig, probegene == "MBNL1")
+# links <- makeLinks(sig_mult[1:13,], gr)
 
 a <- dlply(sig_mult, .(probename), .progress="text", function(x)
 {
@@ -162,10 +163,8 @@ a <- dlply(sig_mult, .(probename), .progress="text", function(x)
 	return(a)
 })
 
-plot(a[[1]])
-
-pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication.pdf", width=25, height=15)
-multiplot(plotlist=a, cols=6)
+pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication2.pdf", width=25, height=20)
+multiplot(plotlist=a, cols=8)
 dev.off()
 
 

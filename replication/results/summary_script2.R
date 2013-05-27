@@ -1,8 +1,3 @@
-library(lattice)
-library(latticeExtra)
-library(gridExtra)
-
-
 summariseRep <- function(filename)
 {
 	load(filename)

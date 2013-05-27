@@ -1,46 +1,55 @@
 library(noia)
 library(plyr)
+library(biomaRt)
 
 ReadOrig <- function(filename, objname, setname)
 {
 	load(filename)
 	sig <- get(objname)
 
-	sig <- subset(sig, select=c(chr1, chr2, snp1, snp2, pos1, pos2, probename, probegene, probechr, pfull, pnest))
+	sig <- subset(sig, select=c(chr1, chr2, snp1, snp2, pos1, pos2, probename, probegene, probechr, pfull, pnest, filter))
 	sig$set <- setname
 	sig$code <- with(sig, paste(probename, snp1, snp2))
 	return(sig)
 }
 
-
-ReadRep <- function(filename, objname, setname)
+FormatRep <- function(sig)
 {
-	load(filename)
-	sig <- get(objname)
-
 	a <- sum(sig$replication_r^2 > 0.1)
 	# cat(a, "pairs with high LD\n")
 
 	b <- sum(sig$replication_nclass != 9)
 	# cat(b, "pairs with < 9 classes\n")
 
-	sig <- subset(sig, replication_r^2 < 0.1 & replication_nclass == 9, select=c(chr1, chr2, snp1, snp2, pos1, pos2, probename, probegene, probechr, replication_pfull, replication_pnest))
+	vc <- apply(subset(sig, replication_r^2 < 0.1 & replication_nclass == 9, select=c(.a, a., .d, d., aa, ad, da, dd)), 1, list)
+	sig <- subset(sig, replication_r^2 < 0.1 & replication_nclass == 9, select=c(chr1, chr2, snp1, snp2, probename, probegene, probechr, replication_pfull, replication_pnest, filter, gcm, gcs))
 
-	names(sig) <- c("chr1", "chr2", "snp1", "snp2", "pos1", "pos2", "probename", "probegene", "probechr", "pfull", "pnest")
-	sig$set <- setname
+
+	names(sig) <- c("chr1", "chr2", "snp1", "snp2", "probename", "probegene", "probechr", "pfull", "pnest", "filter", "gcm", "gcs")
+	sig$vc <- vc
 	sig$code <- with(sig, paste(probename, snp1, snp2))
+	sig <- sig[order(sig$pnest, decreasing=T), ]
 	return(sig)
 }
 
 
-posData <- function(sig, bim)
+posData <- function(sig)
 {
-	sig$position1 <- bim$V4[sig$pos1]
-	sig$position2 <- bim$V4[sig$pos2]
-	sig$snp1 <- as.character(sig$snp1)
-	sig$snp2 <- as.character(sig$snp2)
-	sig$probename <- as.character(sig$probename)
-	sig$probegene <- as.character(sig$probegene)
+	snplist <- unique(c(sig$snp1, sig$snp2))
+	snpmart <- useMart("snp", dataset = "hsapiens_snp")
+	snp_pos <- getBM(
+		attributes = c("refsnp_id", "chr_name", "chrom_start"),
+		filters    = c("snp_filter"),
+		value      = snplist, 
+		mart       = snpmart)
+	names(snp_pos) <- c("snp", "chr", "position")
+	snp_pos <- subset(snp_pos, select=c(snp, position))
+	snp_pos <- subset(snp_pos, !duplicated(snp))
+	sig$index <- 1:nrow(sig)
+	sig <- merge(sig, snp_pos, by.x="snp1", by.y="snp", all.x=TRUE)
+	sig <- merge(sig, snp_pos, by.x="snp2", by.y="snp", suff=c("1","2"), all.x=TRUE)
+	sig <- sig[order(sig$index), ]
+	sig <- subset(sig, select=-c(index))
 	return(sig)
 }
 
@@ -57,10 +66,16 @@ confInt <- function(n, alpha)
 
 qqDat <- function(sig, alpha)
 {
-	sig <- sig[order(sig$pnest, decreasing=T), ]
-	ci <- confInt(nrow(sig), alpha)
-	sig <- data.frame(sig, ci)
-	return(sig)
+	a <- subset(sig, filter == 3)
+	a <- a[order(a$pnest, decreasing=T), ]
+	ci <- confInt(nrow(a), alpha)
+	a <- data.frame(a, ci)
+
+	b <- subset(sig, filter != 3)
+	b <- b[order(b$pnest, decreasing=T), ]
+	ci <- confInt(nrow(b), alpha)
+	b <- data.frame(b, ci)
+	return(rbind(b,a))
 }
 
 
@@ -90,10 +105,8 @@ varianceComponentsBreakdown <- function(sig, geno, phen, loud=FALSE)
 		gen  = cbind(geno[,sig$pos1], geno[, sig$pos2]) + 1
 	)
 	if(loud) print(a)
-	vars <- as.data.frame(as.list(a$variances))[,-1]
-	sig <- cbind(sig, vars)
-
-	return(sig)
+	vars <- a$variances[-1]
+	return(vars)
 }
 
 
@@ -105,17 +118,36 @@ getVcBreakdown <- function(sig, geno, phen)
 		cat(i, "of", nrow(sig), "\n")
 		l[[i]] <- varianceComponentsBreakdown(sig[i,], xmat, resphen)
 	}
-	l <- rbind.fill(l)
-	return(l)
+	sig$vc <- l
+	return(sig)
+}
+
+
+gpMaps <- function(sig, geno, phen)
+{
+	l <- list()
+	m <- list()
+	for(i in 1:nrow(sig))
+	{
+		cat(i, "of", nrow(sig), "\n")
+		y <- phen[,sig$probeid[i]]
+		x1 <- geno[,sig$pos1[i]]
+		x2 <- geno[,sig$pos2[i]]
+		l[[i]] <- tapply(y, list(x1, x2), function(x) mean(x, na.rm=T))
+		m[[i]] <- table(x1, x2)
+	}
+	sig$gcm <- l
+	sig$gcs <- m
+	return(sig)
 }
 
 
 mergeBsgsRep <- function(bsgs, fehr, egcut)
 {
-	f <- subset(fehr, select=c(code, pfull, pnest, upper))
-	names(f) <- c("code", "pfull_fehr", "pnest_fehr", "upper_fehr")
-	e <- subset(egcut, select=c(code, pfull, pnest, upper))
-	names(e) <- c("code", "pfull_egcut", "pnest_egcut", "upper_egcut")
+	f <- subset(fehr, select=c(code, pfull, pnest, upper, vc, gcm, gcs))
+	names(f) <- c("code", "pfull_fehr", "pnest_fehr", "upper_fehr", "vc_fehr", "gcm_fehr", "gcs_fehr")
+	e <- subset(egcut, select=c(code, pfull, pnest, upper, vc, gcm, gcs))
+	names(e) <- c("code", "pfull_egcut", "pnest_egcut", "upper_egcut", "vc_egcut", "gcm_egcut", "gcs_egcut")
 
 	bsgs <- merge(bsgs, f, by="code", all.x=T)
 	bsgs <- merge(bsgs, e, by="code", all.x=T)
@@ -142,31 +174,23 @@ marginalSnpAssociations <- function(bsgs, marginal_list, threshold, probeinfo)
 	return(bsgs)
 }
 
+# Load Data
 
 load("~/repo/eQTL-2D/data/residuals_all.RData")
 load("~/repo/eQTL-2D/data/clean_geno_final.RData")
 load("~/repo/eQTL-2D/data/probeinfo_all.RData")
-bim <- read.table("~/repo/eQTL-2D/data/clean_geno_final.bim", colClasses=c("character", "character", "numeric", "numeric", "character", "character"))
 load("~/repo/eQTL-2D/filtering/marginal_lists/marginal_list.RData")
+load("~/repo/eQTL-2D/replication/results/replication2_summarised.RData")
 bsgs <- ReadOrig(
-	"~/repo/eQTL-2D/replication/run/interactions_list.RData",
+	"~/repo/eQTL-2D/replication/run/interactions_list2.RData",
 	"sig",
 	"BSGS"
 )
-egcut <- ReadRep(
-	"~/repo/eQTL-2D/replication/results/EGCUT_replication.RData",
-	"newsig",
-	"EGCUT"
-)
-fehr <- ReadRep(
-	"~/repo/eQTL-2D/replication/results/FehrmannHT12v3_replication.RData",
-	"newsig",
-	"Ferhmann"
-)
+egcut <- FormatRep(egcut)
+egcut$set <- "EGCUT"
+fehr <- FormatRep(fehr)
+fehr$set <- "Fehrmann"
 
-bsgs <- posData(bsgs, bim)
-fehr <- posData(fehr, bim)
-egcut <- posData(egcut, bim)
 egcut <- qqDat(egcut, 0.05)
 fehr <- qqDat(fehr, 0.05)
 head(bsgs)
@@ -176,17 +200,20 @@ head(fehr)
 # Get VC
 bsgs$probeid <- match(bsgs$probename, colnames(resphen))
 bsgs <- getVcBreakdown(bsgs, xmat, resphen)
-
-# Get replication pvals
-bsgs <- mergeBsgsRep(bsgs, fehr, egcut)
+bsgs <- gpMaps(bsgs, xmat, resphen)
 
 # Get associations for marginal SNPs
 bsgs <- marginalSnpAssociations(bsgs, marginal_list, 1e-2, probeinfo_all)
 
-sig <- bsgs
 
-save(sig, file="~/repo/eQTL-2D/analysis/replication_summary.RData")
+# Get replication pvals
+sig <- mergeBsgsRep(bsgs, fehr, egcut)
+sig <- posData(sig)
 
+# Remove filter==3
+sig_all <- sig
+sig <- subset(sig, filter != 3)
 
+save(sig, sig_all, file="~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
 
 
