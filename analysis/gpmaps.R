@@ -64,6 +64,62 @@ plot3dHairballsRep <- function(sig, pg, cissnp, cohort, z=45)
 	do.call(grid.arrange, l)
 }
 
+rotateGp <- function(mat)
+{
+	if(!is.na(mat[1]))
+	{
+		return(mat[3:1, 3:1])
+	} else {
+		return(NA)
+	}
+}
+
+normaliseGp <- function(g)
+{
+	a <- ddply(g, .(cohort), function(x)
+	{
+		x <- mutate(x)
+		if(length(x) == 1 & is.na(x[1]))
+		{
+			return(x)
+		} else {
+			x$y <- x$y - min(x$y, na.rm=T)
+			x$y <- x$y / max(x$y, na.rm=T)			
+		}
+		return(x)
+	})
+	print(head(a))
+	return(a)
+}
+
+plotHeatmapGp <- function(sig)
+{
+	a <- subset(sig, select=c(snp1, snp2, chr1, chr2, probegene, probename, gcm, gcm_fehr, gcm_egcut, code))
+
+	l <- list()
+	for(i in 1:nrow(a))
+	{
+		g1 <- expand.grid(snp1=0:2, snp2=0:2)
+		g1$y <- c(a$gcm[[i]])
+		g1$cohort <- "BSGS"
+		g2 <- expand.grid(snp1=0:2, snp2=0:2)
+		g2$y <- c(rotateGp(a$gcm_egcut[[i]]))
+		g2$cohort <- "EGCUT"
+		g3 <- expand.grid(snp1=0:2, snp2=0:2)
+		g3$y <- c(rotateGp(a$gcm_fehr[[i]]))
+		g3$cohort <- "Fehrmann"
+		g <- normaliseGp(rbind(g1, g2, g3))
+
+		g$code <- a$code[i]
+		g$code2 <- paste(i, a$probegene[i])
+		l[[i]] <- g
+	}
+	l <- rbind.fill(l)
+	print(head(l))
+	p <- ggplot(l, aes(x=snp1, y=snp2, fill=y)) + geom_tile() + facet_grid(cohort ~ code2) + theme(strip.text = element_text(size = 6))
+
+	return(p)
+}
 
 
 load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
@@ -84,8 +140,6 @@ print(plot3dGp(adk$gcm_fehr[[1]], z=45))
 print(plot3dGp(adk$gcm_egcut[[1]], z=45))
 
 
-
-
-
-
-
+pdf(file="~/repo/eQTL-2D/analysis/images/gpBonfRep.pdf", width=20, height=4)
+plotHeatmapGp(subset(sig, pnest_fehr > -log10(0.05/500) & pnest_egcut > -log10(0.05/500)))
+dev.off()
