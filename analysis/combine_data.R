@@ -214,6 +214,10 @@ sig <- posData(sig)
 sig_all <- sig
 sig <- subset(sig, filter != 3)
 
-save(sig, sig_all, file="~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
+sig_rep1 <- subset(sig, pnest_fehr > upper_fehr | pnest_egcut > upper_egcut)
+sig_rep2 <- subset(sig, pnest_fehr > upper_fehr & pnest_egcut > upper_egcut)
+
+
+save(sig, sig_all, sig_rep1, sig_rep2, file="~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
 
 
