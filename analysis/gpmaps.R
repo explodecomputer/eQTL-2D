@@ -64,35 +64,19 @@ plot3dHairballsRep <- function(sig, pg, cissnp, cohort, z=45)
 	do.call(grid.arrange, l)
 }
 
-rotateGp <- function(mat)
-{
-	if(!is.na(mat[1]))
-	{
-		return(mat[3:1, 3:1])
-	} else {
-		return(NA)
-	}
-}
-
 normaliseGp <- function(g)
 {
 	a <- ddply(g, .(cohort), function(x)
 	{
 		x <- mutate(x)
-		if(length(x) == 1 & is.na(x[1]))
-		{
-			return(x)
-		} else {
-			x$y <- x$y - min(x$y, na.rm=T)
-			x$y <- x$y / max(x$y, na.rm=T)			
-		}
+		x$y <- x$y - min(x$y, na.rm=T)
+		x$y <- x$y / max(x$y, na.rm=T)			
 		return(x)
 	})
-	print(head(a))
 	return(a)
 }
 
-plotHeatmapGp <- function(sig)
+datHeatmapGp <- function(sig)
 {
 	a <- subset(sig, select=c(snp1, snp2, chr1, chr2, probegene, probename, gcm, gcm_fehr, gcm_egcut, code))
 
@@ -111,18 +95,85 @@ plotHeatmapGp <- function(sig)
 		g <- normaliseGp(rbind(g1, g2, g3))
 
 		g$code <- a$code[i]
-		g$code2 <- paste(i, a$probegene[i])
+		g$code2 <- a$probegene[i]
+		g$code3 <- i
 		l[[i]] <- g
 	}
 	l <- rbind.fill(l)
-	print(head(l))
-	p <- ggplot(l, aes(x=snp1, y=snp2, fill=y)) + geom_tile() + facet_grid(cohort ~ code2) + theme(strip.text = element_text(size = 6))
+	return(l)
+}
 
+GpMod <- function(l, code, cohort, ...)
+{
+	index <- l$code3 == code & l$cohort == cohort
+	mat <- matrix(l$y[index], 3, 3, byrow=FALSE)
+	print(mat)
+	print(l$y[index])
+	funcs <- list(...)
+	for(i in 1:length(funcs))
+	{
+		mat <- funcs[[i]](mat)
+	}
+	print(mat)
+	l$y[index] <- c((mat))
+	print(l$y[index])
+	return(l)
+}
+
+flipGpRow <- function(mat)
+{
+	return(mat[3:1, ])
+}
+
+flipGpCol <- function(mat)
+{
+	return(mat[, 3:1])
+}
+
+rotateGp <- function(mat)
+{
+	return(t(mat[3:1, ]))
+}
+
+plotTileGp <- function(l)
+{
+	p <- ggplot(l, aes(x=snp2, y=snp1, fill=y)) + geom_tile() + facet_grid(cohort ~ code2) + theme(strip.text = element_text(size = 6))
 	return(p)
 }
 
 
 load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
+
+l <- datHeatmapGp(subset(sig, pnest_fehr > -log10(0.05/500) & pnest_egcut > -log10(0.05/500)))
+l <- GpMod(l, 1, "BSGS", flipGpCol)
+l <- GpMod(l, 1, "Fehrmann", flipGpRow)
+l <- GpMod(l, 10, "BSGS", flipGpRow, rotateGp, rotateGp, rotateGp)
+l <- GpMod(l, 11, "BSGS", flipGpRow)
+l <- GpMod(l, 12, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 13, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 13, "Fehrmann", flipGpCol)
+l <- GpMod(l, 14, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 15, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 16, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 17, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 2, "Fehrmann", rotateGp)
+l <- GpMod(l, 2, "BSGS", rotateGp, rotateGp, rotateGp)
+l <- GpMod(l, 3, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 4, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 5, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 6, "BSGS", t)
+l <- GpMod(l, 7, "BSGS", rotateGp, rotateGp)
+l <- GpMod(l, 9, "BSGS", rotateGp, rotateGp)
+
+
+pdf(file="~/repo/eQTL-2D/analysis/images/gpBonfRep.pdf", width=20, height=4)
+plotTileGp(l)
+dev.off()
+
+
+mbnl1 <- datHeatmapGp(subset(sig, probegene == "MBNL1"))
+plotTileGp(mbnl1)
+
 
 plot3dHairballsRep(sig, "TMEM149", "rs8106959", "", z=45)
 plot3dHairballsRep(sig, "TMEM149", "rs8106959", "_egcut", z=45)
@@ -139,7 +190,3 @@ print(plot3dGp(adk$gcm[[1]], z=45))
 print(plot3dGp(adk$gcm_fehr[[1]], z=45))
 print(plot3dGp(adk$gcm_egcut[[1]], z=45))
 
-
-pdf(file="~/repo/eQTL-2D/analysis/images/gpBonfRep.pdf", width=20, height=4)
-plotHeatmapGp(subset(sig, pnest_fehr > -log10(0.05/500) & pnest_egcut > -log10(0.05/500)))
-dev.off()
