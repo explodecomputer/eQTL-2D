@@ -103,10 +103,10 @@ plotHeatmapGp <- function(sig)
 		g1$y <- c(a$gcm[[i]])
 		g1$cohort <- "BSGS"
 		g2 <- expand.grid(snp1=0:2, snp2=0:2)
-		g2$y <- c(rotateGp(a$gcm_egcut[[i]]))
+		g2$y <- c(a$gcm_egcut[[i]])
 		g2$cohort <- "EGCUT"
 		g3 <- expand.grid(snp1=0:2, snp2=0:2)
-		g3$y <- c(rotateGp(a$gcm_fehr[[i]]))
+		g3$y <- c(a$gcm_fehr[[i]])
 		g3$cohort <- "Fehrmann"
 		g <- normaliseGp(rbind(g1, g2, g3))
 
