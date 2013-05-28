@@ -1,0 +1,54 @@
+\documentclass{article}
+
+\title{Epistasis identified to be widespread in the control of human gene expression}
+
+
+\begin{document}
+
+\maketitle
+
+
+\begin{abstract}
+A long standing question in human genetics is the extent to which epistasis, where one mutation's effect on a trait depends on other mutations present in the genome, contributes to complex traits. Though epistasis is known to arise from artificial gene manipulation studies in model organisms, and examples have been shown in other species, few convincing examples exist for epistasis amongst natural polymorphisms in human traits. Its absence from empirical findings could be due to its unimportance in the genetic control of complex traits, or it may be too technically difficult to detect due to statistical power and computational issues. Here we show that, using advanced computation techniques and a gene expression study design where any effects are expected to be large, abundant evidence for epistasis is found. In a modest sample size of 842 individuals with data on 7339 gene expression levels in whole blood, we find that after correcting for multiple testing the expression of 249 genes is controlled by 549 significant pairwise epistatic interactions. We attempted replication in two independent datasets and 421 show evidence of significance in at least one dataset. Several genes are controlled by epistatic interactions whereby one cis-acting single nucleotide polymorphism (SNP) is modulated by several trans-acting SNPs, for example MBNL1 is controlled by an additive effect at rs13069559 which itself is controlled by trans-SNPs on 18 different chromosomes, with nearly identical genotype-phenotype (GP) maps for each cis-trans interaction. This study presents the first strong evidence for the widespread existence of epistasis among natural polymorphisms in humans.
+\end{abstract}
+
+
+\section{Main}
+
+The past decade has seen a tremendous amount of activity in mapping genetic polymorphisms that underlie complex traits. Typically, SNPs are treated as contributing linearly, independently, and cumulatively to the mean of a trait and this has been successful in identifying hundreds of causal variants. Yet outside the prism of association studies there is widespread evidence for epistasis, for example at the molecular level in artificial double gene knockouts in experimental organisms and at the evolutionary level in fitness adaptation and speciation. Though its importance is frequently the subject of debate there is little convincing empirical evidence for epistasis playing a substantial role in the architecture of complex traits.
+
+There are two major obstacles in detecting epistasis. First, the detection of epistasis is significantly hampered by power issues. For example, there is a greater dependency on linkage disequilibrium (LD) between causal variants and observed SNPs in order to capture non-additive genetic variance, and this problem is exacerbated further with epistasis because there must be high LD at all interacting loci. Relatedly, the dependence on a much larger sample size in order to detect similar effect sizes compared to additive effects, because of the increased number of parameters in statistical tests for interaction terms, and the increased multiple testing correction for testing combinations of SNPs.  Second, one must extend genome-wide association scans into two or more dimensions in order to detect interacting SNPs, resulting in an overwhelming computational burden. We overcome this problem by distributing the search grid across graphics processing unit compute clusters.
+
+
+
+
+
+Results
+
+
+- Hundreds of significant pairwise interactions controlling gene expression replicate in two independent studies
+
+
+
+- The genotype-phenotype maps for the most significant replications are consistent in all three datasets
+
+
+
+- The proportion of the variance that is due to interactions is generally smaller than additive. There is an ascertainment bias in that there are no genetic interactions strong enough to be detected on their own, and large additive effects are required to push them above the threshold
+
+
+
+- There are several examples of gene expression being controlled by a cis-SNP which in turn is modulated by multiple trans-SNPs. The effects are consistent 
+
+
+
+
+
+
+\section{Methods summary}
+
+
+
+
+
+\end{document}
