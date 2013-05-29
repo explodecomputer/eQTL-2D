@@ -32,57 +32,32 @@ The detection of epistasis is hampered by power issues for several reasons, incl
 \subsubsection{Initial search}
 We searched for pairwise epistasis exhaustively in the BSGS dataset which comprises 842 individuals who are genotyped at 528,509 SNPs and who have gene expression levels measured in whole blood samples for 7339 genes. Recent hardware and software advances made it possible to perform the $1.03 \times 10^{15}$ statistical tests to complete this analysis. We used permutation analysis to calculate an experiment-wide significance threshold of $2.91 \times 10^{-16}$ at the 5\% family-wise error rate (Methods). SNP pairs were modelled for full genetic effects, including marginal additive and dominance at both SNPs plus four interaction terms. Though we could have used a less complex model to improve statistical efficiency, we deemed it important to be agnostic about the type of epistasis that might exist, and therefore chose not to over-parameterise the test. Because there are many large marginal effects present in these data it was necessary to perform several filtering steps to exclude SNP pairs that were significant due to marginal effects alone. All SNP pairs with LD $r^2 > 0.1$ were removed, and were required to have at least 5 data points in all nine genotype classes. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinal SNP pair was retained. Finally, a nested test contrasting the full genetic model against the marginal additive and dominance model was performed for each remaining SNP pair (Methods), resulting in 549 significant interactions after Bonferroni correction for multiple testing.
 
+
 \subsubsection{Replication}
-It is intrinsically difficult to replicate epistasis because the dependence on LD between observed SNPs and causal variants is on average four orders of magnitude higher than for independent additive effects. The significant SNP pairs were carried forward for replication in two independent datasets that used the same expression assays for analysing transcription in whole blood, Fehrmann ($n=1240$) and EGCUT ($n=891$). There was substantial evidence for overlap of interaction effects in all three datasets. Of the 480 original pairs that passed filtering in Fehrmann and EGCUT, 421 of the SNP pairs showed replication for the interaction test at the 5\% false discovery rate (FDR) level in at least one dataset, and 148 in both datasets (Supplementary Figure \ref{fig:qqplotfdr}). The congruence of the epistatic networks in both datasets is shown in Figure \ref{fig:fireworks}. We also report that 39 of the interactions from the discovery set were significant at the Bonferroni level in at least one replication set (Supplementary Figure \ref{fig:qqplotbonf}), and of these 18 were significant in both. The GP maps for these interactions are remarkably similar in all three datasets (Figure \ref{fig:gpmaps}), lending strong evidence for the veracity of these signals. We also attempted replication in the CHDWB dataset, but only 185 of the SNP pairs passed filtering because the sample size was small ($n=139$), and due to insufficient power there was no evidence for replication.
-
-
-\subsubsection{Patterns of epistasis}
-
-
-
-\subsubsection{Characterisation of genetic variation}
-
+Though a necessary step to establish the veracity of the signals from the discovery set, it is theoretically difficult to replicate epistasis because the dependence on LD between observed SNPs and causal variants is on average four orders of magnitude higher than it is for independent additive effects. The significant SNP pairs were carried forward for replication in two independent datasets that used the same expression assays for analysing transcription in whole blood, Fehrmann ($n=1240$) and EGCUT ($n=891$). There was substantial evidence for overlap of interaction effects in all three datasets. Of the 480 original pairs that passed filtering in Fehrmann and EGCUT, 421 of the SNP pairs showed replication for the interaction test at the 5\% false discovery rate (FDR) level in at least one dataset, and 148 in both datasets (Supplementary Figure \ref{fig:qqplotfdr}). The congruence of the epistatic networks in both datasets is shown in Figure \ref{fig:fireworks}. We also report that 39 of the interactions from the discovery set were significant at the Bonferroni level in at least one replication set (Supplementary Figure \ref{fig:qqplotbonf}), and 18 were significant in both. The GP maps for these interactions are remarkably similar in all three datasets (Figure \ref{fig:gpmaps}). We also attempted replication in the CHDWB dataset, but only 185 of the SNP pairs passed filtering because the sample size was small ($n=139$), and due to insufficient power there was no evidence for replication.
 
 
 \subsubsection{Functional annotation}
-
-
-
-\section{Notes}
-
-Results
-
-
-- Hundreds of significant pairwise interactions controlling gene expression replicate in two independent studies
-
-
-
-- The genotype-phenotype maps for the most significant replications are consistent in all three datasets
-
-
-
-- The proportion of the variance that is due to interactions is generally smaller than additive. There is an ascertainment bias in that there are no genetic interactions strong enough to be detected on their own, and large additive effects are required to push them above the threshold
-
-
-
-- There are several examples of gene expression being controlled by a cis-SNP which in turn is modulated by multiple trans-SNPs. The effects are consistent 
-
-
-
 - Functional annotation shows that proteins are not being changed at the codon level
 - There is strong enrichment for enhancers
 - There is tissue specific transcription regulation for cis SNPs - these are regulatory
 - Trans SNPs are not found in tissue specific transcription regions.
 - General enrichment for regulatory motif modifications
 - Names of specific factors that are enriched.
-
-
-
-- No explicit mechanism arises from looking at GP maps
-
-
-
 - Chromosome interactions?
+
+
+\subsubsection{Patterns of epistasis}
+- There are several examples of gene expression being controlled by a cis-SNP which in turn is modulated by multiple trans-SNPs. The effects are consistent 
+- No explicit mechanism arises from looking at GP maps
+- Describe MBNL1
+
+
+\subsubsection{Characterisation of genetic variation}
+- The proportion of the variance that is due to interactions is generally smaller than additive. There is an ascertainment bias in that there are no genetic interactions strong enough to be detected on their own, and large additive effects are required to push them above the threshold
+
+
+
 
 
 
@@ -101,7 +76,7 @@ Results
 \end{figure}
 
 \begin{figure}[H]
-	\caption{\textbf{Replication of genotype-phenotype maps in 2 cohorts} The GP maps for each epistatic interaction that is significant at the Bonferroni level in both replication datasets. Each tile represents the expression level for that SNP-SNP genotype class. Phenotypes for each interaction within each cohort are scaled to be between 0 and 1.}
+	\caption{\textbf{Replication of genotype-phenotype maps in two cohorts} The GP maps for each epistatic interaction that is significant at the Bonferroni level in both replication datasets are shown. Each tile represents the expression level for that two-locus genotype class. Phenotypes for each interaction within each cohort are scaled to be between 0 and 1. Phenotypes are for gene transcript levels, where the gene's name is labelled in the panel columns. Panel rows are labelled for the dataset. There is a general trend of the GP maps replicating across all three datasets.}
 	\label{fig:gpmaps}
 \end{figure}
 
@@ -141,11 +116,11 @@ Results
 
 \subsection{Discovery data}
 
-The Brisbane Systems Genetics Study (BSGS) comprises 862 Individuals of European descent from 274 independent families \cite{pmid22563384}. DNA samples from each individual were genotyped on the Illumina 610-Quad Beadchip by the Scientific Services Division at deCODE Genetics Iceland. Full details of genotyping procedures are given in Medland et al. \cite{Medland2009} Standard QC filters were applied and the remaining 528,509 SNPs were carried forward further analysis. 
+The Brisbane Systems Genetics Study (BSGS) comprises 862 individuals of European descent from 274 independent families \cite{pmid22563384}. DNA samples from each individual were genotyped on the Illumina 610-Quad Beadchip by the Scientific Services Division at deCODE Genetics Iceland. Full details of genotyping procedures are given in Medland et al. \cite{Medland2009} Standard QC filters were applied and the remaining 528,509 SNPs were carried forward further analysis. 
 
 Gene expression profiles were generated from whole blood collected with PAXgene TM tubes (QIAGEN, Valencia, CA) using Illumina HT12-v4.0 bead arrays. The Illumina HT-12 v4.0 chip contains 47,323 probes, although some probes are not assigned to RefSeq genes. We removed any probes that did not match the following criteria: contained a SNP within the probe sequence with MAF > 0.05 within 1000 genomes data; did not map to a listed ref-seq gene; were not significantly expressed (based on a detection $p$-value < 0.05) in 100\% of samples. After this stringent QC ~7000 [need to get exact number] probes remained for 2d-eqtl mapping. 
 
-\subsection{normalisation}
+\subsection{Normalisation}
 
 Gene expression profiles were normalised and batch effects removed with the following procedures; Raw background expression were removed for each sample. Expression levels were then adjusted using Quantile and log2 transformation to standardise distribution between samples. To avoid inflation of the test statistic due to polygenic effects the following linear model was used to correct for batch and polygenic effects;  
 

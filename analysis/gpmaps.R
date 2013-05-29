@@ -137,7 +137,7 @@ rotateGp <- function(mat)
 
 plotTileGp <- function(l)
 {
-	p <- ggplot(l, aes(x=snp2, y=snp1, fill=y)) + geom_tile() + facet_grid(cohort ~ code2) + theme(strip.text = element_text(size = 6))
+	p <- ggplot(l, aes(x=snp2, y=snp1, fill=y)) + geom_tile() + facet_grid(cohort ~ code3) + theme(strip.text = element_text(size = 6))
 	return(p)
 }
 
@@ -165,23 +165,55 @@ l <- GpMod(l, 6, "BSGS", t)
 l <- GpMod(l, 7, "BSGS", rotateGp, rotateGp)
 l <- GpMod(l, 9, "BSGS", rotateGp, rotateGp)
 
+index <- match(mbnl1$code, sig$code)
+mbnl1$code4 <- paste(sig$chr1[index], "x", sig$chr2[index])
+mbnl1 <- subset(mbnl1, !is.na(y))
+mbnl1$code3 <- mbnl1$code
 
 pdf(file="~/repo/eQTL-2D/analysis/images/gpBonfRep.pdf", width=20, height=4)
 plotTileGp(l)
 dev.off()
 
+temp <- subset(sig, probegene == "MBNL1")
+temp <- subset(temp, !duplicated(paste(chr1, chr2)) & !is.na(pnest_egcut) & !is.na(pnest_fehr))
+mbnl1 <- datHeatmapGp(temp)
+mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpCol)
+mbnl1 <- GpMod(mbnl1, 2, "BSGS", rotateGp, rotateGp)
+mbnl1 <- GpMod(mbnl1, 3, "BSGS", flipGpCol)
+mbnl1 <- GpMod(mbnl1, 4, "BSGS", rotateGp, rotateGp)
+mbnl1 <- GpMod(mbnl1, 5, "BSGS", flipGpCol)
+mbnl1 <- GpMod(mbnl1, 6, "BSGS", flipGpRow)
+mbnl1 <- GpMod(mbnl1, 6, "Fehrmann", flipGpCol)
+mbnl1 <- GpMod(mbnl1, 7, "BSGS", rotateGp, rotateGp)
+mbnl1 <- GpMod(mbnl1, 8, "BSGS", rotateGp, rotateGp)
+mbnl1 <- GpMod(mbnl1, 9, "BSGS", flipGpCol)
+mbnl1 <- GpMod(mbnl1, 10, "BSGS", flipGpCol)
+mbnl1 <- GpMod(mbnl1, 11, "BSGS", flipGpCol)
+mbnl1 <- GpMod(mbnl1, 12, "BSGS", rotateGp, rotateGp)
+mbnl1 <- GpMod(mbnl1, 12, "Fehrmann", flipGpRow)
+mbnl1 <- GpMod(mbnl1, 13, "BSGS", flipGpCol)
+mbnl1 <- GpMod(mbnl1, 14, "BSGS", flipGpCol)
+mbnl1 <- GpMod(mbnl1, 14, "Fehrmann", flipGpRow)
 
-mbnl1 <- datHeatmapGp(subset(sig, probegene == "MBNL1"))
+index <- match(mbnl1$code, sig$code)
+replicates <- rep("", length(index))
+replicates[with(sig[index, ], pnest_fehr > upper_fehr | pnest_egcut > upper_egcut)] <- "*"
+replicates[with(sig[index, ], pnest_fehr > upper_fehr & pnest_egcut > upper_egcut)] <- "**"
+mbnl1$code4 <- paste(sig$chr1[index], "x", sig$chr2[index], replicates)
+mbnl1 <- subset(mbnl1, !is.na(y))
+mbnl1$code3 <- mbnl1$code4
+
 plotTileGp(mbnl1)
+
 
 
 plot3dHairballsRep(sig, "TMEM149", "rs8106959", "", z=45)
 plot3dHairballsRep(sig, "TMEM149", "rs8106959", "_egcut", z=45)
 plot3dHairballsRep(sig, "TMEM149", "rs8106959", "_fehr", z=45)
 
-plot3dHairballsRep(sig, "MBNL1", "rs13069559", "", z=-45)
-plot3dHairballsRep(sig, "MBNL1", "rs13069559", "_egcut", z=-45)
-plot3dHairballsRep(sig, "MBNL1", "rs13069559", "_fehr", z=-45)
+plot3dHairballsRep(subset(sig, code %in% mbnl1$code), "MBNL1", "rs13069559", "", z=-135)
+plot3dHairballsRep(subset(sig, code %in% mbnl1$code), "MBNL1", "rs13069559", "_egcut", z=45)
+plot3dHairballsRep(subset(sig, code %in% mbnl1$code), "MBNL1", "rs13069559", "_fehr", z=45)
 
 adk <- subset(sig, probegene=="ADK")[1,]
 

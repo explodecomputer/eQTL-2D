@@ -127,7 +127,7 @@ plot3dHairballs <- function(sig, pg, cissnp, resphen, xmat, bim, z=45)
 		gp <- tapply(y, list(x1, x[,i]), function(x) mean(x, na.rm=T))
 		gp <- gp - min(gp, na.rm=T)
 		print(gp)
-		title <- paste(s$probegene[1], "chr", subset(chrkey, snp == cissnp)$chr, "x", subset(chrkey, snp == tsnps[i])$chr)
+		title <- paste("Chromosome", subset(chrkey, snp == cissnp)$chr, "x", subset(chrkey, snp == tsnps[i])$chr)
 		l[[i]] <- plot3dGp(gp, title, cissnp, tsnps[i], z)
 	}
 	do.call(grid.arrange, l)
