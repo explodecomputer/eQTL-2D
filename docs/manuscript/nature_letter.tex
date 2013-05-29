@@ -30,7 +30,7 @@ The detection of epistasis is hampered by power issues for several reasons, incl
 \subsection{Results}
 
 \subsubsection{Initial search}
-We searched for pairwise epistasis exhaustively in the BSGS dataset which comprises 846 individuals who are genotyped at 528,509 SNPs and who have gene expression levels measured in whole blood samples for 7339 genes. Recent hardware and software advances made it possible to perform the $1.03 \times 10^{15}$ statistical tests to complete this analysis. We used permutation analysis to calculate an experiment-wide significance threshold of $2.91 \times 10^{-16}$ at the 5\% family-wise error rate (Methods). SNP pairs were modelled for full genetic effects, including marginal additive and dominance at both SNPs plus four interaction terms. Though we could have used a less complex model to improve statistical efficiency, we deemed it important to be agnostic about the type of epistasis that might exist, and therefore chose not to over-parameterise the test. Because there are many large marginal effects present in these data it was necessary to perform several filtering steps to exclude SNP pairs that were significant due to marginal effects alone. All SNP pairs with LD $r^2 > 0.1$ were removed, and were required to have at least 5 data points in all nine genotype classes. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinal SNP pair was retained. Finally, a nested test contrasting the full genetic model against the marginal additive and dominance model was performed for each remaining SNP pair (Methods), resulting in 549 significant interactions after Bonferroni correction for multiple testing.
+We searched for pairwise epistasis exhaustively in the BSGS dataset which comprises 846 individuals who are genotyped at 528,509 SNPs and who have gene expression levels measured in whole blood samples for 7339 genes. Recent hardware and software advances made it possible to perform the $1.03 \times 10^{15}$ statistical tests to complete this analysis. We used permutation analysis to calculate an experiment-wide significance threshold of $2.91 \times 10^{-16}$ at the 5\% family-wise error rate (FWER). SNP pairs were modelled for full genetic effects, including marginal additive and dominance at both SNPs plus four interaction terms. Though we could have used a less complex model to improve statistical efficiency, we deemed it important to be agnostic about the type of epistasis that might exist, and therefore chose not to over-parameterise the test. Because there are many large marginal effects present in these data it was necessary to perform several filtering steps to exclude SNP pairs that were significant due to marginal effects alone. All SNP pairs with LD $r^2 > 0.1$ were removed, and were required to have at least 5 data points in all nine genotype classes. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinal SNP pair was retained. Finally, a nested test contrasting the full genetic model against the marginal additive and dominance model was performed for each remaining SNP pair (Methods), resulting in 549 significant interactions after Bonferroni correction for multiple testing of the filtered SNPs.
 
 
 \subsubsection{Replication}
@@ -38,6 +38,9 @@ Though a necessary step to establish the veracity of the signals from the discov
 
 
 \subsubsection{Functional annotation}
+Of the 549 interactions, 66 were cis-cis acting (both SNPs were on the same chromosome as the expression gene), 470 were cis-trans acting, and 3 were trans-trans acting. In total the 549 interactions comprised 835 unique SNPs, which we analysed for functional enrichment. We observed that there was significant enrichment of cis-acting SNPs in transcriptionally active regions for haematopoetic cell lines only, as measured by localisation within H3K4ME3 regions ($p = ?$).
+
+
 - Functional annotation shows that proteins are not being changed at the codon level
 - There is strong enrichment for enhancers
 - There is tissue specific transcription regulation for cis SNPs - these are regulatory
@@ -55,14 +58,6 @@ Though a necessary step to establish the veracity of the signals from the discov
 
 \subsubsection{Characterisation of genetic variation}
 - The proportion of the variance that is due to interactions is generally smaller than additive. There is an ascertainment bias in that there are no genetic interactions strong enough to be detected on their own, and large additive effects are required to push them above the threshold
-
-
-
-
-
-
-\clearpage
-\section{Methods summary}
 
 
 
@@ -153,15 +148,15 @@ H _1 : \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \mu) ^2 > 0;
 \label{eq:8df}
 \end{equation}
 
-where $\mu$ is the mean expression level and $x _{ij}$ is the pairwise genotype class mean for genotype $i$ at SNP 1 and genotype $j$ at locus B. This type of test does not parameterize for specific types of epistasis, rather it tests for the joint genetic effects at two loci. This has been demonstrated to be statistically more efficient when searching for a wide range of epistatic patterns (add refs), although will include any marginal effects of SNPs.
+where $\mu$ is the mean expression level and $x _{ij}$ is the pairwise genotype class mean for genotype $i$ at SNP 1 and genotype $j$ at SNP 2. This type of test does not parameterize for specific types of epistasis, rather it tests for the joint genetic effects at two loci. This has been demonstrated to be statistically more efficient when searching for a wide range of epistatic patterns, although will include any marginal effects of SNPs.
  
-The complete exhaustive scan for 7339 probes comprises $1.03 \times 10^{15}$ $F$-tests. Due to the very large number of tests it was necessary to devise an appropriate threshold. We performed a further 1600 exhaustive 2D scans on permuted phenotypes to generate a null distribution of the extreme $p$-values expected to be obtained from this number of multiple tests given the correlation structure between the SNPs. We took the most extreme $p$-value from each of the 1600 scans and set the 5\% FWER to be the 95\% most extreme of these $p$-values, $T_{*} = 2.13 \times 10^{-12}$. The effective number of tests in one 2D scan being performed is therefore $N_{*} = 0.05 / T_{*} \approx 2.33 \times 10^{10}$. To correct for the testing of multiple traits we established an experiment wide threshold of $T = 0.05 / (N_{*} \times 7339) = 2.91 \times 10^{-16}$. This is likely to be conservative as it assumes independence between probes.
+The complete exhaustive scan for 7339 probes comprises $1.03 \times 10^{15}$ $F$-tests. We used permutation analysis to estimate an appropriate significance threshold for the study. To do this we performed a further 1600 exhaustive 2D scans on permuted phenotypes to generate a null distribution of the extreme $p$-values expected to be obtained from this number of multiple tests given the correlation structure between the SNPs. We took the most extreme $p$-value from each of the 1600 scans and set the 5\% FWER to be the 95\% most extreme of these $p$-values, $T_{*} = 2.13 \times 10^{-12}$. The effective number of tests in one 2D scan being performed is therefore $N_{*} = 0.05 / T_{*} \approx 2.33 \times 10^{10}$. To correct for the testing of multiple traits we established an experiment wide threshold of $T = 0.05 / (N_{*} \times 7339) = 2.91 \times 10^{-16}$. This is likely to be conservative as it assumes independence between probes.
 
 Following filtering on this threshold only SNP pairs with at least 5 data points in all 9 genotype classes were kept. We then calculated the LD between interacting SNPs and removed any pairs with $r^2 > 0.1$. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinal SNP pair was retained, \emph{i.e.} if a probe had multiple SNP pairs that were on chromosomes one and two then only the SNP pair with the most significant $p$-value was retained. At this stage 6404 filtered SNP pairs remained. We then performed a second filtering screen that was identical to the first but an additional step was included where any SNPs that had previously been shown to have a significant additive or dominant effect ($p < 1.0 \times 10^{-10}$) was removed, creating a second set of 4751 filtered SNP pairs. To ensure that interacting SNPs were driven by epistasis and not marginal effects we performed a nested ANOVA on each filtered pair to test if the interaction terms were significant. We did this by contrasting the full genetic model (8 d.f.) against the reduced marginal effects model which included the additive and dominance terms at both SNPs (4 d.f.). Thus, a 4 d.f. $F$-test was performed on the residual genetic variation, representing the contribution of epistatic variance. Significance of epistasis was determined using a Bonferroni threshold of $0.05 / (6404+4751) = 4.48 \times 10^{-6}$. This resulted in 432 and 117 SNP pairs with significant interaction terms from filters 1 and 2, respectively.
 
 
 \subsection{Replication}
-We have attempted replication of the 2D scan significant results using three independent cohorts; Fehrmann, EGCUT, and CHDWB. Details of cohorts are as follows. \\[0.1cm]  
+We have attempted replication of the 529 significant interactions from the discovery set using three independent cohorts; Fehrmann, EGCUT, and CHDWB. Details of the cohorts are as follows. \\[0.1cm]  
 
 Fehrmann: $n=1240$ \\[0.1cm]
 The Fehrmann dataset consists of whole peripheral blood samples of 1240 unrelated individuals from the United Kingdom and the Netherlands. Some of these individuals are patients, while others are healthy controls. Individuals were genotyped using the Illumina 610 Quad platform. RNA levels were quantified using the HT12v3 platform. \\[0.1cm]
