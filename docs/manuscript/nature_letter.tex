@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage[superscript,biblabel]{cite}
 \usepackage{graphicx}
+\usepackage{float}
 
 \graphicspath{{../../analysis/images/}}
 \bibliographystyle{plain}
@@ -44,7 +45,6 @@ It is intrinsically difficult to replicate epistasis because the dependence on L
 
 
 \subsubsection{Functional annotation}
-
 
 
 
@@ -95,17 +95,17 @@ Results
 \clearpage
 \section{Figure legends}
 
-\begin{figure}
+\begin{figure}[H]
 	\caption{\textbf{Replication of epistatic networks in two cohorts} Panel A shows the overall network of genetic interactions (edges) for each probe (red nodes) and their controlling SNPs (black nodes) from the discovery set. Panel B shows those interactions that were present at the 5\% FDR level in at least one replication dataset, and panel C shows which interactions were significant in both replication datasets.}
 	\label{fig:fireworks}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 	\caption{\textbf{Replication of genotype-phenotype maps in 2 cohorts} The GP maps for each epistatic interaction that is significant at the Bonferroni level in both replication datasets. Each tile represents the expression level for that SNP-SNP genotype class. Phenotypes for each interaction within each cohort are scaled to be between 0 and 1.}
 	\label{fig:gpmaps}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 	\caption{\textbf{Comparison of genetic variances} Panel A shows the proportion of phenotypic variation that is captured by additive, dominant and interaction components for all 529 significant interactions, ordered by total phenotypic variance explained by the SNP pair. Panel B shows the proportion of the genetic variance that is attributable to the three variance components, ordered by the proportion that is additive.}
 	\label{fig:variancecomponents}
 \end{figure}
@@ -113,10 +113,10 @@ Results
 
 
 \clearpage
-\section*{}
+\section{Figures}
 \setcounter{figure}{0}
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \includegraphics[width=5in]{hairballs_all_reps.pdf}
 \caption{}
@@ -213,19 +213,25 @@ The Rotterdam Study is a large population based cohort collected to investigate 
 
 \clearpage
 \section{Supplementary Figures}
+\setcounter{figure}{0}
 \makeatletter 
 \renewcommand{\thefigure}{S\@arabic\c@figure} 
+\makeatletter 
 
-\begin{figure}
-\caption{\textbf{Q-Q plots of interaction $p$-values in two independent datasets}}
+\begin{figure}[H]
+\includegraphics[width=5in]{qqbonf}
+\caption{\textbf{Q-Q plots of interaction $p$-values in two independent datasets} The interaction $p$-values for the 480 SNP pairs that passed filtering in the two replication datasets. Green points represent $p$-values that surpass Bonferroni correction}
 \label{fig:qqplotbonf}
 \end{figure}
 
 \begin{figure}
-\caption{\textbf{Q-Q plots of replicated interaction $p$-values excluding the 20 most extreme $p$-values}}
+\includegraphics[width=5in]{qqfdr}
+\caption{\textbf{Q-Q plots of replicated interaction $p$-values excluding the 20 most extreme $p$-values} The left panel (Null) shows the replication $p$-values from 529 randomly drawn SNP pairs in the Fehrmann (top row) and EGCUT (bottom row) datasets. The right panel (Observed) shows the interaction $p$-values from the 460 least significant pairs that pass filtering in the two replication datasets (\emph{i.e.} excluding the 20 most extreme $p$-values for clarity). Dark blue points represent $p$-values that surpass the 5\% FDR level.}
 \label{fig:qqplotfdr}
 \end{figure}
 
-
+\begin{figure}
+\caption{\textbf{}}
+\end{figure}
 
 \end{document}

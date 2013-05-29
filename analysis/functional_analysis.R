@@ -138,7 +138,7 @@ plot3dHairballs <- function(sig, pg, cissnp, resphen, xmat, bim, z=45)
 #=================================================================================================#
 
 
-load("~/repo/eQTL-2D/analysis/replication_summary.RData")
+load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
 load("~/repo/eQTL-2D/data/residuals_all.RData")
 load("~/repo/eQTL-2D/data/clean_geno_final.RData")
 
@@ -361,10 +361,12 @@ prop <- prop[nrow(prop):1, ]
 prop$variable <- factor(prop$variable, levels=c("varI", "varD", "varA"))
 levels(prop$variable) <- c("Interaction", "Dominance", "Additive")
 p1 <- ggplot(prop, aes(y=value, x=index)) + 
-	geom_bar(stat="identity", width=1, size=0.0, aes(fill=variable)) +
+	geom_bar(stat="identity", aes(fill=variable, colour=variable), position=position_stack(width=0)) +
 	scale_fill_brewer("Variance component") +
+	scale_colour_brewer("Variance component") +
 	ylab("Phenotypic variance") + xlab("") +
-	coord_flip() + theme(legend.position = "none")
+	coord_flip() + theme(legend.position = "none") +
+	theme(axis.text.y=element_text(size=0), axis.ticks.y=element_line(size=0))
 ggsave("~/repo/eQTL-2D/analysis/images/proportion_additive.pdf", width=10, height=10)
 
 
@@ -384,14 +386,16 @@ prop <- prop[nrow(prop):1, ]
 prop$variable <- factor(prop$variable, levels=c("varI", "varD", "varA"))
 levels(prop$variable) <- c("Interaction", "Dominance", "Additive")
 p2 <- ggplot(prop, aes(y=value, x=index)) + 
-	geom_bar(stat="identity", width=1, size=0.0, aes(fill=variable)) +
+	geom_bar(stat="identity", aes(fill=variable, colour=variable), position=position_stack(width=0)) +
 	scale_fill_brewer("Variance component") +
+	scale_colour_brewer("Variance component") +
 	ylab("Proportion of genetic variance") + xlab("") +
-	coord_flip() + theme(legend.justification=c(1,0), legend.position=c(1,0))
+	coord_flip() + 
+	theme(legend.justification=c(1,0), legend.position=c(1,0)) + 
+	theme(axis.text.y=element_text(size=0), axis.ticks.y=element_line(size=0))
 ggsave("~/repo/eQTL-2D/analysis/images/proportion_genetic.pdf", width=10, height=10)
 
 pdf(file="~/repo/eQTL-2D/analysis/images/variance_components.pdf", width=10, height=10)
 multiplot(p1, p2, cols=2)
 dev.off()
-
 
