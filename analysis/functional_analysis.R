@@ -310,9 +310,10 @@ plot3dProbe(sig, "CTSC", xmat, resphen, z=135)
 
 # Distribution of additive vs non-additive variance
 
-sig$varA <- sig$.a + sig$a.
-sig$varD <- sig$.d + sig$d.
-sig$varI <- sig$aa + sig$ad + sig$da + sig$dd
+a <- as.data.frame(do.call(rbind, sig$vc))
+sig$varA <- a$.a + a$a.
+sig$varD <- a$.d + a$d.
+sig$varI <- a$aa + a$ad + a$da + a$dd
 prop <- subset(sig, select=c(varA, varI, varD))
 prop <- prop[order(prop$varA+prop$varI+prop$varD, decreasing=T),]
 prop$index <- 1:nrow(prop)
@@ -321,9 +322,34 @@ prop <- prop[nrow(prop):1, ]
 prop$variable <- factor(prop$variable, levels=c("varI", "varD", "varA"))
 levels(prop$variable) <- c("Interaction", "Dominance", "Additive")
 ggplot(prop, aes(y=value, x=index)) + 
-	geom_bar(stat="identity", width=1, size=0.0, colour="black", aes(fill=variable)) +
-	scale_fill_brewer("Proportion of phenotypic variance") +
-	ylab("Phenotypic variance") +
+	geom_bar(stat="identity", width=1, size=0.0, aes(fill=variable)) +
+	scale_fill_brewer("Variance component") +
+	ylab("Phenotypic variance") + xlab("") +
 	coord_flip() 
 ggsave("~/repo/eQTL-2D/analysis/images/proportion_additive.pdf", width=10, height=10)
+
+
+a <- as.data.frame(do.call(rbind, sig$vc))
+sig$varA <- a$.a + a$a.
+sig$varD <- a$.d + a$d.
+sig$varI <- a$aa + a$ad + a$da + a$dd
+sig$varG <- with(sig, varA + varD + varI)
+sig$varA <- sig$varA / sig$varG
+sig$varD <- sig$varD / sig$varG
+sig$varI <- sig$varI / sig$varG
+prop <- subset(sig, select=c(varA, varI, varD))
+prop <- prop[order(prop$varA, decreasing=T),]
+prop$index <- 1:nrow(prop)
+prop <- melt(prop, id=c("index"))
+prop <- prop[nrow(prop):1, ]
+prop$variable <- factor(prop$variable, levels=c("varI", "varD", "varA"))
+levels(prop$variable) <- c("Interaction", "Dominance", "Additive")
+ggplot(prop, aes(y=value, x=index)) + 
+	geom_bar(stat="identity", width=1, size=0.0, aes(fill=variable)) +
+	scale_fill_brewer("Proportion of genetic variance") +
+	ylab("Variance component") + xlab("") +
+	coord_flip() 
+ggsave("~/repo/eQTL-2D/analysis/images/proportion_genetic.pdf", width=10, height=10)
+
+
 
