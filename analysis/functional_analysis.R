@@ -5,6 +5,45 @@ library(ggplot2)
 library(reshape2)
 library(plyr)
 
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL)
+{
+	require(grid)
+
+	# Make a list from the ... arguments and plotlist
+	plots <- c(list(...), plotlist)
+
+	numPlots = length(plots)
+
+	# If layout is NULL, then use 'cols' to determine layout
+	if (is.null(layout)) 
+	{
+		# Make the panel
+		# ncol: Number of columns of plots
+		# nrow: Number of rows needed, calculated from # of cols
+		layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+		ncol = cols, nrow = ceiling(numPlots/cols))
+	}
+
+	if (numPlots==1) 
+	{
+		print(plots[[1]])
+	} else {
+		# Set up the page
+		grid.newpage()
+		pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+		# Make each plot, in the correct location
+		for (i in 1:numPlots)
+		{
+			# Get the i,j matrix positions of the regions that contain this subplot
+			matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+			print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+			layout.pos.col = matchidx$col))
+		}
+	}
+}
+
 
 plot3d <- function(res, geno, phen, z=-45)
 {
@@ -321,11 +360,11 @@ prop <- melt(prop, id=c("index"))
 prop <- prop[nrow(prop):1, ]
 prop$variable <- factor(prop$variable, levels=c("varI", "varD", "varA"))
 levels(prop$variable) <- c("Interaction", "Dominance", "Additive")
-ggplot(prop, aes(y=value, x=index)) + 
+p1 <- ggplot(prop, aes(y=value, x=index)) + 
 	geom_bar(stat="identity", width=1, size=0.0, aes(fill=variable)) +
 	scale_fill_brewer("Variance component") +
 	ylab("Phenotypic variance") + xlab("") +
-	coord_flip() 
+	coord_flip() + theme(legend.position = "none")
 ggsave("~/repo/eQTL-2D/analysis/images/proportion_additive.pdf", width=10, height=10)
 
 
@@ -344,12 +383,15 @@ prop <- melt(prop, id=c("index"))
 prop <- prop[nrow(prop):1, ]
 prop$variable <- factor(prop$variable, levels=c("varI", "varD", "varA"))
 levels(prop$variable) <- c("Interaction", "Dominance", "Additive")
-ggplot(prop, aes(y=value, x=index)) + 
+p2 <- ggplot(prop, aes(y=value, x=index)) + 
 	geom_bar(stat="identity", width=1, size=0.0, aes(fill=variable)) +
-	scale_fill_brewer("Proportion of genetic variance") +
-	ylab("Variance component") + xlab("") +
-	coord_flip() 
+	scale_fill_brewer("Variance component") +
+	ylab("Proportion of genetic variance") + xlab("") +
+	coord_flip() + theme(legend.justification=c(1,0), legend.position=c(1,0))
 ggsave("~/repo/eQTL-2D/analysis/images/proportion_genetic.pdf", width=10, height=10)
 
+pdf(file="~/repo/eQTL-2D/analysis/images/variance_components.pdf", width=10, height=10)
+multiplot(p1, p2, cols=2)
+dev.off()
 
 
