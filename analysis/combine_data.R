@@ -203,12 +203,21 @@ bsgs <- getVcBreakdown(bsgs, xmat, resphen)
 bsgs <- gpMaps(bsgs, xmat, resphen)
 
 # Get associations for marginal SNPs
-bsgs <- marginalSnpAssociations(bsgs, marginal_list, 1e-2, probeinfo_all)
+bsgs <- marginalSnpAssociations(bsgs, marginal_list, 1.29e-11, probeinfo_all)
 
 
 # Get replication pvals
 sig <- mergeBsgsRep(bsgs, fehr, egcut)
 sig <- posData(sig)
+
+
+# The VC lists are weird
+for(i in 1:nrow(sig))
+{
+	sig$vc_fehr[[i]] <- sig$vc_fehr[[i]][[1]]
+	sig$vc_egcut[[i]] <- sig$vc_egcut[[i]][[1]]
+}
+
 
 # Remove filter==3
 sig_all <- sig

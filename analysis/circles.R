@@ -149,7 +149,7 @@ sig <- subset(sig, filter != 3)
 
 gr <- makeGr()
 index <- table(sig$probename)
-sig_mult <- subset(sig, probename %in% names(index)[index > 2])
+sig_mult <- subset(sig, probename %in% names(index)[index > 3])
 
 # sig_mult <- subset(sig, probegene == "MBNL1")
 # links <- makeLinks(sig_mult[1:13,], gr)
@@ -164,7 +164,7 @@ a <- dlply(sig_mult, .(probename), .progress="text", function(x)
 })
 
 pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication2.pdf", width=25, height=20)
-multiplot(plotlist=a, cols=8)
+multiplot(plotlist=a, cols=6)
 dev.off()
 
 key <- subset(sig, !duplicated(probename), select=c(probename, probegene))

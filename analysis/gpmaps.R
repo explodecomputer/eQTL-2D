@@ -14,8 +14,9 @@ plot3dGp <- function(gp, title="", snp1="SNP1", snp2="SNP2", z=-45)
 		col="black", 
 		col.facet=c("#e5f5e0", "#A1D99B", "#31A354"), 
 		xbase=0.6, ybase=0.6,
-		xlab=snp1, ylab=snp2, zlab="y",
-		default.scales=list(arrows=F),
+		xlab=list(label=snp1, cex=0.8), ylab=list(label=snp2, cex=0.8), zlab="",
+		default.scales=list(arrows=F, z = list(cex = 0), y = list(cex = 0.5), x=list(cex=0.5)),
+		cex.title = 0.5,
 		screen = list(z = z, x = -60, y = 3),
 		main = title
 	)
@@ -58,7 +59,7 @@ plot3dHairballsRep <- function(sig, pg, cissnp, cohort, z=45)
 		}
 		gp <- gp - min(gp, na.rm=T)
 
-		title <- paste(s$probegene[1], "chr", subset(chrkey, snp == cissnp)$chr, "x", subset(chrkey, snp == snp2)$chr)
+		title <- paste("chr", subset(chrkey, snp == cissnp)$chr, "x", subset(chrkey, snp == snp2)$chr)
 		l[[i]] <- plot3dGp(gp, title, cissnp, snp2, z)
 	}
 	do.call(grid.arrange, l)
@@ -165,11 +166,6 @@ l <- GpMod(l, 6, "BSGS", t)
 l <- GpMod(l, 7, "BSGS", rotateGp, rotateGp)
 l <- GpMod(l, 9, "BSGS", rotateGp, rotateGp)
 
-index <- match(mbnl1$code, sig$code)
-mbnl1$code4 <- paste(sig$chr1[index], "x", sig$chr2[index])
-mbnl1 <- subset(mbnl1, !is.na(y))
-mbnl1$code3 <- mbnl1$code
-
 pdf(file="~/repo/eQTL-2D/analysis/images/gpBonfRep.pdf", width=20, height=4)
 plotTileGp(l)
 dev.off()
@@ -207,11 +203,14 @@ plotTileGp(mbnl1)
 
 
 
-plot3dHairballsRep(sig, "TMEM149", "rs8106959", "", z=45)
+plot3dHairballsRep(sig, "TMEM149", "rs8106959", "", z=-45)
 plot3dHairballsRep(sig, "TMEM149", "rs8106959", "_egcut", z=45)
 plot3dHairballsRep(sig, "TMEM149", "rs8106959", "_fehr", z=45)
 
+pdf("~/repo/eQTL-2D/analysis/images/MBNL1.pdf", width=20, height=20)
 plot3dHairballsRep(subset(sig, code %in% mbnl1$code), "MBNL1", "rs13069559", "", z=-135)
+dev.off()
+
 plot3dHairballsRep(subset(sig, code %in% mbnl1$code), "MBNL1", "rs13069559", "_egcut", z=45)
 plot3dHairballsRep(subset(sig, code %in% mbnl1$code), "MBNL1", "rs13069559", "_fehr", z=45)
 
