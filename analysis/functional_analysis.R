@@ -498,9 +498,11 @@ perm500kb <- a
 load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_10000.RData")
 perm20kb <- a
 
-perms <- data.frame(
-	n=c(sample(c(0,1), 10000, replace=T), perm2mb, sample(c(0,1), 10000, replace=T), sample(c(0,1), 10000, replace=T)), 
-	window=rep(c("10Mb", "2Mb", "500kb", "20kb"), each=10000))
+binom.test(x=69, n=549, p=mean(perm2mb)/549)$p.value
+
+# perms <- data.frame(
+# 	n=c(sample(c(0,1), 10000, replace=T), perm2mb, sample(c(0,1), 10000, replace=T), sample(c(0,1), 10000, replace=T)), 
+# 	window=rep(c("10Mb", "2Mb", "500kb", "20kb"), each=10000))
 
 perms <- data.frame(
 	n=c(perm10mb, perm2mb, perm50kb, perm20kb), 
