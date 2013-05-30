@@ -455,9 +455,11 @@ ciOverlap <- function(ci, sig, win)
 }
 
 
-a <- ciOverlap(ci, sig, 10000)
+a <- ciOverlap(ci, sig, 250000)
 table(is.na(a$int1))
 
+b <- ciOverlap(ci, sig, 1000000)
+table(is.na(b$int1))
 
 # What are the chances of finding any?
 
