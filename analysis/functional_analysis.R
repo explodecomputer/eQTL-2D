@@ -495,7 +495,7 @@ load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_1e+06.RData")
 perm2mb <- a
 load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_250000.RData")
 perm500kb <- a
-load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_10000.RData")
+load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_5000.RData")
 perm20kb <- a
 
 binom.test(x=69, n=549, p=mean(perm2mb)/549)$p.value
@@ -505,7 +505,7 @@ binom.test(x=69, n=549, p=mean(perm2mb)/549)$p.value
 # 	window=rep(c("10Mb", "2Mb", "500kb", "20kb"), each=10000))
 
 perms <- data.frame(
-	n=c(perm10mb, perm2mb, perm50kb, perm20kb), 
+	n=c(perm10mb, perm2mb, perm500kb, perm20kb), 
 	window=rep(c("10Mb", "2Mb", "500kb", "20kb"), each=10000))
 
 observed <- data.frame(
