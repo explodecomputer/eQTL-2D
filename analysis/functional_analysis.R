@@ -399,3 +399,83 @@ pdf(file="~/repo/eQTL-2D/analysis/images/variance_components.pdf", width=10, hei
 multiplot(p1, p2, cols=2)
 dev.off()
 
+
+
+
+# Chromosome interactions
+
+ci <- read.csv("supFile3_K562_interactingLoci_clusters.csv", header=T)
+dim(ci)
+head(ci)
+table(ci$cluster)
+
+# For each of the significant interactions see if the two positions are within 1kb of any of the chromosome interactions
+
+ciOverlap <- function(ci, sig, win)
+{
+	ci$index <- 1:nrow(ci)
+	sig$int1 <- NA
+	sig$int2 <- NA
+	for(i in 1:nrow(sig))
+	{
+		cat(i, "of", nrow(sig), "\n")
+		chr1 <- sig$chr1[i]
+		chr2 <- sig$chr2[i]
+		pos1 <- sig$pos1[i]
+		pos2 <- sig$pos2[i]
+
+		sa <- subset(ci, 
+			loci1_chromosome == chr1 & 
+			loci2_chromosome == chr2
+		)
+		index <- with(sa, abs(loci1_position - pos1) <= win & abs(loci2_position - pos2) <= win)
+
+		sa <- subset(sa,
+		)
+
+		sb <- subset(ci, 
+			loci1_chromosome == chr2 & 
+			loci2_chromosome == chr1 &
+			abs(loci1_position - pos2) <= win &
+			abs(loci2_position - pos1) <= win
+		)
+
+		if(nrow(sa) > 0)
+		{
+			sig$int1[i] <- list(sa$index)
+			print("Found!")
+		}
+		if(nrow(sb) > 0)
+		{
+			sig$int2[i] <- list(sb$index)
+			print("Found!")
+		}
+	}
+	return(sig)
+}
+
+
+a <- ciOverlap(ci, sig, 10000)
+table(is.na(a$int1))
+
+
+# What are the chances of finding any?
+
+bim <- read.table("~/repo/eQTL-2D/data/clean_geno_final.bim", colClasses=c("numeric", "character", "numeric", "numeric", "character", "character"))
+
+createFake <- function(bim, n)
+{
+	a <- sample(1:nrow(bim), n, replace=FALSE)
+	b <- sample(1:nrow(bim), n, replace=FALSE)
+
+	dat <- data.frame(chr1=bim$V1[a], pos1=bim$V4[a], chr2=bim$V1[b], pos2=bim$V4[b])
+	return(dat)
+}
+
+fake <- createFake(bim, 549)
+
+b <- ciOverlap(ci, fake, 2000000)
+
+
+
+
