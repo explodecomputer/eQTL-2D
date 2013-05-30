@@ -38,19 +38,15 @@ Though a necessary step to establish the veracity of the signals from the discov
 \subsection{Functional annotation}
 Of the 549 interactions, 66 were \emph{cis}-\emph{cis} acting (both SNPs were on the same chromosome as the expression gene), 470 were \emph{cis}-\emph{trans} acting, and 13 were \emph{trans}-\emph{trans} acting. In total the 549 interactions comprised 835 unique SNPs, which we analysed for functional enrichment. We observed that there was significant enrichment of \emph{cis}-acting SNPs in transcriptionally active regions for haematopoetic cell lines only, as measured by localisation within H3K4me3 active regions (the three tissues with the strongest enrichment are significant at $p < 1 \times 10^{-4}$, after adjusting for multiple testing), but \emph{trans}-acting SNPs did not show tissue specific enrichment ($p > 0.1$ for all tissues, Supplementary Figure \ref{fig:h3k4me3}). 
 
-We cross referenced our list of interactions with a map of chromosome interacting regions in K562 blood cell lines. Forty-nine epistatic interactions mapped to within 50kb of a chromosome interaction, and 69 mapped to within 2Mb ($p < 1.0 \times 10^{-4}$ in both cases). 
+We cross referenced our list of interactions with a map of chromosome interacting regions in K562 blood cell lines. Forty-nine epistatic interactions mapped to within 500kb of a chromosome interaction, and 69 mapped to within 2Mb ($p < 1.0 \times 10^{-4}$ in both cases, Supplementary Figure \ref{fig:chromosomeinteractions}). 
 
-- Functional annotation shows that proteins are not being changed at the codon level
-
-- There is strong enrichment for enhancers
-
-- There is tissue specific transcription regulation for cis SNPs - these are regulatory
-
-- Trans SNPs are not found in tissue specific transcription regions.
+There is strong enrichment for SNPs to be localised in enhancer binding regions (Supplementary Figure \ref{fig:enhancers}). This enrichment is consistent for both \emph{cis} and \emph{trans} SNPs.
 
 - General enrichment for regulatory motif modifications
 
 - Names of specific factors that are enriched.
+
+- Functional annotation shows that proteins are not being changed at the codon level
 
 
 \subsection{Patterns of epistasis}
@@ -214,12 +210,24 @@ The Center for Health Discovery and Well Being (CDHWB) Study is a population bas
 \clearpage
 
 \begin{figure}
-	\includegraphics[width=5in]{MBNL1.pdf}
+	\includegraphics[width=5in]{MBNL1}
 	\caption{\textbf{Genotype-phenotype maps for 14 interactions controlling MBNL1} Each bar represents the mean phenotypic value for individuals in that genotype class. The rs13069559 SNP typically has a \emph{cis}-additive decreasing effect on the expression of MBNL1, but in many of these interactions the \emph{cis} effect is masked when the \emph{trans} SNP is homozygous.}
 	\label{fig:mbnl13d}
 \end{figure}
 \clearpage
 
+\begin{figure}
+	\includegraphics[width=5in]{chromosome_interactions}
+	\caption{\textbf{Number of overlaps between chromosome interactions and epistatic interactions} Interacting chromosome regions may be a possible mechanism underlying epistatic interactions. The number of epistatic interactions within 20kb, 500kb, 2Mb and 10Mb of known chromosome interacting regions are shown by red vertical lines. The histograms represent the null distribution based on random sampling of 10000 datasets for each window size.}
+	\label{fig:chromosomeinteractions}
+\end{figure}
+\clearpage
 
+\begin{figure}
+	\includegraphics[width=5in]{enhancers}
+	\caption{\textbf{There is enrichment for enhancer sequences for \emph{cis} and \emph{trans} SNPs}}
+	\label{fig:enhancers}
+\end{figure}
+\clearpage
 
 \end{document}

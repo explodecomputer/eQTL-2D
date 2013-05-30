@@ -455,11 +455,20 @@ ciOverlap <- function(ci, sig, win)
 }
 
 
-a <- ciOverlap(ci, sig, 250000)
-table(is.na(a$int1))
 
-b <- ciOverlap(ci, sig, 1000000)
-table(is.na(b$int1))
+counts <- rep(0, 4)
+
+a1 <- ciOverlap(ci, sig, 10000)
+counts[1] <- sum(!is.na(a1$int1))
+
+a2 <- ciOverlap(ci, sig, 250000)
+counts[2] <- sum(!is.na(a2$int1))
+
+a3 <- ciOverlap(ci, sig, 1000000)
+counts[3] <- sum(!is.na(a3$int1))
+
+a4 <- ciOverlap(ci, sig, 5000000)
+counts[4] <- sum(!is.na(a4$int1))
 
 # What are the chances of finding any?
 
@@ -477,6 +486,39 @@ createFake <- function(bim, n)
 fake <- createFake(bim, 549)
 
 b <- ciOverlap(ci, fake, 2000000)
+
+# Permutations performed on cluster. Plot results
+
+load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_5e+06.RData")
+perm10mb <- a
+load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_1e+06.RData")
+perm2mb <- a
+load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_250000.RData")
+perm500kb <- a
+load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_10000.RData")
+perm20kb <- a
+
+perms <- data.frame(
+	n=c(sample(c(0,1), 10000, replace=T), perm2mb, sample(c(0,1), 10000, replace=T), sample(c(0,1), 10000, replace=T)), 
+	window=rep(c("10Mb", "2Mb", "500kb", "20kb"), each=10000))
+
+perms <- data.frame(
+	n=c(perm10mb, perm2mb, perm50kb, perm20kb), 
+	window=rep(c("10Mb", "2Mb", "500kb", "20kb"), each=10000))
+
+observed <- data.frame(
+	n=c(88, 69, 49, 8), 
+	window=rep(c("10Mb", "2Mb", "500kb", "20kb")))
+
+perms$window <- factor(perms$window, levels=c("10Mb", "2Mb", "500kb", "20kb"))
+observed$window <- factor(observed$window, levels=c("10Mb", "2Mb", "500kb", "20kb"))
+
+ggplot() + 
+	geom_histogram(data=perms, aes(x = n), binwidth=1) + 
+	geom_vline(data=observed, aes(xintercept = n), colour="red") +
+	facet_grid(window ~ .)
+ggsave(file="~/repo/eQTL-2D/analysis/images/chromosome_interactions.pdf")
+
 
 
 
