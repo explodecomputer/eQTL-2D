@@ -18,7 +18,7 @@ i=${PBS_ARRAY_INDEX}
 cifile="~/repo/eQTL-2D/data/supFile3_K562_interactingLoci_clusters.csv"
 bimfile="~/repo/eQTL-2D/data/clean_geno_final.bim"
 n=549
-win=500000
+win=5000000
 outroot="~/repo/eQTL-2D/analysis/chromosome_interactions/results/out"
 
 R --no-save --args ${i} ${n} ${win} ${cifile} ${bimfile} ${outroot} < ~/repo/eQTL-2D/analysis/chromosome_interactions/simulation.R
