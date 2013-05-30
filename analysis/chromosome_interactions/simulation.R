@@ -83,7 +83,3 @@ head(fake)
 b <- ciOverlap(ci, fake, win)
 
 write.table(sum(!is.na(b$int1) | !is.na(b$int2)), file=output, row=F, col=F, qu=F)
-
-
-
-
