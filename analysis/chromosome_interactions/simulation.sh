@@ -21,6 +21,6 @@ cifile="~/repo/eQTL-2D/data/supFile3_K562_interactingLoci_clusters.csv"
 bimfile="~/repo/eQTL-2D/data/clean_geno_final.bim"
 n=549
 win=25000
-outroot="~/repo/eQTL-2D/analysis/chromosome_interactions/out"
+outroot="~/repo/eQTL-2D/analysis/chromosome_interactions/results/out"
 
 R --no-save --args ${i} ${n} ${win} ${cifile} ${bimfile} ${outroot} < simulation.R
