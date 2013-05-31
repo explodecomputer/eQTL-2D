@@ -151,6 +151,14 @@ gr <- makeGr()
 index <- table(sig$probename)
 sig_mult <- subset(sig, probename %in% names(index)[index > 3])
 
+thresh <- -log10(0.05 / 549)
+
+sig_mult2 <- subset(sig, pnest_egcut > thresh | pnest_fehr > thresh)
+sig_mult2$rep <- 1
+sig_mult2$rep[sig_mult2$pnest_fehr > thresh & sig_mult2$pnest_egcut > thresh] <- 2
+sig_mult2 <- subset(sig_mult2, !is.na(vc_fehr))
+sig_mult2$rep <- as.factor(sig_mult2$rep)
+
 # sig_mult <- subset(sig, probegene == "MBNL1")
 # links <- makeLinks(sig_mult[1:13,], gr)
 
@@ -163,9 +171,26 @@ a <- dlply(sig_mult, .(probename), .progress="text", function(x)
 	return(a)
 })
 
+b <- dlply(sig_mult2, .(probename), .progress="text", function(x)
+{
+	x <- mutate(x)
+	links <- makeLinks(x, gr)
+	dot <- makeDot(x, gr)
+	a <- plotCircos(gr, links, dot)
+	return(a)
+})
+
+
 pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication2.pdf", width=25, height=20)
 multiplot(plotlist=a, cols=6)
 dev.off()
+
+
+pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication_bonf.pdf", width=25, height=20)
+multiplot(plotlist=b, cols=6)
+dev.off()
+
+
 
 key <- subset(sig, !duplicated(probename), select=c(probename, probegene))
 nom <- subset(key, duplicated(probegene))$probename
