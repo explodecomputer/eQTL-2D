@@ -13,9 +13,17 @@ metaNestedTest <- function(nest1, nest2)
 {
 	nT <- nest1$Res[2] + 9 + nest2$Res[2] + 9
 	RSST <- nest1$RSS + nest2$RSS
-	F <- ((RSST[1] - RSST[2]) / 4) / (RSST[2] / (nT - 9))
-	p <- pf(F, 4, nT - 4, lower.tail=FALSE)
+	Fval <- ((RSST[1] - RSST[2]) / 4) / (RSST[2] / (nT - 9))
+	p <- pf(Fval, 4, nT - 4, lower.tail=FALSE)
 	return(-log10(p))
+}
+
+
+metaTestChisq <- function(nest1, nest2)
+{
+	F1 <- nest1$F[2]
+	F2 <- nest2$F[2]
+	return(-log10(pchisq(F1 + F2, 8, lower.tail=TRUE)))
 }
 
 
@@ -145,11 +153,13 @@ egcut <- mod
 names(egcut) <- newsig$code
 
 
+
 #=============================================================#
 #=============================================================#
 
 
 sig_all$pnest_meta <- NA
+sig_all$pnest_meta2 <- NA
 sig_all$code <- with(sig_all, paste(probename, snp1, snp2))
 
 for(i in 1:nrow(sig_all))
@@ -163,10 +173,12 @@ for(i in 1:nrow(sig_all))
 	b1 <- nestedTestVars(egcut[[sig_all$code[i]]])
 	b2 <- nestedTestVars(fehr[[sig_all$code[i]]])
 	sig_all$pnest_meta[i] <- metaNestedTest(b1, b2)
+	sig_all$pnest_meta2[i] <- metaTestChisq(b1, b2)
 }
 
-thresh <- -log10(0.05 / 297)
+thresh <- -log10(0.05 / 473)
 with(sig_all, table(filter, pnest_meta > thresh))
+with(sig_all, table(filter, pnest_meta2 > thresh))
 with(sig_all, table(filter, is.na(pnest_meta)))
 
 meta <- subset(sig_all, !is.na(pnest_meta))
@@ -204,6 +216,32 @@ qqPlot(combined)
 
 with(combined, table(filter, ex))
 
+
+sig_all$pnest_combined <- NA
+for(i in 1:nrow(sig_all))
+{
+	cat(i, "\n")
+	if(is.na(sig_all$pnest_egcut[i]) | is.na(sig_all$pnest_fehr[i]) | length(sig_all$gcs_egcut[[i]]) != 9 | length(sig_all$gcs_fehr[[i]]) != 9)
+	{
+		cat("skipped\n")
+		next
+	}
+	m <- combineReplicationData(egcut[[sig_all$code[i]]], fehr[[sig_all$code[i]]])
+	sig_all$pnest_combined[i] <- -log10(nestedTestVars(m)$P[2])
+}
+
+thresh <- -log10(0.05 / 473)
+with(sig_all, table(filter, pnest_combined > thresh))
+with(sig_all, table(filter, is.na(pnest_combined)))
+
+combined <- subset(sig_all, !is.na(pnest_combined))
+combined <- qqDat(combined, 0.05, "pnest_combined")
+combined$ex <- combined$pnest_combined > combined$upper
+combined$fake <- combined$filter == 3
+combined$observed <- combined$pnest_combined
+qqPlot(combined)
+
+with(combined, table(filter, ex))
 
 
 
