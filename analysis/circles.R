@@ -187,7 +187,7 @@ dev.off()
 
 
 pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication_bonf.pdf", width=25, height=20)
-multiplot(plotlist=b, cols=6)
+multiplot(plotlist=b, cols=5)
 dev.off()
 
 
