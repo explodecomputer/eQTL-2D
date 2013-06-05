@@ -79,18 +79,6 @@ performMeta <- function(sig, mod1, mod2)
 }
 
 
-makeQqDat <- function(sig, alpha, col)
-{
-	meta <- subset(sig_all, !is.na(pnest_meta))
-	meta <- qqDat(meta, 0.05, "pnest_meta")
-	meta$ex <- meta$pnest_meta > meta$upper
-	meta$fake <- "Null"
-	meta$fake[meta$filter != 3] <- "Empirical"
-	meta$observed <- meta$pnest_meta
-	return(meta)
-}
-
-
 confInt <- function(n, alpha)
 {
 	k <- c(1:n)
@@ -116,8 +104,19 @@ qqDat <- function(sig, alpha, col)
 	return(rbind(b, a))
 }
 
+makeQqDat <- function(sig, alpha, col)
+{
+	meta <- subset(sig, !is.na(pnest_meta))
+	meta <- qqDat(meta, 0.05, "pnest_meta")
+	meta$ex <- meta$pnest_meta > meta$upper
+	meta$fake <- "Null"
+	meta$fake[meta$filter != 3] <- "Empirical"
+	meta$observed <- meta$pnest_meta
+	return(meta)
+}
 
-qqPlot <- function(dat)
+
+qqPlot <- function(dat, lim)
 {
 	p <- qqplot2 <- ggplot(dat) +
 		geom_ribbon(aes(x=expect, ymin=lower, ymax=upper), colour="white", alpha=0.5) +
@@ -126,7 +125,7 @@ qqPlot <- function(dat)
 		facet_grid(. ~ fake) +
 		labs(colour="Above FDR 5% CI?", y="Observed", x="Expected") +
 		scale_colour_brewer(type="qual", palette=3) +
-		theme(legend.position="none") + ylim(c(0, 7))
+		theme(legend.position="none") + ylim(c(0, lim))
 	return(p)
 }
 
@@ -239,14 +238,16 @@ with(sig_all, table(filter, is.na(pnest_meta)))
 
 # Make Q-Q plots for meta analysis
 
-meta <- makeQqDat(sig_all, "pnest_meta")
-qqPlot(meta)
+meta <- makeQqDat(sig_all, 0.05, "pnest_meta")
+meta2 <- makeQqDat(subset(sig_all, pnest_meta < 5), 0.05, "pnest_meta")
+qqPlot(meta2, 5)
 ggsave(file="~/repo/eQTL-2D/analysis/images/qqMeta.pdf", width=15, height=7.5)
-
 
 with(meta, table(filter, pnest_meta > upper))
 with(meta, table(filter, pnest_fehr > upper_fehr))
 with(meta, table(filter, pnest_egcut > upper_egcut))
+
+
 
 
 #=============================================================#
@@ -279,13 +280,10 @@ lambdaVal2(p1a)
 lambdaVal2(p2)
 lambdaVal2(p3)
 
-
-
 lambdaVal2(sig$pnest_fehr)
 lambdaVal2(sig$pnest_egcut)
 lambdaVal2(subset(sig_all, filter == 3)$pnest_egcut)
 lambdaVal2(subset(sig_all, filter == 3)$pnest_fehr)
-
 
 lambdaVal2(subset(sig_all, filter != 3)$pnest_egcut)
 lambdaVal2(subset(sig_all, filter != 3)$pnest_fehr)
