@@ -263,18 +263,18 @@ save(sig_all, sig, sig_rep1, sig_rep2, file="~/repo/eQTL-2D/analysis/interaction
 # Make Q-Q plots for meta analysis
 
 meta <- makeQqDat(sig_all, 0.05, "pnest_meta")
-meta2 <- makeQqDat(subset(sig_all), 0.05, "pnest_meta")
-qqPlot(meta2, thresh)
+qqPlot(meta, thresh)
 ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaNonsig.pdf", width=15, height=7.5)
-qqPlot(meta2, max(meta2$pnest_meta))
+qqPlot(meta, max(meta$pnest_meta))
 ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaAll.pdf", width=15, height=7.5)
-qqPlot2(meta2, thresh)
+qqPlot2(meta, thresh)
 ggsave(file="~/repo/eQTL-2D/analysis/images/qqMeta.pdf", width=7.5, height=15)
 
 with(meta, table(filter, pnest_meta > upper))
 with(meta, table(filter, pnest_fehr > upper_fehr))
 with(meta, table(filter, pnest_egcut > upper_egcut))
 
+save(meta, file="~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
 
 
 #=============================================================#
