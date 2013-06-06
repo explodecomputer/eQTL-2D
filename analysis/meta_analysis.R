@@ -129,6 +129,24 @@ qqPlot <- function(dat, lim)
 	return(p)
 }
 
+qqPlot2 <- function(dat, thresh)
+{
+	dat <- subset(dat, filter != 3)
+	dat1 <- subset(dat, pnest_meta < thresh)
+	dat$code <- "All"
+	dat1$code <- "Below Bonferroni threshold"
+	dat <- rbind(dat, dat1)
+	p <- qqplot2 <- ggplot(dat) +
+		geom_ribbon(aes(x=expect, ymin=lower, ymax=upper), colour="white", alpha=0.5) +
+		geom_abline(intercept=0, slope=1) +
+		geom_point(aes(x=expect, y=observed, colour=ex), size=1.5) +
+		facet_grid(code ~ ., scales = "free_y") +
+		geom_hline(yintercept=thresh, linetype="dotted") +
+		labs(colour="Above FDR 5% CI?", y="Observed", x="Expected") +
+		scale_colour_brewer(type="qual", palette=3) +
+		theme(legend.position="none")
+	return(p)
+}
 
 
 alleleFreq <- function(x)
@@ -206,7 +224,7 @@ createAverageGp <- function(gcm, gcs)
 
 # Read in data
 
-load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
+load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary_pruned.RData")
 
 load("~/repo/eQTL-2D/replication/results/replication_GrngHT12v3.RData")
 newsig$code <- with(newsig, paste(probename, snp1, snp2))
@@ -225,28 +243,37 @@ names(egcut) <- newsig$code
 # Perform meta analysis on replication data
 
 sig_all <- performMeta(sig_all, egcut, fehr)
+sig <- performMeta(sig, egcut, fehr)
+sig_rep1 <- performMeta(sig_rep1, egcut, fehr)
+sig_rep2 <- performMeta(sig_rep2, egcut, fehr)
 
-thresh <- -log10(0.05 / 450)
+thresh <- -log10(0.05 / 442)
 with(sig_all, table(filter, pnest_meta > thresh))
 with(sig_all, table(filter, pnest_meta2 > thresh))
 with(sig_all, table(filter, pnest_meta_vc > thresh))
 with(sig_all, table(filter, is.na(pnest_meta)))
 
-	
+save(sig_all, sig, sig_rep1, sig_rep2, file="~/repo/eQTL-2D/analysis/interaction_list_replication_summary_pruned.RData")
+
+
+
 #=============================================================#
 #=============================================================#
 
 # Make Q-Q plots for meta analysis
 
 meta <- makeQqDat(sig_all, 0.05, "pnest_meta")
-meta2 <- makeQqDat(subset(sig_all, pnest_meta < 5), 0.05, "pnest_meta")
-qqPlot(meta2, 5)
-ggsave(file="~/repo/eQTL-2D/analysis/images/qqMeta.pdf", width=15, height=7.5)
+meta2 <- makeQqDat(subset(sig_all), 0.05, "pnest_meta")
+qqPlot(meta2, thresh)
+ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaNonsig.pdf", width=15, height=7.5)
+qqPlot(meta2, max(meta2$pnest_meta))
+ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaAll.pdf", width=15, height=7.5)
+qqPlot2(meta2, thresh)
+ggsave(file="~/repo/eQTL-2D/analysis/images/qqMeta.pdf", width=7.5, height=15)
 
 with(meta, table(filter, pnest_meta > upper))
 with(meta, table(filter, pnest_fehr > upper_fehr))
 with(meta, table(filter, pnest_egcut > upper_egcut))
-
 
 
 
@@ -264,21 +291,23 @@ lambdaVal <- function(pval)
 
 lambdaVal2 <- function(pval)
 {
-	median(qchisq(10^-pval, 1, lower.tail=FALSE)) / 0.455
+	mean(qchisq(10^-pval, 1, lower.tail=FALSE))
 }
 
 
 p1 <- subset(meta, !is.na(pnest_meta) & filter != 3)$pnest_meta
 p2 <- subset(meta, !is.na(pnest_meta) & filter == 3)$pnest_meta
 p3 <- subset(meta, !is.na(pnest_meta) & filter == 3)$expect
+p4 <- subset(meta, pnest_meta < thresh & filter != 3)$pnest_meta
 mean(qchisq(p2/2.3, 2), na.rm=T)
 
 p1 <- p1[order(p1, decreasing=T)]
 p1a <- p1[-c(1:20)]
 
-lambdaVal2(p1a)
+lambdaVal2(p1)
 lambdaVal2(p2)
 lambdaVal2(p3)
+lambdaVal2(p4)
 
 lambdaVal2(sig$pnest_fehr)
 lambdaVal2(sig$pnest_egcut)

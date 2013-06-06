@@ -230,3 +230,20 @@ sig_rep2 <- subset(sig, pnest_fehr > upper_fehr & pnest_egcut > upper_egcut)
 save(sig, sig_all, sig_rep1, sig_rep2, file="~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
 
 
+sig_all$code2 <- with(sig_all, paste(chr1, chr2, probegene))
+sig$code2 <- with(sig, paste(chr1, chr2, probegene))
+sig_rep1$code2 <- with(sig_rep1, paste(chr1, chr2, probegene))
+sig_rep2$code2 <- with(sig_rep2, paste(chr1, chr2, probegene))
+
+sig_all <- subset(sig_all, !duplicated(code2) | filter == 3)
+sig <- subset(sig, !duplicated(code2))
+sig_rep1 <- subset(sig_rep1, !duplicated(code2))
+sig_rep2 <- subset(sig_rep2, !duplicated(code2))
+
+dim(sig_all)
+dim(sig)
+dim(sig_rep1)
+dim(sig_rep2)
+
+save(sig, sig_all, sig_rep1, sig_rep2, file="~/repo/eQTL-2D/analysis/interaction_list_replication_summary_pruned.RData")
+
