@@ -344,8 +344,6 @@ plot3dProbe(sig, "CTSC", xmat, resphen, z=135)
 #=================================================================================================#
 #=================================================================================================#
 
-
-
 # Distribution of additive vs non-additive variance
 
 a <- as.data.frame(do.call(rbind, sig$vc))
@@ -399,14 +397,10 @@ multiplot(p1, p2, cols=2)
 dev.off()
 
 
-
+#=================================================================================================#
+#=================================================================================================#
 
 # Chromosome interactions
-
-ci <- read.csv("~/repo/eQTL-2D/data/supFile3_K562_interactingLoci_clusters.csv", header=T)
-dim(ci)
-head(ci)
-table(ci$cluster)
 
 # For each of the significant interactions see if the two positions are within 1kb of any of the chromosome interactions
 ciOverlap <- function(ci, sig, win)
@@ -457,28 +451,24 @@ ciOverlap <- function(ci, sig, win)
 }
 
 
+load("~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
+ci <- read.csv("~/repo/eQTL-2D/data/supFile3_K562_interactingLoci_clusters.csv", header=T)
+dim(ci)
+head(ci)
+table(ci$cluster)
+
+sig2 <- subset(meta, filter != 3)
 
 counts <- rep(0, 4)
-
-sig$code2 <- with(sig, paste(probegene, chr1, chr2))
-sig2 <- sig[order(sig$code2, sig$pnest_fehr, decreasing=T), ]
-sig2 <- subset(sig2, !duplicated(sig2$code2))
-dim(sig2)
-head(sig2)
-
-sig3 <- subset(sig2, chr1 != chr2)
-
 a1 <- ciOverlap(ci, sig2, 10000)
 counts[1] <- sum((!is.na(a1$int1) | !is.na(a1$int2)))
-
 a2 <- ciOverlap(ci, sig2, 250000)
 counts[2] <- sum((!is.na(a2$int1) | !is.na(a2$int2)))
-
 a3 <- ciOverlap(ci, sig2, 1000000)
 counts[3] <- sum((!is.na(a3$int1) | !is.na(a3$int2)))
-
-a4 <- ciOverlap(ci, sig3, 5000000)
+a4 <- ciOverlap(ci, sig2, 5000000)
 counts[4] <- sum((!is.na(a4$int1) | !is.na(a4$int2)))
+
 
 # Permutations performed on cluster. Plot results
 
@@ -491,7 +481,7 @@ perm250kb <- a
 load("~/repo/eQTL-2D/analysis/chromosome_interactions/out_549_10000.RData")
 perm10kb <- a
 
-binom.test(x=50, n=549, p=mean(perm2mb)/549)$p.value
+binom.test(x=44, n=434, p=mean(perm5mb)/549)$p.value
 
 # perms <- data.frame(
 # 	n=c(sample(c(0,1), 10000, replace=T), perm2mb, sample(c(0,1), 10000, replace=T), sample(c(0,1), 10000, replace=T)), 
