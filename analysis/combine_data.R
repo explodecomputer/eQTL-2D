@@ -219,6 +219,21 @@ for(i in 1:nrow(sig))
 }
 
 
+# Get sentinal SNPs and remove probes that tag the same genes
+sig$code2 <- with(sig, paste(chr1, chr2, probegene))
+sig <- sig[order(sig$code2, sig$pnest_egcut, decreasing=T), ]
+sig <- subset(sig, !duplicated(code2) | filter == 3)
+
+
+# Make sure that probechr, chr1 and chr2 are in 1:22
+sig <- subset(sig, ((probechr %in% 1:22 & chr1 %in% 1:22 & chr2 %in% 1:22) | filter == 3))
+
+
+# Make sure all SNPs are rsIDs
+sig <- subset(sig, snp1 %in% grep("rs", snp1, value=TRUE) & snp2 %in% grep("rs", snp2, value=TRUE))
+table(sig$filter != 3)
+
+
 # Remove filter==3
 sig_all <- sig
 sig <- subset(sig, filter != 3)
@@ -226,7 +241,4 @@ sig <- subset(sig, filter != 3)
 sig_rep1 <- subset(sig, pnest_fehr > upper_fehr | pnest_egcut > upper_egcut)
 sig_rep2 <- subset(sig, pnest_fehr > upper_fehr & pnest_egcut > upper_egcut)
 
-
 save(sig, sig_all, sig_rep1, sig_rep2, file="~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
-
-

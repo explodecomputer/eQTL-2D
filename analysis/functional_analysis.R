@@ -335,17 +335,14 @@ subset(marginal_list, snp %in% c("rs2395095", "rs10824092"))
 #=================================================================================================#
 
 # CTSC
+
 plot3dProbe(sig, "CTSC", xmat, resphen, z=135)
 
 
 
 
-
-
 #=================================================================================================#
 #=================================================================================================#
-
-
 
 # Distribution of additive vs non-additive variance
 
@@ -400,17 +397,12 @@ multiplot(p1, p2, cols=2)
 dev.off()
 
 
-
+#=================================================================================================#
+#=================================================================================================#
 
 # Chromosome interactions
 
-ci <- read.csv("supFile3_K562_interactingLoci_clusters.csv", header=T)
-dim(ci)
-head(ci)
-table(ci$cluster)
-
 # For each of the significant interactions see if the two positions are within 1kb of any of the chromosome interactions
-
 ciOverlap <- function(ci, sig, win)
 {
 	ci$index <- 1:nrow(ci)
@@ -421,105 +413,180 @@ ciOverlap <- function(ci, sig, win)
 		cat(i, "of", nrow(sig), "\n")
 		chr1 <- sig$chr1[i]
 		chr2 <- sig$chr2[i]
-		pos1 <- sig$pos1[i]
-		pos2 <- sig$pos2[i]
+		pos1 <- sig$position1[i]
+		pos2 <- sig$position2[i]
+
 
 		sa <- subset(ci, 
 			loci1_chromosome == chr1 & 
 			loci2_chromosome == chr2
 		)
-		index <- with(sa, abs(loci1_position - pos1) <= win & abs(loci2_position - pos2) <= win)
-
-		sa <- subset(sa,
-		)
 
 		sb <- subset(ci, 
 			loci1_chromosome == chr2 & 
-			loci2_chromosome == chr1 &
-			abs(loci1_position - pos2) <= win &
-			abs(loci2_position - pos1) <= win
+			loci2_chromosome == chr1
 		)
+
+		sa$diff1 <- with(sa, abs(loci1_position - pos1))
+		sa$diff2 <- with(sa, abs(loci2_position - pos2))
+		sb$diff1 <- with(sb, abs(loci1_position - pos2))
+		sb$diff2 <- with(sb, abs(loci2_position - pos1))
+
+		sa <- subset(sa, diff1 < win & diff2 < win)
+		sb <- subset(sb, diff1 < win & diff2 < win)
 
 		if(nrow(sa) > 0)
 		{
-			sig$int1[i] <- list(sa$index)
+			sig$int1[i] <- list(sa)
 			print("Found!")
 		}
 		if(nrow(sb) > 0)
 		{
-			sig$int2[i] <- list(sb$index)
+			sig$int2[i] <- list(sb)
 			print("Found!")
 		}
 	}
+	print(sum(!is.na(sig$int1) | !is.na(sig$int2)))
 	return(sig)
 }
 
 
+load("~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
+ci <- read.csv("~/repo/eQTL-2D/data/supFile3_K562_interactingLoci_clusters.csv", header=T)
+dim(ci)
+head(ci)
+table(ci$cluster)
+
+sig2 <- subset(meta, filter != 3)
 
 counts <- rep(0, 4)
+a1 <- ciOverlap(ci, sig2, 10000)
+counts[1] <- sum((!is.na(a1$int1) | !is.na(a1$int2)))
+a2 <- ciOverlap(ci, sig2, 250000)
+counts[2] <- sum((!is.na(a2$int1) | !is.na(a2$int2)))
+a3 <- ciOverlap(ci, sig2, 1000000)
+counts[3] <- sum((!is.na(a3$int1) | !is.na(a3$int2)))
+a4 <- ciOverlap(ci, sig2, 5000000)
+counts[4] <- sum((!is.na(a4$int1) | !is.na(a4$int2)))
 
-a1 <- ciOverlap(ci, sig, 10000)
-counts[1] <- sum(!is.na(a1$int1))
-
-a2 <- ciOverlap(ci, sig, 250000)
-counts[2] <- sum(!is.na(a2$int1))
-
-a3 <- ciOverlap(ci, sig, 1000000)
-counts[3] <- sum(!is.na(a3$int1))
-
-a4 <- ciOverlap(ci, sig, 5000000)
-counts[4] <- sum(!is.na(a4$int1))
-
-# What are the chances of finding any?
-
-bim <- read.table("~/repo/eQTL-2D/data/clean_geno_final.bim", colClasses=c("numeric", "character", "numeric", "numeric", "character", "character"))
-
-createFake <- function(bim, n)
-{
-	a <- sample(1:nrow(bim), n, replace=FALSE)
-	b <- sample(1:nrow(bim), n, replace=FALSE)
-
-	dat <- data.frame(chr1=bim$V1[a], pos1=bim$V4[a], chr2=bim$V1[b], pos2=bim$V4[b])
-	return(dat)
-}
-
-fake <- createFake(bim, 549)
-
-b <- ciOverlap(ci, fake, 2000000)
 
 # Permutations performed on cluster. Plot results
 
-load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_5e+06.RData")
-perm10mb <- a
-load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_1e+06.RData")
-perm2mb <- a
-load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_250000.RData")
-perm500kb <- a
-load("~/repo/eQTL-2D/analysis/chromosome_interactions/collate_549_5000.RData")
-perm20kb <- a
+load("~/repo/eQTL-2D/analysis/chromosome_interactions/out_549_5e+06.RData")
+perm5mb <- a
+load("~/repo/eQTL-2D/analysis/chromosome_interactions/out_549_1e+06.RData")
+perm1mb <- a
+load("~/repo/eQTL-2D/analysis/chromosome_interactions/out_549_250000.RData")
+perm250kb <- a
+load("~/repo/eQTL-2D/analysis/chromosome_interactions/out_549_10000.RData")
+perm10kb <- a
 
-binom.test(x=69, n=549, p=mean(perm2mb)/549)$p.value
+binom.test(x=44, n=434, p=mean(perm5mb)/549)$p.value
 
 # perms <- data.frame(
 # 	n=c(sample(c(0,1), 10000, replace=T), perm2mb, sample(c(0,1), 10000, replace=T), sample(c(0,1), 10000, replace=T)), 
 # 	window=rep(c("10Mb", "2Mb", "500kb", "20kb"), each=10000))
 
 perms <- data.frame(
-	n=c(perm10mb, perm2mb, perm500kb, perm20kb), 
-	window=rep(c("10Mb", "2Mb", "500kb", "20kb"), each=10000))
+	n=c(perm5mb, perm1mb, perm250kb, perm10kb), 
+	window=rep(c("5Mb", "1Mb", "250kb", "10kb"), each=1000))
+perms$window <- factor(perms$window, levels=c("5Mb", "1Mb", "250kb", "10kb"))
 
 observed <- data.frame(
-	n=c(88, 69, 49, 8), 
-	window=rep(c("10Mb", "2Mb", "500kb", "20kb")))
-
-perms$window <- factor(perms$window, levels=c("10Mb", "2Mb", "500kb", "20kb"))
-observed$window <- factor(observed$window, levels=c("10Mb", "2Mb", "500kb", "20kb"))
+	n=rev(counts), 
+	window=rep(c("5Mb", "1Mb", "250kb", "10kb")))
+observed$window <- factor(observed$window, levels=c("5Mb", "1Mb", "250kb", "10kb"))
 
 ggplot() + 
 	geom_histogram(data=perms, aes(x = n), binwidth=1) + 
 	geom_vline(data=observed, aes(xintercept = n), colour="red") +
-	facet_grid(window ~ .)
+	facet_grid(window ~ .) +
+	xlab("Number of chromosome interactions") + ylab("Frequency")
 ggsave(file="~/repo/eQTL-2D/analysis/images/chromosome_interactions.pdf")
+
+
+getInteractionList <- function(a, ci)
+{
+	require(plyr)
+	a <- subset(a, !is.na(int1) | !is.na(int2), select=c(snp1, snp2, chr1, chr2, position1, position2, probegene, pnest_fehr, pnest_egcut, int1, int2))
+
+	l <- list()
+	for(i in 1:nrow(a))
+	{
+		temp <- rbind(a$int1[i][[1]], a$int2[i][[1]])
+		temp <- subset(temp, !duplicated(index))
+		temp$diffsum <- temp$diff1 + temp$diff2
+		b <- ddply(temp, .(cluster), function(x)
+		{
+			x <- mutate(x)
+			row <- which.min(x$diffsum)[1]
+			return(x[row, ])
+		})
+	}
+}
+
+
+
+library(ggbio)
+library(grid)
+library(gridExtra)
+library(plyr)
+library(GenomicRanges)
+
+makeGr <- function()
+{
+	data("hg19Ideogram", package = "biovizBase")
+	chr.sub <- paste("chr", 1:22, sep = "")
+	new.names <- as.character(1:22)
+	names(new.names) <- paste("chr", new.names, sep = "")
+	hg19Ideo <- hg19Ideogram
+	hg19Ideo <- keepSeqlevels(hg19Ideogram, chr.sub)
+	hg19Ideo <- renameSeqlevels(hg19Ideo, new.names)
+	head(hg19Ideo)
+	gr <- GRanges(
+		seqnames = (1:22),
+		ranges = hg19Ideo@ranges
+	)
+	seqlengths(gr) <- seqlengths(hg19Ideo)
+	return(gr)
+}
+
+
+makeLinks <- function(x, gr)
+{
+	links1 <- GRanges(
+		seqnames = x$chr1,
+		IRanges(start = x$position1, width=1),
+		seqinfo = seqinfo(gr)
+	)
+	links2 <- GRanges(
+		seqnames = x$chr2,
+		IRanges(start = x$position2, width=1),
+		seqinfo = seqinfo(gr)
+	)
+	values(links1)$links2 <- links2
+	values(links1)$col <- x$rep
+	return(links1)
+}
+
+
+plotCircos <- function(gr, links)
+{
+	a <- ggplot() + 
+		layout_circle(gr, geom = "ideo", radius = 6, trackWidth = 1) +
+		layout_circle(links, geom = "link", linked.to = "links2", radius = 3.55, trackwidth = 0.5) +
+		layout_circle(gr, geom = "text", aes(label = seqnames), vjust = 0, radius = 5.9, trackWidth = 1, size=4, colour = "white") +
+		theme(legend.position="false")
+
+	return(a)
+}
+
+gr <- makeGr()
+links <- makeLinks(a, gr)
+
+pdf("~/repo/eQTL-2D/analysis/images/chromosome_interactions_circle.pdf")
+plotCircos(gr, links)
+dev.off()
 
 
 

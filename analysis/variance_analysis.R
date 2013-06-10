@@ -60,7 +60,10 @@ chisq.test(x=tab / sum(tab), y=c(0.25, 0.5, 0.25))
 
 
 
+bsgs$varG <- with(bsgs, sum(varA, varD, varI))
 
+s <- apply(subset(bsgs, select=c(varA, varD, varI)), 2, sum)
+s / sum(s)
 
 
 
