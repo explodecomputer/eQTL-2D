@@ -324,8 +324,12 @@ af_bsgs <- 1 - do.call(rbind, lapply(sig_all$gcs, alleleFreq))
 af_egcut <- do.call(rbind, lapply(sig_all$gcs_egcut, alleleFreq))
 af_fehr <- do.call(rbind, lapply(sig_all$gcs_fehr, alleleFreq))
 
+pdf("~/repo/eQTL-2D/analysis/images/alleleFreq.pdf")
 pairs(data.frame(BSGS = af_bsgs[,1], EGCUT = af_egcut[,1], Fehrmann = af_fehr[,1]))
-pairs(data.frame(BSGS = af_bsgs[,2], EGCUT = af_egcut[,2], Fehrmann = af_fehr[,2]))
+dev.off()
+
+
+pairs(data.frame(BSGS = c(af_bsgs), EGCUT = c(af_egcut), Fehrmann = c(af_fehr)))
 
 
 x_fehr <- cbind(abs(af_bsgs[,1] - af_fehr[,1]), abs(af_bsgs[,2] - af_fehr[,2]))
