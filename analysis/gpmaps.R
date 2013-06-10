@@ -4,6 +4,7 @@ library(gridExtra)
 library(ggplot2)
 library(reshape2)
 library(plyr)
+library(xtable)
 
 
 plot3dGp <- function(gp, title="", snp1="SNP1", snp2="SNP2", z=-45)
@@ -98,6 +99,7 @@ datHeatmapGp <- function(sig)
 		g$code <- a$code[i]
 		g$code2 <- a$probegene[i]
 		g$code3 <- i
+		g <- GpMod(g, i, "BSGS", rotateGp, rotateGp)
 		l[[i]] <- g
 	}
 	l <- rbind.fill(l)
@@ -138,37 +140,87 @@ rotateGp <- function(mat)
 
 plotTileGp <- function(l)
 {
-	p <- ggplot(l, aes(x=snp2, y=snp1, fill=y)) + geom_tile() + facet_grid(cohort ~ code3) + theme(strip.text = element_text(size = 6))
+	p <- ggplot(l, aes(x=snp2, y=snp1, fill=y)) + 
+	geom_tile() + 
+	facet_grid(code3 ~ cohort) + 
+	theme(strip.text = element_text(size = 6),
+		axis.text = element_text(size = 6),
+		axis.title = element_text(size = 8), 
+		legend.position="none") + 
+	xlab("SNP 2") + 
+	ylab("SNP 1")
+	return(p)
+}
+
+plotTileGp2 <- function(l)
+{
+	p <- ggplot(l, aes(x=snp2, y=snp1, fill=y)) + 
+	geom_tile() + 
+	facet_grid(code3 ~ cohort) + 
+	theme(strip.text = element_text(size = 6), 
+		axis.ticks.y = element_line(0),
+		axis.text.y = element_text(size=0),
+		legend.position = "none") + 
+	xlab("SNP 2") + 
+	ylab(NULL)
 	return(p)
 }
 
 
-load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
+convertToScientific <- function(x)
+{
 
-l <- datHeatmapGp(subset(sig, pnest_fehr > -log10(0.05/500) & pnest_egcut > -log10(0.05/500)))
-l <- GpMod(l, 1, "BSGS", flipGpCol)
-l <- GpMod(l, 1, "Fehrmann", flipGpRow)
-l <- GpMod(l, 10, "BSGS", flipGpRow, rotateGp, rotateGp, rotateGp)
-l <- GpMod(l, 11, "BSGS", flipGpRow)
-l <- GpMod(l, 12, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 13, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 13, "Fehrmann", flipGpCol)
-l <- GpMod(l, 14, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 15, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 16, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 17, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 2, "Fehrmann", rotateGp)
-l <- GpMod(l, 2, "BSGS", rotateGp, rotateGp, rotateGp)
-l <- GpMod(l, 3, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 4, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 5, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 6, "BSGS", t)
-l <- GpMod(l, 7, "BSGS", rotateGp, rotateGp)
-l <- GpMod(l, 9, "BSGS", rotateGp, rotateGp)
+}
 
-pdf(file="~/repo/eQTL-2D/analysis/images/gpBonfRep.pdf", width=20, height=4)
-plotTileGp(l)
+
+load("~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
+sig <- subset(meta, filter !=3)
+
+# Results table
+
+bsig <- subset(sig, pnest_meta > -log10(0.05/434))
+bsig <- bsig[order(bsig$probegene), ]
+dim(bsig)
+
+tab <- subset(bsig, select=c(probegene, probechr, snp1, chr1, snp2, chr2, pnest, pnest_meta))
+rownames(tab) <- 1:nrow(tab)
+
+tab$snp1 <- paste(tab$snp1, " (", tab$chr1, ") ", sep="")
+tab$snp2 <- paste(tab$snp2, " (", tab$chr2, ") ", sep="")
+tab$probegene <- paste(tab$probegene, " (", tab$probechr, ") ", sep="")
+tab <- subset(tab, select=-c(chr1, chr2, probechr))
+tab
+
+names(tab) <- c("Gene (chromosome)", "SNP 1 (chromosome)", "SNP 2 (chromosome)", "Discovery", "Replication")
+
+xtable(tab, digits = c(0, 0, 0, 0, 2, 2))
+
+
+
+# Plots
+
+l <- datHeatmapGp(bsig)
+l <- GpMod(l, 2, "EGCUT", rotateGp, rotateGp, rotateGp)
+l <- GpMod(l, 3, "EGCUT", flipGpRow, flipGpCol)
+l <- GpMod(l, 5, "BSGS", flipGpCol)
+l <- GpMod(l, 6, "EGCUT", flipGpRow)
+l <- GpMod(l, 10, "Fehrmann", flipGpCol)
+l <- GpMod(l, 11, "EGCUT", flipGpRow)
+l <- GpMod(l, 12, "EGCUT", flipGpRow)
+l <- GpMod(l, 13, "EGCUT", flipGpRow)
+l <- GpMod(l, 15, "EGCUT", flipGpRow)
+l <- GpMod(l, 22, "BSGS", flipGpRow)
+l <- GpMod(l, 22, "EGCUT", flipGpRow)
+l <- GpMod(l, 22, "Fehrmann", flipGpRow)
+
+
+pdf(file="~/repo/eQTL-2D/analysis/images/gpBonfRep.pdf", width=7, height=14)
+plot1 <- plotTileGp(subset(l, code3 %in% 1:15))
+plot2 <- plotTileGp(subset(l, code3 %in% 16:30))
+grid.arrange(plot1, plot2, ncol=2)
 dev.off()
+
+
 
 temp <- subset(sig, probegene == "MBNL1")
 temp <- subset(temp, !duplicated(paste(chr1, chr2)) & !is.na(pnest_egcut) & !is.na(pnest_fehr))
@@ -220,4 +272,26 @@ par(mfrow=c(2,2))
 print(plot3dGp(adk$gcm[[1]], z=45))
 print(plot3dGp(adk$gcm_fehr[[1]], z=45))
 print(plot3dGp(adk$gcm_egcut[[1]], z=45))
+
+
+
+m <- subset(marginal_list, pval < 10^-15.51 & chr %in% 1:22)
+dim(m)
+m1 <- subset(m, !duplicated(probename) & probename %in% probeinfo$PROBE_ID)
+dim(m1)
+m2 <- merge(m1, probeinfo, by.x="probename", by.y="PROBE_ID")
+m3 <- subset(m2, CHR %in% 1:22)
+dim(m3)
+m3 <- subset(m3, !duplicated(ILMN_GENE))
+dim(m3)
+
+517 to 453
+
+vg <- 
+
+
+
+
+
+
 
