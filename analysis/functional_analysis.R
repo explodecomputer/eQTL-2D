@@ -505,6 +505,18 @@ ggplot() +
 ggsave(file="~/repo/eQTL-2D/analysis/images/chromosome_interactions.pdf")
 
 
+
+chr_interaction_list <- subset(a4, !is.na(int1) | !is.na(int2), select=c(probegene, probechr, snp1, snp2, chr1, chr2, position1, position2, pnest, pnest_meta))
+
+meta <- subset(meta, filter != 3)
+meta_replicated <- subset(meta, pnest_meta > upper)
+
+save(sig, chr_interaction_list, meta, meta_replicated, file="~/repo/eQTL-2D/analysis/data_lists.RData")
+
+
+
+
+
 getInteractionList <- function(a, ci)
 {
 	require(plyr)
