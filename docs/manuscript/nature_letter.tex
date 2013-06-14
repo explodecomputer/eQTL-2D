@@ -2,7 +2,7 @@
 \usepackage[superscript,biblabel]{cite}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage{multirow}
+\usepackage{threeparttable}
 
 \graphicspath{{../../analysis/images/}}
 \bibliographystyle{naturemag}
@@ -18,7 +18,7 @@ Greg Gibson, Grant W Montgomery, Peter M Visscher}
 
 
 \begin{abstract}
-A long standing question in evolution and human genetics is the extent to which epistasis, the phenomenon whereby one polymorphism's effect on a trait depends on other polymorphisms present in the genome, influences complex traits \cite{Carlborg2004} and contributes to their variation \cite{Hill2008a, Crow2010}. Though epistasis has been demonstrated in artificial gene manipulation studies in model organisms \cite{Costanzo2010, Bloom2013}, and some examples have been shown in other species \cite{Carlborg2006}, few convincing examples exist for epistasis amongst natural polymorphisms in human traits \cite{Strange2010, Evans2011}. Its absence from empirical findings may simply be due to its unimportance in the genetic control of complex traits \cite{Hill2008a, Crow2010}, but an alternative view is that it has previously been too technically difficult to detect due to statistical power and computational issues \cite{Cordell2009}. Here we show that, using advanced computation techniques \cite{Hemani2011} and a gene expression study design, many instances of epistasis are found. In a cohort of 846 individuals with data on 7339 gene expression levels in whole blood, we found 501 significant pairwise epistatic interactions between single nucleotide polymorphisms (SNPs) acting on the expression levels of 238 genes ($p < 2.91 \times 10^{-16}$). Thirty interactions replicated in two independent datasets \cite{Metspalu2004, Fehrmann2011} following Bonferroni correction for multiple testing. Of the SNPs that did not pass this replication threshold, there was significant enrichment for interaction effects ($p < 1.0 \times 10^{-16}$). There was evidence of functional enrichment for the interacting SNPs, for instance 44 of the genetic interactions are located within 2Mb of regions of known intra-cellular chromosome interactions \cite{Lieberman-Aiden2009} ($p = 1.8 \times 10^{-10}$). Epistatic networks of three SNPs or more influence the expression levels of 129 genes, whereby one \emph{cis}-acting SNP is modulated by several \emph{trans}-acting SNPs. For example MBNL1 is influenced by an additive effect at rs13069559 which itself is masked by \emph{trans}-SNPs on 14 different chromosomes, with nearly identical genotype-phenotype (GP) maps for each \emph{cis}-\emph{trans} interaction. This study presents the first evidence for multiple instances of epistatic genetic effects emerging from natural genetic variation in humans.
+Epistasis is the phenomenon whereby one polymorphism's effect on a trait depends on other polymorphisms present in the genome. The extent to which epistasis influences complex traits \cite{Carlborg2004} and contributes to their variation \cite{Hill2008a, Crow2010} is a fundamental question in evolution and human genetics. Though epistasis has been demonstrated in artificial gene manipulation studies in model organisms \cite{Costanzo2010, Bloom2013}, and some examples have been shown in other species \cite{Carlborg2006}, few convincing examples exist for epistasis amongst natural polymorphisms in human traits \cite{Strange2010, Evans2011}. Its absence from empirical findings may simply be due to its unimportance in the genetic control of complex traits \cite{Hill2008a, Crow2010}, but an alternative view is that it has previously been too technically difficult to detect due to statistical power and computational issues \cite{Cordell2009}. Here we show that, using advanced computation techniques \cite{Hemani2011} and a gene expression study design, many instances of epistasis are found. In a cohort of 846 individuals with data on 7339 gene expression levels in whole blood, we found 501 significant pairwise epistatic interactions between single nucleotide polymorphisms (SNPs) acting on the expression levels of 238 genes ($p < 2.91 \times 10^{-16}$). Thirty interactions replicated in two independent datasets \cite{Metspalu2004, Fehrmann2011} following stringent Bonferroni correction for multiple testing. Of the SNPs that did not pass this replication threshold, there was significant enrichment for interaction effects ($p < 1.0 \times 10^{-16}$). There was evidence of functional enrichment for the interacting SNPs, for instance 44 of the genetic interactions are located within 2Mb of regions of known intra-cellular chromosome interactions \cite{Lieberman-Aiden2009} ($p = 1.8 \times 10^{-10}$). Epistatic networks of three SNPs or more influence the expression levels of 129 genes, whereby one \emph{cis}-acting SNP is modulated by several \emph{trans}-acting SNPs. For example MBNL1 is influenced by an additive effect at rs13069559 which itself is masked by \emph{trans}-SNPs on 14 different chromosomes, with nearly identical genotype-phenotype (GP) maps for each \emph{cis}-\emph{trans} interaction. This study presents the first evidence for multiple instances of epistatic genetic effects emerging from natural genetic variation in humans.
 
 \end{abstract}
 
@@ -67,46 +67,55 @@ We searched for pairwise epistasis exhaustively in the BSGS discovery dataset \c
 \section{Tables}
 
 \begin{table}[ht]
-\centering
-\begin{tabular}{rlllrr}
+	\centering
+	\begin{threeparttable}
+		\caption{Epistatic interactions significant at the Bonferroni level in two replication sets}
+		\label{tab:bonferroni}
+		{\footnotesize
+		\begin{tabular}{rlllrrrr}
   \hline
- & & & & \multicolumn{2}{c}{$-\log_{10} p$} \\
- & Gene (chr.) & SNP 1 (chr.) & SNP 2 (chr.) & Discovery & Replication \\
+ & Gene (chr.) & SNP 1 (chr.) & SNP 2 (chr.) & BSGS\tnote{2} & Fehrmann\tnote{3} & EGCUT\tnote{3} & Meta\tnote{4} \\
   \hline
-1 & ADK (10)  & rs2395095 (10)  & rs10824092 (10)  & 6.69 & 39.82 \\
-  2 & ATP13A1 (19)  & rs4284750 (19)  & rs873870 (19)  & 5.30 & 14.23 \\
-  3 & C21ORF57 (21)  & rs9978658 (21)  & rs11701361 (21)  & 9.42 & 21.67 \\
-  4 & CSTB (21)  & rs9979356 (21)  & rs3761385 (21)  & 11.99 & 42.27 \\
-  5 & CTSC (11)  & rs7930237 (11)  & rs556895 (11)  & 7.16 & 33.53 \\
-  6 & FN3KRP (17)  & rs898095 (17)  & rs9892064 (17)  & 16.16 & 59.95 \\
-  7 & GAA (17)  & rs11150847 (17)  & rs12602462 (17)  & 13.91 & 32.60 \\
-  8 & HNRPH1 (5)  & rs6894268 (5)  & rs4700810 (5)  & 15.38 & 10.37 \\
-  9 & LAX1 (1)  & rs1891432 (1)  & rs10900520 (1)  & 19.16 & 29.24 \\
-  10 & MBNL1 (3)  & rs16864367 (3)  & rs13079208 (3)  & 13.49 & 41.56 \\
-  11 & MBNL1 (3)  & rs7710738 (5)  & rs13069559 (3)  & 7.92 & 9.28 \\
-  12 & MBNL1 (3)  & rs2030926 (6)  & rs13069559 (3)  & 7.10 & 5.53 \\
-  13 & MBNL1 (3)  & rs2614467 (14)  & rs13069559 (3)  & 5.74 & 5.30 \\
-  14 & MBNL1 (3)  & rs218671 (17)  & rs13069559 (3)  & 7.63 & 5.23 \\
-  15 & MBNL1 (3)  & rs11981513 (7)  & rs13069559 (3)  & 7.71 & 4.58 \\
-  16 & MBP (18)  & rs8092433 (18)  & rs4890876 (18)  & 5.40 & 28.73 \\
-  17 & NAPRT1 (8)  & rs2123758 (8)  & rs3889129 (8)  & 8.45 & 30.77 \\
-  18 & NCL (2)  & rs7563453 (2)  & rs4973397 (2)  & 7.31 & 12.70 \\
-  19 & PRMT2 (21)  & rs2839372 (21)  & rs11701058 (21)  & 4.81 & 4.06 \\
-  20 & RPL13 (16)  & rs352935 (16)  & rs2965817 (16)  & 4.98 & 17.24 \\
-  21 & SNORD14A (11)  & rs2634462 (11)  & rs6486334 (11)  & 7.31 & 23.22 \\
-  22 & TMEM149 (19)  & rs807491 (19)  & rs7254601 (19)  & 12.16 & 145.78 \\
-  23 & TMEM149 (19)  & rs8106959 (19)  & rs6926382 (6)  & 5.80 & 10.72 \\
-  24 & TMEM149 (19)  & rs8106959 (19)  & rs914940 (1)  & 6.22 & 9.20 \\
-  25 & TMEM149 (19)  & rs8106959 (19)  & rs2351458 (4)  & 7.30 & 8.00 \\
-  26 & TMEM149 (19)  & rs8106959 (19)  & rs6718480 (2)  & 8.55 & 7.36 \\
-  27 & TMEM149 (19)  & rs8106959 (19)  & rs1843357 (8)  & 6.21 & 6.00 \\
-  28 & TMEM149 (19)  & rs8106959 (19)  & rs9509428 (13)  & 9.44 & 4.47 \\
-  29 & TRA2A (7)  & rs7776572 (7)  & rs11770192 (7)  & 8.23 & 4.09 \\
-  30 & VASP (19)  & rs1264226 (19)  & rs2276470 (19)  & 5.09 & 4.95 \\
+1 & ADK (10)  & rs2395095 (10)  & rs10824092 (10)  & 6.69\tnote{1} & 18.33\tnote{1} & 21.21\tnote{1} & 39.82\tnote{1} \\
+  2 & ATP13A1 (19)  & rs4284750 (19)  & rs873870 (19)  & 5.30 & 12.18 & 3.25 & 14.23 \\
+  3 & C21ORF57 (21)  & rs9978658 (21)  & rs11701361 (21)  & 9.42 & 6.08 & 16.36 & 21.67 \\
+  4 & CSTB (21)  & rs9979356 (21)  & rs3761385 (21)  & 11.99 & 25.20 & 16.72 & 42.27 \\
+  5 & CTSC (11)  & rs7930237 (11)  & rs556895 (11)  & 7.16 & 18.76 & 15.06 & 33.53 \\
+  6 & FN3KRP (17)  & rs898095 (17)  & rs9892064 (17)  & 16.16 & 28.24 & 29.39 & 59.95 \\
+  7 & GAA (17)  & rs11150847 (17)  & rs12602462 (17)  & 13.91 & 19.98 & 12.99 & 32.60 \\
+  8 & HNRPH1 (5)  & rs6894268 (5)  & rs4700810 (5)  & 15.38 & 8.55 & 3.01 & 10.37 \\
+  9 & LAX1 (1)  & rs1891432 (1)  & rs10900520 (1)  & 19.16 & 18.60 & 11.22 & 29.24 \\
+  10 & MBNL1 (3)  & rs16864367 (3)  & rs13079208 (3)  & 13.49 & 16.25 & 24.74 & 41.56 \\
+  11 & MBNL1 (3)  & rs7710738 (5)  & rs13069559 (3)  & 7.92 & 2.55 & 7.89 & 9.28 \\
+  12 & MBNL1 (3)  & rs2030926 (6)  & rs13069559 (3)  & 7.10 & 0.91 & 5.80 & 5.53 \\
+  13 & MBNL1 (3)  & rs2614467 (14)  & rs13069559 (3)  & 5.74 & 4.13 & 2.22 & 5.30 \\
+  14 & MBNL1 (3)  & rs218671 (17)  & rs13069559 (3)  & 7.63 & 0.62 & 5.82 & 5.23 \\
+  15 & MBNL1 (3)  & rs11981513 (7)  & rs13069559 (3)  & 7.71 & 0.43 & 5.36 & 4.58 \\
+  16 & MBP (18)  & rs8092433 (18)  & rs4890876 (18)  & 5.40 & 7.06 & 21.91 & 28.73 \\
+  17 & NAPRT1 (8)  & rs2123758 (8)  & rs3889129 (8)  & 8.45 & 15.12 & 16.08 & 30.77 \\
+  18 & NCL (2)  & rs7563453 (2)  & rs4973397 (2)  & 7.31 & 7.51 & 6.33 & 12.70 \\
+  19 & PRMT2 (21)  & rs2839372 (21)  & rs11701058 (21)  & 4.81 & 0.69 & 4.47 & 4.06 \\
+  20 & RPL13 (16)  & rs352935 (16)  & rs2965817 (16)  & 4.98 & 3.79 & 14.41 & 17.24 \\
+  21 & SNORD14A (11)  & rs2634462 (11)  & rs6486334 (11)  & 7.31 & 13.11 & 10.96 & 23.22 \\
+  22 & TMEM149 (19)  & rs807491 (19)  & rs7254601 (19)  & 12.16 & 81.55 & 45.78 & 145.78 \\
+  23 & TMEM149 (19)  & rs8106959 (19)  & rs6926382 (6)  & 5.80 & 3.06 & 8.80 & 10.72 \\
+  24 & TMEM149 (19)  & rs8106959 (19)  & rs914940 (1)  & 6.22 & 3.36 & 6.96 & 9.20 \\
+  25 & TMEM149 (19)  & rs8106959 (19)  & rs2351458 (4)  & 7.30 & 0.04 & 9.61 & 8.00 \\
+  26 & TMEM149 (19)  & rs8106959 (19)  & rs6718480 (2)  & 8.55 & 3.31 & 5.15 & 7.36 \\
+  27 & TMEM149 (19)  & rs8106959 (19)  & rs1843357 (8)  & 6.21 & 3.72 & 3.33 & 6.00 \\
+  28 & TMEM149 (19)  & rs8106959 (19)  & rs9509428 (13)  & 9.44 & 0.10 & 5.75 & 4.47 \\
+  29 & TRA2A (7)  & rs7776572 (7)  & rs11770192 (7)  & 8.23 & 3.19 & 1.89 & 4.09 \\
+  30 & VASP (19)  & rs1264226 (19)  & rs2276470 (19)  & 5.09 & 0.94 & 5.14 & 4.95 \\
    \hline
-\end{tabular}
-\caption{Epistatic interactions significant at the Bonferroni level in two replication sets. All $p$-values are for 4 \emph{d.f.} interaction tests (exact in Discovery and meta analysis for Replication).}
-\label{tab:bonferroni}
+		\end{tabular}
+		}
+		\begin{tablenotes}
+			\item [1] $-\log_{10} p$-values for 4 \emph{d.f.} interaction tests
+			\item [2] Discovery dataset
+			\item [3] Independent replication dataset
+			\item [4] Meta analysis of interaction terms between replication datasets only
+		\end{tablenotes}
+	\end{threeparttable}
 \end{table}
 
 

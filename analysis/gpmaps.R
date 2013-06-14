@@ -182,7 +182,7 @@ bsig <- subset(sig, pnest_meta > -log10(0.05/434))
 bsig <- bsig[order(bsig$probegene), ]
 dim(bsig)
 
-tab <- subset(bsig, select=c(probegene, probechr, snp1, chr1, snp2, chr2, pnest, pnest_meta))
+tab <- subset(bsig, select=c(probegene, probechr, snp1, chr1, snp2, chr2, pnest, pnest_fehr, pnest_egcut, pnest_meta))
 rownames(tab) <- 1:nrow(tab)
 
 tab$snp1 <- paste(tab$snp1, " (", tab$chr1, ") ", sep="")
@@ -191,9 +191,8 @@ tab$probegene <- paste(tab$probegene, " (", tab$probechr, ") ", sep="")
 tab <- subset(tab, select=-c(chr1, chr2, probechr))
 tab
 
-names(tab) <- c("Gene (chromosome)", "SNP 1 (chromosome)", "SNP 2 (chromosome)", "Discovery", "Replication")
-
-xtable(tab, digits = c(0, 0, 0, 0, 2, 2))
+names(tab) <- c("Gene (chr.)", "SNP 1 (chr.)", "SNP 2 (chr.)", "Discovery", "Fehrmann", "EGCUT", "Combined replication")
+xtable(tab, digits = c(0, 0, 0, 0, 2, 2, 2, 2))
 
 
 
