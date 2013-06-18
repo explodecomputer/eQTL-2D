@@ -78,14 +78,29 @@ The 4 \emph{d.f.} interaction $p$-values for each independent replication datase
 
 \section{Additive vs epistatic variance comparison}
 
-To compare the relative contribution of genetic variance between additive and epistatic variances one would ideally take all the possible additive effects 
+To compare the relative contribution to the phenotypic variance of gene expression levels between additive and epistatic effects we are constrained by the problem that non-additive variance components for a phenotype cannot be calculated directly. Here, we only have SNP pairs that exceed a threshold of $p < 2.91 \times 10^{-16} = T_{e}$. A strong conclusion cannot be made about the genome-wide variance contribution, but we can compare the variance explained by SNP effects at this threshold for additive scans and epistatic scans. 
+
+In Powell \emph{et al} 2012 \cite{Powell2012} an expression quantitative trait locus (eQTL) study was performed searching for additive effects in the same BSGS dataset as was used for the discovery here. Using the threshold $T_{e}$ for the additive eQTL study, 453 of the 7339 probes analysed here had at least one significant additive effect. Assuming that the phenotypic variance for each of the probes is normalised to 1, the total phenotypic variance of all 7339 explained by the significant additive effects was 1.73\%.
+
+Following the same procedure, at the threshold $T_{e}$ there were 238 gene expression probes with at least one significant pairwise epistatic interaction out of the 7339 tested. In total the proportion of the phenotypic variance explained by the epistatic effects at these SNP pairs was 0.25\%.
 
 
 \section{Functional enrichment analysis}
 
-\subsection{H3K4me3}
+\subsection{Tissue specific transcriptionally active regions}
+
+We employed a recently published method (http://www.broadinstitute.org/mpg/epigwas/) \cite{Trynka2013} that tests for cell-type-specific enrichment of active chromatin, measured through H3K4me3 chromatin marks \cite{Koch2007} in regions surrounding the 731 SNPs that comprise the 501 discovery interactions. We subsequently refer to these 731 SNPs as the IndexSNPs A recent paper shows that H3K4me3 chromatin marks are the most cell-type-specific marks in terms of co-localization with previously published GWAS loci \cite{Trynka2013}. The idea behind the method is that variants related to a particular phenotype may affect cell-type-specific gene expression by changing regulatory elements in cell types relevant to that phenotype. Hence, overlap between associated variants and chromatin marks should occur preferentially in the relevant cell type(s). Our analysis tested for enrichment of these chromatin marks in 34 different cell types from 4 different broad tissue types.
+
+For each IndexSNP, a locus region was defined, bounded on either side of the IndexSNP by the most distant SNP within 250 kb that was in LD (r2 > 0.8). For each SNP in a locus region regulatory activity scores were calculated as the height of the nearest H3K4me3 mark divided by distance from the SNP to the H3K4me3 mark. The SNP with the highest score within each locus region in a given tissue was designated the BestSNP, which served as the score representing that locus.
+
+Cell-type-specificity scores per locus were estimated by normalizing BestSNP scores so that the sum of scores for a given locus across all cell types equaled 1. Cell-type-specificity scores per tissue were defined by summing normalized BestSNP scores across all loci within a given tissue. 10,000 sets of SNPs (matched to the IndexSNP regions having the same total number of H3K4me3 peaks) were sampled (from among background SNPs provided with the software) to estimate null distributions of cell-type-specificity scores per locus and per tissue. P-values for cell-type-specificity scores summed across all BestSNPs for each tissue (the observed per-tissue score) were estimated as the proportion of random SNP sets with a per-tissue score exceeding the observed per- tissue score. We identified loci with BestSNP cell-type-specificity scores falling at or above the 95th percentile of the corresponding null distribution as demonstrating greater than expected specificity within a given cell type (50).
+Figure S20 shows p-values for the cell-type-specific overlap of H3K4me3 marks and IndexSNP regions for each cell type. Four cell/tissue types showed significant overlap at nominal p ≤ 0.05: for EduYears, anterior caudate (p = 0.0089), CD4+ naive primary cells (p = 0.032), hippocampus middle (p = 0.05) and muscle satellite cultured cells (p = 0.0236); and for College, anterior caudate (p = 0.0007). Additionally, for College the mid-frontal lobe showed marginal enrichment at p = 0.0502. Only the anterior caudate results for College survive correction for multiple hypothesis testing.
+The results from the analysis of overlap between H3K4me4 chromatin marks and education-associated SNP regions suggest gene expression regulatory function for those loci in specific cell types. In particular, we note that anterior caudate tissue appears enriched for both EduYears and College phenotypes, although only the latter survives multiple testing correction. Figure S21 shows cell-type-specificity scores per locus in the four nominally significant tissues and 95th-percentile threshold (dashed red line). Loci above the threshold were identified as showing greater than chance specificity within that particular cell type. Table S19 identifies these enriched loci, along with distance to the nearest chromatin mark.
+
 
 \subsection{Chromosome interactions}
+
+I like when chromosomes interact because I like epistasis. Also there is a cool figure with lots of circles.
 
 \subsection{Transcription factor enrichment}
 

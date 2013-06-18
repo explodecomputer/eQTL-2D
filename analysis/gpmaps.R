@@ -200,7 +200,7 @@ xtable(tab, digits = c(0, 0, 0, 0, 2, 2, 2, 2))
 
 l <- datHeatmapGp(bsig)
 l <- GpMod(l, 2, "EGCUT", rotateGp, rotateGp, rotateGp)
-l <- GpMod(l, 3, "EGCUT", flipGpRow, flipGpCol)
+l <- GpMod(l, 3, "EGCUT", t)
 l <- GpMod(l, 5, "BSGS", flipGpCol)
 l <- GpMod(l, 6, "EGCUT", flipGpRow)
 l <- GpMod(l, 10, "Fehrmann", flipGpCol)
@@ -218,7 +218,7 @@ plot1 <- plotTileGp(subset(l, code3 %in% 1:15))
 plot2 <- plotTileGp(subset(l, code3 %in% 16:30))
 grid.arrange(plot1, plot2, ncol=2)
 dev.off()
-
+plot1
 
 
 temp <- subset(sig, probegene == "MBNL1")
