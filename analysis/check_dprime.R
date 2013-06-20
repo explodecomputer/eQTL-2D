@@ -37,6 +37,8 @@ ciscis$gap <- abs(ciscis$position1 - ciscis$position2) / 1000000
 
 ciscis
 
+table(ciscis$gap < 1)
+
 
 #============================================================#
 #============================================================#
@@ -71,3 +73,5 @@ for(i in 1:nrow(ciscis))
 	cat(i, " - ", l[i], "\n")
 }
 
+sort(l^2)
+mean(l^2)
