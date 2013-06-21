@@ -1,0 +1,128 @@
+nestedTestVars <- function(mod)
+{
+	phen <- mod$phen
+	x <- mod$gen
+	mod1 <- lm(phen ~ as.factor(x[,1]) * as.factor(x[,2]))
+	mod2 <- lm(phen ~ as.factor(x[,1]) + as.factor(x[,2]))
+	nest <- anova(mod2, mod1)
+	return(nest)
+}
+
+
+compareLargestVc <- function(s, mod1, mod2)
+{
+	vcepi <- cbind(c(4,5,7,8), s$vc[[1]][c(4, 5, 7, 8)])
+
+	i <- vcepi[which.max(vcepi[,2]), 1] + 1
+	p1 <- mod1[[s$code]]$pvalues[i]
+	p2 <- mod2[[s$code]]$pvalues[i]
+	return(-log10(pchisq(-2*log(p1) - 2*log(p2), 4, lower.tail=FALSE)))
+}	
+
+
+metaTestChisq <- function(nest1, nest2)
+{
+	F1 <- nest1$F[2]
+	F2 <- nest2$F[2]
+	return(-log10(pchisq(4*F1 + 4*F2, 8, lower.tail=FALSE)))
+}
+
+
+metaTestPval <- function(nest1, nest2)
+{
+	p1 <- nest1$P[2]
+	p2 <- nest2$P[2]
+	return(-log10(pchisq(-2*log(p1) - 2*log(p2), 4, lower.tail=FALSE)))
+}
+
+
+performMeta <- function(sig, mod1, mod2)
+{
+	sig$pnest_meta <- NA
+	sig$pnest_meta2 <- NA
+	sig$pnest_meta_vc <- NA
+	sig$code <- with(sig, paste(probename, snp1, snp2))
+
+	for(i in 1:nrow(sig))
+	{
+		cat(i, "\n")
+		if(is.na(sig$pnest_egcut[i]) | is.na(sig$pnest_fehr[i]) | length(sig$gcs_egcut[[i]]) != 9 | length(sig$gcs_fehr[[i]]) != 9)
+		{
+			cat("skipped\n")
+			next
+		}
+		b1 <- nestedTestVars(mod1[[sig$code[i]]])
+		b2 <- nestedTestVars(mod2[[sig$code[i]]])
+		sig$pnest_meta[i] <- metaTestChisq(b1, b2)
+		sig$pnest_meta2[i] <- metaTestPval(b1, b2)
+		sig$pnest_meta_vc[i] <- compareLargestVc(sig[i, ], mod1, mod2)
+	}
+	return(sig)
+}
+
+
+confInt <- function(n, alpha)
+{
+	k <- c(1:n)
+	upper <- -log10(qbeta(alpha/2,k,n+1-k))
+	lower <- -log10(qbeta((1-alpha/2),k,n+1-k))
+	expect <- -log10((k-0.5)/n)
+	return(data.frame(expect, lower, upper))
+}
+
+
+qqDat <- function(sig, alpha, col)
+{
+	a <- subset(sig, filter==3)
+	a <- a[order(a[[col]], decreasing=T), ]
+	ci <- confInt(nrow(a), alpha)
+	a <- data.frame(a, ci)
+
+	b <- subset(sig, filter!=3)
+	b <- b[order(b[[col]], decreasing=T), ]
+	ci <- confInt(nrow(b), alpha)
+	b <- data.frame(b, ci)
+
+	return(rbind(b, a))
+}
+
+makeQqDat <- function(sig, alpha, col)
+{
+	meta <- subset(sig, !is.na(pnest_meta))
+	meta <- qqDat(meta, 0.05, "pnest_meta")
+	meta$ex <- meta$pnest_meta > meta$upper
+	meta$fake <- "Null"
+	meta$fake[meta$filter != 3] <- "Empirical"
+	meta$observed <- meta$pnest_meta
+	return(meta)
+}
+
+
+#=============================================================#
+#=============================================================#
+
+# Read in data
+
+load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
+
+load("~/repo/eQTL-2D/replication/results/replication_GrngHT12v3.RData")
+newsig$code <- with(newsig, paste(probename, snp1, snp2))
+fehr <- mod
+names(fehr) <- newsig$code
+
+load("~/repo/eQTL-2D/replication/results/replication_EGCUT.RData")
+newsig$code <- with(newsig, paste(probename, snp1, snp2))
+egcut <- mod
+names(egcut) <- newsig$code
+
+
+#=============================================================#
+#=============================================================#
+
+# Perform meta analysis on replication data
+
+sig_all <- performMeta(sig_all, egcut, fehr)
+meta <- makeQqDat(sig_all, 0.05, "pnest_meta")
+save(meta, file="~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
+
+
