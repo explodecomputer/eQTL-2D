@@ -221,10 +221,10 @@ createAverageGp <- function(gcm, gcs)
 load(file="~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
 
 thresh <- -log10(0.05 / 442)
-with(sig_all, table(filter, pnest_meta > thresh))
-with(sig_all, table(filter, pnest_meta2 > thresh))
-with(sig_all, table(filter, pnest_meta_vc > thresh))
-with(sig_all, table(filter, is.na(pnest_meta)))
+with(meta, table(filter, pnest_meta > thresh))
+with(meta, table(filter, pnest_meta2 > thresh))
+with(meta, table(filter, pnest_meta_vc > thresh))
+with(meta, table(filter, is.na(pnest_meta)))
 
 
 #=============================================================#
@@ -234,7 +234,7 @@ with(sig_all, table(filter, is.na(pnest_meta)))
 
 
 qqPlot(meta, thresh)
-ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaNonsig.pdf", width=5, height=10)
+ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaNonsig.pdf", width=10, height=5)
 qqPlot(meta, max(meta$pnest_meta))
 ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaAll.pdf", width=5, height=10)
 qqPlot2(meta, thresh)
