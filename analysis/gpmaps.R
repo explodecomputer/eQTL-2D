@@ -7,22 +7,6 @@ library(plyr)
 library(xtable)
 
 
-plot3dGp <- function(gp, title="", snp1="SNP1", snp2="SNP2", z=-45)
-{
-	p <- cloud(
-		gp, 
-		panel.3d.cloud=panel.3dbars, 
-		col="black", 
-		col.facet=c("#e5f5e0", "#A1D99B", "#31A354"), 
-		xbase=0.6, ybase=0.6,
-		xlab=list(label=snp1, cex=0.8), ylab=list(label=snp2, cex=0.8), zlab="",
-		default.scales=list(arrows=F, z = list(cex = 0), y = list(cex = 0.5), x=list(cex=0.5)),
-		cex.title = 0.5,
-		screen = list(z = z, x = -60, y = 3),
-		main = title
-	)
-}
-
 
 plot3dHairballsRep <- function(sig, pg, cissnp, cohort, z=45)
 {
@@ -99,6 +83,11 @@ datHeatmapGp <- function(sig)
 		g$code <- a$code[i]
 		g$code2 <- a$probegene[i]
 		g$code3 <- i
+		g$s1 <- a$snp1[i]
+		g$s2 <- a$snp2[i]
+		g$chr1 <- a$chr1[i]
+		g$chr2 <- a$chr2[i]
+		g$index <- i
 		g <- GpMod(g, i, "BSGS", rotateGp, rotateGp)
 		l[[i]] <- g
 	}
@@ -167,10 +156,8 @@ plotTileGp2 <- function(l)
 }
 
 
-convertToScientific <- function(x)
-{
-
-}
+#=================================================================================================#
+#=================================================================================================#
 
 
 load("~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
@@ -194,6 +181,9 @@ tab
 names(tab) <- c("Gene (chr.)", "SNP 1 (chr.)", "SNP 2 (chr.)", "Discovery", "Fehrmann", "EGCUT", "Combined replication")
 xtable(tab, digits = c(0, 0, 0, 0, 2, 2, 2, 2))
 
+
+#=================================================================================================#
+#=================================================================================================#
 
 
 # Plots
@@ -219,6 +209,86 @@ plot2 <- plotTileGp(subset(l, code3 %in% 16:30))
 grid.arrange(plot1, plot2, ncol=2)
 dev.off()
 plot1
+
+
+#=================================================================================================#
+#=================================================================================================#
+
+
+plot3dGp <- function(gp, title="", snp1="SNP1", snp2="SNP2", z=-45)
+{
+	p <- cloud(
+		gp, 
+		panel.3d.cloud=panel.3dbars, 
+		col="black", 
+		col.facet=c("#e5f5e0", "#A1D99B", "#31A354"), 
+		xbase=0.6, 
+		ybase=0.6,
+		xlab=list(label=snp1, cex=0.8), 
+		ylab=list(label=snp2, cex=0.8), 
+		scales=list(arrows=F, z = list(cex = 0), y = list(cex = 0.5), x=list(cex=0.5)),
+		zlab="",
+		cex.title = 0.5,
+		screen = list(z = z, x = -60, y = 3),
+		main = title
+	)
+	return(p)
+}
+
+plot3dGpGrid <- function(dat, dataset)
+{
+	l <- list()
+	index <- unique(dat$index)
+	j <- 1
+	for(i in index)
+	{
+		a <- subset(dat, index == i & cohort == dataset)
+		print(head(a))
+		gp <- matrix(a$y, 3, 3)
+		gp <- gp - min(gp, na.rm=T)
+		l[[i]] <- plot3dGp(as.table(gp), title=as.character(i), snp1=a$s1[1], snp2=a$s2[1])
+	}
+	do.call(grid.arrange, l)
+}
+
+
+
+mbnl1 <- subset(datHeatmapGp(subset(sig, probegene == "MBNL1")), cohort == "BSGS")
+mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
+mbnl1 <- GpMod(mbnl1, 2, "BSGS", flipGpRow)
+mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
+mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
+mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
+mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
+mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
+mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
+
+plot3dGpGrid(mbnl1, "BSGS")
+
+
+gp <- matrix(1:9, 3, 3) / 9
+gp
+as.table(gp)
+
+plot3dGp(as.table(gp))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 temp <- subset(sig, probegene == "MBNL1")

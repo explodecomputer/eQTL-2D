@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{url}
 \usepackage[superscript,biblabel]{cite}
 \bibliographystyle{naturemag}
 
@@ -10,14 +11,18 @@
 \maketitle
 
 
+\tableofcontents
+
 \section{Discovery data}
+
+\subsection{Data description}
 
 The Brisbane Systems Genetics Study (BSGS) comprises 846 individuals of European descent from 274 independent families \cite{Powell2012}. DNA samples from each individual were genotyped on the Illumina 610-Quad Beadchip by the Scientific Services Division at deCODE Genetics Iceland. Full details of genotyping procedures are given in Medland et al. \cite{Medland2009} Standard quality control (QC) filters were applied and the remaining 528,509 autosomal SNPs were carried forward for further analysis. 
 
 Gene expression profiles were generated from whole blood collected with PAXgene TM tubes (QIAGEN, Valencia, CA) using Illumina HT12-v4.0 bead arrays. The Illumina HT-12 v4.0 chip contains 47,323 probes, although some probes are not assigned to RefSeq genes. We removed any probes that did not match the following criteria: contained a SNP within the probe sequence with MAF $ > 0.05$ within 1000 genomes data; did not map to a listed RefSeq gene; were not significantly expressed (based on a detection $p$-value $< 0.05$) in at least 90\% of samples. After this stringent QC 7339 probes remained for 2D-eQTL mapping.
 
 
-\section{Normalisation}
+\subsection{Normalisation}
 
 Gene expression profiles were normalised and adjusted for batch and polygenic effects. Profiles were first adjusted for raw background expression in each sample. Expression levels were then adjusted using quantile and log2 transformation to standardise distributions between samples. Batch and polygenic effects were adjusted using the linear model
 
@@ -33,7 +38,7 @@ G_{ijk} = \left \{
 2\phi _{ijk} \sigma _a ^2& 			j \neq k \\
 \end{array} \right.
 \end{equation}
-The parameters $\sigma_a^2$ and $\sigma_e^2$ are variance components for additive background genetic and environmental effects respectively. Here, we are using family based pedigree information rather than SNP based IDB to account for relationships between individuals and so $\phi _{ijk}$ is the kinship coefficient between individuals $j$ and $k$. The residual, $e$, from equation \ref{eq:lm} is assumed to follow a multivariate normal distribution with a mean of zero. Residuals were normalised by rank transformation and used as the adjusted phenotype for the pairwise epistasis scan. The GenABEL package for R was used to perform the normalisation \cite{Aulchenko2007}.
+The parameters $\sigma_a^2$ and $\sigma_e^2$ are variance components for additive background genetic and environmental effects respectively. Here, we are using family based pedigree information rather than SNP based IDB to account for relationships between individuals and so $\phi _{ijk}$ is the kinship coefficient between individuals $j$ and $k$. The residual, $e$, from equation \ref{eq:lm} is assumed to follow a multivariate normal distribution with a mean of zero. Residuals were normalised by rank transformation and used as the adjusted phenotype for the pairwise epistasis scan to remove any skewness and avoid results being driven by outliers. The GenABEL package for R was used to perform the normalisation \cite{Aulchenko2007}.
 
 
 \section{Exhaustive 2D-eQTL analysis}
@@ -51,9 +56,9 @@ H _1 : \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \mu) ^2 > 0;
 
 where $\mu$ is the mean expression level and $x _{ij}$ is the pairwise genotype class mean for genotype $i$ at SNP 1 and genotype $j$ at SNP 2. This type of test does not parameterize for specific types of epistasis, rather it tests for the joint genetic effects at two loci. This has been demonstrated to be statistically more efficient when searching for a wide range of epistatic patterns, although will also include any marginal effects of SNPs which must be dealt with post-hoc \cite{Hemani2013}.
  
-The complete exhaustive scan for 7339 probes comprises $1.03 \times 10^{15}$ $F$-tests. We used permutation analysis to estimate an appropriate significance threshold for the study. To do this we performed a further 1600 exhaustive 2D scans on permuted phenotypes to generate a null distribution of the extreme $p$-values expected to be obtained from this number of multiple tests given the correlation structure between the SNPs. We took the most extreme $p$-value from each of the 1600 scans and set the 5\% FWER to be the 95\% most extreme of these $p$-values, $T_{*} = 2.13 \times 10^{-12}$. The effective number of tests in one 2D scan being performed is therefore $N_{*} = 0.05 / T_{*} \approx 2.33 \times 10^{10}$. To correct for the testing of multiple traits we established an experiment wide threshold of $T = 0.05 / (N_{*} \times 7339) = 2.91 \times 10^{-16}$. This is likely to be conservative as it assumes independence between probes.
+The complete exhaustive scan for 7339 probes comprises $1.03 \times 10^{15}$ $F$-tests. We used permutation analysis to estimate an appropriate significance threshold for the study. To do this we performed a further 1600 exhaustive 2D scans on permuted phenotypes to generate a null distribution of the extreme $p$-values expected to be obtained from this number of multiple tests given the correlation structure between the SNPs. We took the most extreme $p$-value from each of the 1600 scans and set the 5\% FWER to be the 95\% most extreme of these $p$-values, $T_{*} = 2.13 \times 10^{-12}$. The effective number of tests in one 2D scan being performed is therefore $N_{*} = 0.05 / T_{*} \approx 2.33 \times 10^{10}$. To correct for the testing of multiple traits we established an experiment wide threshold of $T_{e} = 0.05 / (N_{*} \times 7339) = 2.91 \times 10^{-16}$. This is likely to be conservative as it assumes independence between probes.
 
-Following filtering on this threshold only SNP pairs with at least 5 data points in all 9 genotype classes were kept. We then calculated the LD between interacting SNPs and removed any pairs with $r^2 > 0.1$. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinal SNP pair was retained, \emph{i.e.} if a probe had multiple SNP pairs that were on chromosomes one and two then only the SNP pair with the most significant $p$-value was retained. At this stage 6404 filtered SNP pairs remained. We then performed a second filtering screen that was identical to the first but an additional step was included where any SNPs that had previously been shown to have a significant additive or dominant effect ($p < 1.29 \times 10^{-11}$) was removed, creating a second set of 4751 filtered SNP pairs.
+Following filtering on this threshold only SNP pairs with at least 5 data points in all 9 genotype classes were kept. We then calculated the LD between interacting SNPs and removed any pairs with $r^2 > 0.1$ or $D'^{2} > 0.1$ to avoid the inclusion of haplotype effects and to increase the accuracy of genetic variance decomposition. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinal SNP pair was retained, \emph{i.e.} if a probe had multiple SNP pairs that were on chromosomes one and two then only the SNP pair with the most significant $p$-value was retained. At this stage 6404 filtered SNP pairs remained. We then performed a second filtering screen that was identical to the first but an additional step was included where any SNPs that had previously been shown to have a significant additive or dominant effect ($p < 1.29 \times 10^{-11}$) was removed, creating a second set of 4751 filtered SNP pairs.
 
 To ensure that interacting SNPs were driven by epistasis and not marginal effects we performed a nested ANOVA on each pair in the filtered set to test if the interaction terms were significant. We did this by contrasting the full genetic model (8 \emph{d.f.}) against the reduced marginal effects model which included the additive and dominance terms at both SNPs (4 \emph{d.f.}). Thus, a 4 \emph{d.f.} $F$-test was performed on the residual genetic variation, representing the contribution of epistatic variance. Significance of epistasis was determined using a Bonferroni threshold of $0.05 / (6404+4751) = 4.48 \times 10^{-6}$. This resulted in 432 and 117 SNP pairs with significant interaction terms from filters 1 and 2, respectively.
 
@@ -61,7 +66,11 @@ All variance decompositions were calculated using the NOIA method \cite{Alvarez-
 
 
 \section{Replication}
-We have attempted replication of the 529 significant interactions from the discovery set using three independent cohorts; Fehrmann, EGCUT, and CHDWB. It was required that LD $r^2 < 0.1$ between interacting SNPs, and all nine genotype classes had at least 5 individuals present in order to proceed with statistical testing for replication in both datasets. We also excluded any putative SNPs that had discordant allele frequencies in any of the datasets. Details of the cohorts are as follows.
+
+
+\subsection{Data description}
+
+We have attempted replication of the 501 significant interactions from the discovery set using three independent cohorts; Fehrmann, EGCUT, and CHDWB. It was required that LD $r^2 < 0.1$ and $D'^{2} < 0.1$ between interacting SNPs, and all nine genotype classes had at least 5 individuals present in order to proceed with statistical testing for replication in both datasets. We also excluded any putative SNPs that had discordant allele frequencies in any of the datasets. Details of the cohorts are as follows.
 
 \paragraph{Fehrmann: $n=1240$}
 The Fehrmann dataset \cite{Fehrmann2011} consists of whole peripheral blood samples of 1240 unrelated individuals from the United Kingdom and the Netherlands. Some of these individuals are patients, while others are healthy controls. Individuals were genotyped using the Illumina 610 Quad platform. RNA levels were quantified using the HT12v3 platform.
@@ -70,10 +79,12 @@ The Fehrmann dataset \cite{Fehrmann2011} consists of whole peripheral blood samp
 The Estonian Genome Center of the University of Tartu (EGCUT) study \cite{Metspalu2004} consists of whole blood samples of 891 unrelated individuals from Estonia. They were genotyped using the Illumina 610 Quad platform. RNA levels were quantified using the HT12v3 platform.
 
 \paragraph{CDHWB: $n=139$}
-The Center for Health Discovery and Well Being (CDHWB) Study \cite{Preininger2013} is a population based cohort consisting of 139 individuals of European descent collected in Atlanta USA. Gene expression profiles were generated with Illumina HT-12 V3.0 arrays from whole blood collected from Tempus tubes that preserve RNA. Whole genome genotypes were measured using Illumina OmniQuad arrays. Due to the small sample size, most SNP pairs did not pass filtering in this dataset and so we have excluded it from the rest of the analysis.
+The Center for Health Discovery and Well Being (CDHWB) Study \cite{Preininger2013} is a population based cohort consisting of 139 individuals of European descent collected in Atlanta USA. Gene expression profiles were generated with Illumina HT-12 V3.0 arrays from whole blood collected from Tempus tubes that preserve RNA. Whole genome genotypes were measured using Illumina OmniQuad arrays. Due to the small sample size, most SNP pairs did not pass filtering in this dataset (185 remained) and so we have excluded it from the rest of the analysis.
 
 \subsection{Meta Analysis}
-The 4 \emph{d.f.} interaction $p$-values for each independent replication dataset were calculated using the same statistical test as was performed in the discovery dataset. We then took the interaction $p$-values from EGCUT and Fehrmann and calculated a joint $p$-value as $-2 \log p_{1} - 2 \log p_{2} \sim \chi^{2}_{4 d.f.}$.
+
+The 4 \emph{d.f.} interaction $p$-values for each independent replication dataset were calculated using the same statistical test as was performed in the discovery dataset. We then took the interaction $p$-values from EGCUT and Fehrmann and calculated a joint $p$-value using Fisher's method of combining $p$-values for a meta analysis as $-2 \ln p_{1} - 2 \ln p_{2} \sim \chi^{2}_{4 d.f.}$. As in the discovery analysis, all gene expression levels were normalised using rank transformation to avoid skew or outliers in the distribution.
+
 
 
 \section{Additive vs epistatic variance comparison}
@@ -89,7 +100,7 @@ Following the same procedure, at the threshold $T_{e}$ there were 238 gene expre
 
 \subsection{Tissue specific transcriptionally active regions}
 
-We employed a recently published method (http://www.broadinstitute.org/mpg/epigwas/) \cite{Trynka2013} that tests for cell-type-specific enrichment of active chromatin, measured through H3K4me3 chromatin marks \cite{Koch2007} in regions surrounding the 731 SNPs that comprise the 501 discovery interactions. We subsequently refer to these 731 SNPs as the IndexSNPs A recent paper shows that H3K4me3 chromatin marks are the most cell-type-specific marks in terms of co-localization with previously published GWAS loci \cite{Trynka2013}. The idea behind the method is that variants related to a particular phenotype may affect cell-type-specific gene expression by changing regulatory elements in cell types relevant to that phenotype. Hence, overlap between associated variants and chromatin marks should occur preferentially in the relevant cell type(s). Our analysis tested for enrichment of these chromatin marks in 34 different cell types from 4 different broad tissue types.
+We employed a recently published method (\url{http://www.broadinstitute.org/mpg/epigwas/}) \cite{Trynka2013} that tests for cell-type-specific enrichment of active chromatin, measured through H3K4me3 chromatin marks \cite{Koch2007} in regions surrounding the 731 SNPs that comprise the 501 discovery interactions. We subsequently refer to these 731 SNPs as the IndexSNPs A recent paper shows that H3K4me3 chromatin marks are the most cell-type-specific marks in terms of co-localization with previously published GWAS loci \cite{Trynka2013}. The idea behind the method is that variants related to a particular phenotype may affect cell-type-specific gene expression by changing regulatory elements in cell types relevant to that phenotype. Hence, overlap between associated variants and chromatin marks should occur preferentially in the relevant cell type(s). Our analysis tested for enrichment of these chromatin marks in 34 different cell types from 4 different broad tissue types.
 
 For each IndexSNP, a locus region was defined, bounded on either side of the IndexSNP by the most distant SNP within 250 kb that was in LD ($r^{2} > 0.8$). For each SNP in a locus region regulatory activity scores were calculated as the height of the nearest H3K4me3 mark divided by distance from the SNP to the H3K4me3 mark. The SNP with the highest score within each locus region in a given tissue was designated the BestSNP, which served as the score representing that locus.
 
@@ -116,9 +127,15 @@ We then performed the whole querying process for each of the 528,509 SNPs presen
 
 \subsection{Transcription factor enrichment}
 
-To test for enrichment of transcription factor binding sites (TFBS) we followed a procedure similar to that described in Section \ref{sub:snp_colocalisation_with_genomic_features}. For each of the 687 IndexSNPs we extracted regional SNPs as previously described. We then used the PWMEnrich package in Bioconductor (http://www.bioconductor.org/packages/2.12/bioc/html/PWMEnrich.html) to identify which TFBSs each of the regional SNPs for one IndexSNP falls in (within a radius of 250bp). Thus, the number of occurrences of a particular TFBS was counted for each IndexSNP. We used the ``Threshold-free affinity'' method for identifying TFBSs \cite{Stormo2000}.
+To test for enrichment of transcription factor binding sites (TFBS) we followed a procedure similar to that described in Section \ref{sub:snp_colocalisation_with_genomic_features}. For each of the 687 IndexSNPs we extracted regional SNPs as previously described. We then used the PWMEnrich package in Bioconductor (\url{http://www.bioconductor.org/packages/2.12/bioc/html/PWMEnrich.html}) to identify which TFBSs each of the regional SNPs for one IndexSNP falls in (within a radius of 250bp). Thus, the number of occurrences of a particular TFBS was counted for each IndexSNP. We used the ``Threshold-free affinity'' method for identifying TFBSs \cite{Stormo2000}.
 
 We constructed a null distribution of expected TFBS occurrences based on the same null hypothesis as described in Section \ref{sub:snp_colocalisation_with_genomic_features} - the probability of an IndexSNP covering a particular TFBS is identical to any of the 528,509 SNPs in the discovery SNP chip. To do this, we performed the same procedure for each SNP in the discovery SNP chip as was performed for each IndexSNP to obtain an expected probability of covering a particular TFBS. We then tested the IndexSNPs for enrichment of each TFBS independently, and for \emph{cis}- and \emph{trans}-SNPs separately. $p$-values were obtained using Z-scores, calculated by using a normal approximation to the sum of binomial random variables representing motif hits along the sequence \cite{HoSui2005}.
+
+
+\subsection{Defining previously identified SNP associations}
+
+The discovery dataset (BSGS) had previously been analysed for additive and dominant marginal effects for all gene expression levels \cite{Powell2012, Powell2013}. To define SNPs that had been previously detected to have effects for a particular gene expression level we used a significance threshold accounting for multiple testing across SNPs and expression probes, $T_{m} = 0.05 / (528509 \times 7339) = 1.29 \times 10^{-11}$. From this, we found that only nine of the 501 discovery interactions had known main effects, 64 were between SNPs that had no known marginal effects, and 439 were between a SNP with a known marginal effect and a SNP with no known marginal effect.
+
 
 
 \section{References}
