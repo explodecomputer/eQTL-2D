@@ -1,23 +1,10 @@
 library(reshape2)
 library(ggplot2)
 
-load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
 
+#================================================================================#
+#================================================================================#
 
-sig$type <- "cis-cis"
-sig$type[with(sig, chr1 == probechr & chr2 != probechr)] <- "cis-trans"
-sig$type[with(sig, chr1 != probechr & chr2 == probechr)] <- "cis-trans"
-sig$type[with(sig, chr1 != probechr & chr2 != probechr)] <- "trans-trans"
-
-for(i in 1:nrow(sig))
-{
-	sig$vc_fehr[[i]] <- sig$vc_fehr[[i]][[1]]
-	sig$vc_egcut[[i]] <- sig$vc_egcut[[i]][[1]]
-}
-
-bsgs <- do.call(rbind, sig$vc)
-fehr <- do.call(rbind, sig$vc_fehr)
-egcut <- do.call(rbind, sig$vc_egcut)
 
 standardiseVg <- function(dat)
 {
@@ -30,52 +17,122 @@ standardiseVg <- function(dat)
 	return(dat)
 }
 
-bsgs <- standardiseVg(bsgs)
-fehr <- standardiseVg(fehr)
-egcut <- standardiseVg(egcut)
 
-varA <- data.frame(bsgs = bsgs$varA, fehr = fehr$varA, egcut = egcut$varA)
-varD <- data.frame(bsgs = bsgs$varD, fehr = fehr$varD, egcut = egcut$varD)
-varI <- data.frame(bsgs = bsgs$varI, fehr = fehr$varI, egcut = egcut$varI)
+sortVar <- function(bsgs, fehr, egcut, cohort)
+{
+	varA <- data.frame(bsgs = bsgs$varA, fehr = fehr$varA, egcut = egcut$varA)
+	varD <- data.frame(bsgs = bsgs$varD, fehr = fehr$varD, egcut = egcut$varD)
+	varI <- data.frame(bsgs = bsgs$varI, fehr = fehr$varI, egcut = egcut$varI)
 
-pairs(varA)
-pairs(varD)
-pairs(varI)
+	varA$index <- 1:nrow(varA)
+	varA <- varA[order(varA[[cohort]], decreasing=T), ]
+	varD <- varD[varA$index, ]
+	varI <- varI[varA$index, ]
+	varA <- subset(varA, select=-c(index))
+	vA <- melt(varA)
+	vA$vc <- "A"
+	vD <- melt(varD)
+	vD$vc <- "D"
+	vI <- melt(varI)
+	vI$vc <- "I"
 
-vA <- melt(varA)
-vA$vc <- "A"
-vD <- melt(varD)
-vD$vc <- "D"
-vI <- melt(varI)
-vI$vc <- "I"
+	vA$index <- rep(1:nrow(bsgs), 3)
+	vD$index <- rep(1:nrow(bsgs), 3)
+	vI$index <- rep(1:nrow(bsgs), 3)
 
-vA$index <- 1:nrow(vA)
-vD$index <- 1:nrow(vD)
-vI$index <- 1:nrow(vI)
+	dat <- rbind(vA, vD, vI)
+	names(dat) <- c("dataset", "Variance", "Component", "index")
+	levels(dat$dataset) <- c("BSGS", "Fehrmann", "EGCUT")
 
-dat <- rbind(vA, vD, vI)
-dim(dat)
-names(dat) <- c("dataset", "Variance", "Component", "index")
-head(dat)
+	return(dat)
+}
 
-with(dat, tapply(Variance, list(dataset, Component), function(x) mean(x, na.rm=T)))
 
+sortVar2 <- function(bsgs, fehr, egcut)
+{
+	bsgs <- bsgs[order(bsgs$varA, decreasing=FALSE), ]
+	fehr <- fehr[order(fehr$varA, decreasing=FALSE), ]
+	egcut <- egcut[order(egcut$varA, decreasing=FALSE), ]	
+	
+	varA <- data.frame(bsgs = bsgs$varA, fehr = fehr$varA, egcut = egcut$varA)
+	varD <- data.frame(bsgs = bsgs$varD, fehr = fehr$varD, egcut = egcut$varD)
+	varI <- data.frame(bsgs = bsgs$varI, fehr = fehr$varI, egcut = egcut$varI)
+
+	vA <- melt(varA)
+	vA$vc <- "A"
+	vD <- melt(varD)
+	vD$vc <- "D"
+	vI <- melt(varI)
+	vI$vc <- "I"
+
+	vA$index <- rep(1:nrow(bsgs), 3)
+	vD$index <- rep(1:nrow(bsgs), 3)
+	vI$index <- rep(1:nrow(bsgs), 3)
+
+	dat <- rbind(vA, vD, vI)
+	names(dat) <- c("dataset", "Variance", "Component", "index")
+	levels(dat$dataset) <- c("BSGS", "Fehrmann", "EGCUT")
+
+	return(dat)
+}
 
 
 plotvarG <- function(dat)
 {
+	dat$Component <- factor(dat$Component, levels=c("D", "I", "A"))
+	levels(dat$Component) <- c("Dominance", "Interaction", "Additive")
 	p1 <- ggplot(dat, aes(y=Variance, x=index)) +
 		geom_bar(stat="identity", aes(fill=Component, colour=Component), position=position_stack(width=0)) +
 		scale_fill_brewer("Variance component") +
 		scale_colour_brewer("Variance component") +
-		ylab("Phenotypic variance") + xlab("") +
-		coord_flip() + theme(legend.position = "none") +
-		# theme(axis.text.y=element_text(size=0), axis.ticks.y=element_line(size=0)) +
-		facet_grid(. ~ dataset)
+		ylab("Genetic variance") + 
+		xlab("") +
+		facet_grid(dataset ~ .)
 	return(p1)
 }
 
-plotvarG(dat)
+
+#================================================================================#
+#================================================================================#
+
+
+load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
+
+
+#================================================================================#
+#================================================================================#
+
+
+sig$type <- "cis-cis"
+sig$type[with(sig, chr1 == probechr & chr2 != probechr)] <- "cis-trans"
+sig$type[with(sig, chr1 != probechr & chr2 == probechr)] <- "cis-trans"
+sig$type[with(sig, chr1 != probechr & chr2 != probechr)] <- "trans-trans"
+
+bsgs <- do.call(rbind, sig$vc)
+fehr <- do.call(rbind, sig$vc_fehr)
+egcut <- do.call(rbind, sig$vc_egcut)
+
+bsgs <- standardiseVg(bsgs)
+fehr <- standardiseVg(fehr)
+egcut <- standardiseVg(egcut)
+
+dat <- sortVar(bsgs, fehr, egcut, "fehr")
+dat2 <- sortVar2(bsgs, fehr, egcut)
+
+
+#================================================================================#
+#================================================================================#
+
+
+plotvarG(dat2)
+ggsave(file="~/repo/eQTL-2D/analysis/images/compare_vc.pdf", width=7, height=7)
+
+#================================================================================#
+#================================================================================#
+
+
+
+
 
 
 prop <- subset(sig, select=c(varA, varI, varD))

@@ -86,7 +86,7 @@ We also demonstrate spacial organisation of interacting loci suggesting a mechan
 % \subsection{Contribution of epistatic variance}
 Though we present many instances of epistasis, quantifying its relative importance to complex traits in humans remains an open question. In this study we are able to identify 238 gene expression traits with at least one significant interaction given our experiment-wide threshold. How does this compare to the number of traits influenced by additive effects? The BSGS dataset has been previously analysed for additive effects at all expression traits \cite{Powell2012}, and if we take all the additive eQTLs that were significant at the epistatic threshold of $p < 2.91 \times 10^{-16}$ we find that 453 gene expression levels out of the 7339 analysed had at least one significant expression quantitative trait locus (eQTL). Therefore it can be argued that the number of instances of detectable epistasis are substantial.
 
-However in terms of their contribution to complex traits a more important metric might be the proportion of the variance that the epistatic loci explain \cite{Hill2008a}. Ideally one would approach this question from a whole genome perspective \cite{Visscher2008} but this is intractable for non-additive variance components. Nevertheless, some inference can be made from the ascertained effects in these analyses and it is evident that additive variance is overall a larger component than epistatic variance, as has been argued previously \cite{Hill2008a, Crow2010}. Taking the additive effects detected in Powell \emph{et al} (2012) at the $p < 2.91 \times 10^{-16}$ threshold, we calculate that on average they explain 1.73\% of the phenotypic variance of each of the 7339 probes. By contrast, the epistatic variance from the interacting SNPs detected in this study on average explain 0.25\% of phenotypic variance, approximately seven times lower than the additive variance (Methods). There are at least three caveats to this comparison. Firstly, the ratio of additive to epistatic variance may differ at different effect sizes. Secondly, the power of a 1 \emph{d.f.} test exceeds that of an 8 \emph{d.f.} test. And thirdly, the non-additive variance at causal variants is expected to be underestimated by observed SNPs in comparison to estimates for additive variance, due to differences in the rate of decay of the estimate of the genetic variance of the causal SNPs as LD decreases with the observed SNPs.
+However in terms of their contribution to complex traits a more important metric might be the proportion of the variance that the epistatic loci explain \cite{Hill2008a}. Ideally one would approach this question from a whole genome perspective \cite{Visscher2008} but this is intractable for non-additive variance components. Nevertheless, some inference can be made from the ascertained effects in these analyses and it is evident that additive variance is overall a larger component than epistatic variance, as has been argued previously \cite{Hill2008a, Crow2010}. Taking the additive effects detected in Powell \emph{et al} (2012) at the $p < 2.91 \times 10^{-16}$ threshold, we calculate that on average they explain 1.73\% of the phenotypic variance of each of the 7339 probes. By contrast, the epistatic variance from the interacting SNPs detected in this study on average explain 0.25\% of phenotypic variance, approximately seven times lower than the additive variance (Methods). There are several caveats to this comparison. Firstly, the ratio of additive to epistatic variance may differ at different effect sizes, and our estimate is determined by the threshold used. Secondly, the power of a 1 \emph{d.f.} test exceeds that of an 8 \emph{d.f.} test. And thirdly, the non-additive variance at causal variants is expected to be underestimated by observed SNPs in comparison to estimates for additive variance, due to differences in the rate of decay of the estimate of the genetic variance of the causal SNPs as LD decreases with the observed SNPs.
 
 
 % \subsection{Discussion}
@@ -295,6 +295,14 @@ The EGCUT study received targeted financing from Estonian Government SF0180142s0
 	\caption{\textbf{Comparison of allele frequencies for 781 SNPs involved in genetic interactions across independent populations} Outliers were removed from the analysis as part of the filtering stage during replication.}
 	\label{fig:allelefreq}
 \end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{compare_vc}
+	\caption{\textbf{Comparison of variance distribution from different cohorts} How does the estimated variance decomposition change in different cohorts? The cumulative proportion of the genetic variance that is additive, dominant, or epistatic for each putative interaction is shown on the $y$-axis. BSGS has 501 interactions whereas Fehrmann and EGCUT have 434 ($x$-axis). The variance estimates are ordered from lowest additive to highest additive proportion. This is done independently for each cohort to depict the distribution of estimated effects.}
+	\label{fig:compare_vc}
+\end{figure}
+
 
 
 
@@ -916,7 +924,7 @@ ABCA7 & ILMN\_1743205 & 19 & rs3752237 & 19 & 1047161 & ABCA7 & rs596183 & 6 & 1
 \end{landscape}
 
 \clearpage
-\section{References}
+% \section{References}
 \bibliography{refs}
 
 \end{document}
