@@ -517,6 +517,16 @@ save(sig, chr_interaction_list, meta, meta_replicated, file="~/repo/eQTL-2D/anal
 
 
 
+chrtab <- subset(a4, !is.na(int1), select=c(probegene, probechr, snp1, snp2, chr1, chr2, pnest, pnest_meta, position1, position2))
+chrtab$dif <- with(chrtab, abs(position2 - position1)) / 1000000
+chrtab$dif[chrtab$probechr != chrtab$chr1 | chrtab$probechr != chrtab$chr2] <- NA
+dim(chrtab)
+head(chrtab)
+chrtab
+
+
+
+
 getInteractionList <- function(a, ci)
 {
 	require(plyr)
