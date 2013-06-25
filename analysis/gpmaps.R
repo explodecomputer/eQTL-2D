@@ -7,48 +7,9 @@ library(plyr)
 library(xtable)
 
 
+#=================================================================================================#
+#=================================================================================================#
 
-plot3dHairballsRep <- function(sig, pg, cissnp, cohort, z=45)
-{
-	# make table of mean phenotypes
-	# AA cis vs 1:nalleles trans
-	# Aa cis vs 1:nalleles trans
-	# aa cis vs 1:nalleles trans
-
-	s <- subset(sig, probegene==pg)
-	snps <- unique(c(s$snp1, s$snp2))
-	stopifnot(cissnp %in% snps)
-	tsnps <- snps[! snps %in% cissnp]
-
-	# transpose the GP map for all where the cis snp is snp2
-
-	temp1 <- subset(s, select=c(snp1, chr1))
-	temp2 <- subset(s, select=c(snp2, chr2))
-	names(temp1) <- names(temp2) <- c("snp", "chr")
-	chrkey <- rbind(temp1, temp2)
-	chrkey <- subset(chrkey, !duplicated(snp))
-
-	nom <- paste("gcm", cohort, sep="")
-
-	l <- list()
-	for(i in 1:nrow(s))
-	{
-		print(gp <- s[[nom]][[i]])
-		snp1 <- cissnp
-		snp2 <- s$snp2[i]
-
-		if(s$snp1[i] != cissnp)
-		{
-			gp <- t(gp)
-			snp2 <- s$snp1[i]
-		}
-		gp <- gp - min(gp, na.rm=T)
-
-		title <- paste("chr", subset(chrkey, snp == cissnp)$chr, "x", subset(chrkey, snp == snp2)$chr)
-		l[[i]] <- plot3dGp(gp, title, cissnp, snp2, z)
-	}
-	do.call(grid.arrange, l)
-}
 
 normaliseGp <- function(g)
 {
@@ -141,18 +102,62 @@ plotTileGp <- function(l)
 	return(p)
 }
 
-plotTileGp2 <- function(l)
+
+plot3dGp <- function(gp, title="", snp1="SNP1", snp2="SNP2", z=-45)
 {
-	p <- ggplot(l, aes(x=snp2, y=snp1, fill=y)) + 
-	geom_tile() + 
-	facet_grid(code3 ~ cohort) + 
-	theme(strip.text = element_text(size = 6), 
-		axis.ticks.y = element_line(0),
-		axis.text.y = element_text(size=0),
-		legend.position = "none") + 
-	xlab("SNP 2") + 
-	ylab(NULL)
+	p <- cloud(
+		gp, # This has to be a table!?
+		panel.3d.cloud=panel.3dbars, 
+		col="black", 
+		col.facet=c("#e5f5e0", "#A1D99B", "#31A354"), 
+		# col.facet=c("#31A354"), 
+		xbase=0.4, 
+		ybase=0.4,
+		xlab=list(
+			label=snp1, 
+			cex=0.8), 
+		ylab=list(
+			label=snp2, 
+			cex=0.8), 
+		scales=list(
+			arrows=F, 
+			z = list(cex = 0), 
+			y = list(cex = 0.5), 
+			x=list(cex=0.5)),
+		zlab="",
+		cex.title = 0.5,
+		screen = list(
+			z = z, 
+			x = -60, 
+			y = 3),
+		main = list(
+			label=title, 
+			cex=0.8)
+	)
 	return(p)
+}
+
+
+plot3dGpGrid <- function(dat, dataset, cischr, z)
+{
+	l <- list()
+	index <- unique(dat$index)
+	j <- 1
+	for(i in index)
+	{
+		a <- subset(dat, index == i & cohort == dataset)
+		print(head(a))
+		gp <- matrix(a$y, 3, 3)
+		gp <- gp - min(gp, na.rm=T)
+		gp <- as.table(gp)
+		rownames(gp) <- colnames(gp) <- c("0", "1", "2")
+		m <- paste("Chr", a$chr1[1], "x", a$chr2[1], "\n", a$s1[1], "x", a$s2[1])
+		sl1 <- ifelse(a$chr1[1] == cischr, "cis", "trans")
+		sl2 <- ifelse(a$chr2[1] == cischr, "cis", "trans")
+		zi <- ifelse(is.na(z[i]), -45, z[i])
+		l[[i]] <- plot3dGp(as.table(gp), title=m, snp1=sl1, snp2=sl2, z=zi)
+	}
+	do.call(grid.arrange, l)
 }
 
 
@@ -215,152 +220,32 @@ plot1
 #=================================================================================================#
 
 
-plot3dGp <- function(gp, title="", snp1="SNP1", snp2="SNP2", z=-45)
-{
-	p <- cloud(
-		gp, 
-		panel.3d.cloud=panel.3dbars, 
-		col="black", 
-		col.facet=c("#e5f5e0", "#A1D99B", "#31A354"), 
-		xbase=0.6, 
-		ybase=0.6,
-		xlab=list(label=snp1, cex=0.8), 
-		ylab=list(label=snp2, cex=0.8), 
-		scales=list(arrows=F, z = list(cex = 0), y = list(cex = 0.5), x=list(cex=0.5)),
-		zlab="",
-		cex.title = 0.5,
-		screen = list(z = z, x = -60, y = 3),
-		main = title
-	)
-	return(p)
-}
-
-plot3dGpGrid <- function(dat, dataset)
-{
-	l <- list()
-	index <- unique(dat$index)
-	j <- 1
-	for(i in index)
-	{
-		a <- subset(dat, index == i & cohort == dataset)
-		print(head(a))
-		gp <- matrix(a$y, 3, 3)
-		gp <- gp - min(gp, na.rm=T)
-		l[[i]] <- plot3dGp(as.table(gp), title=as.character(i), snp1=a$s1[1], snp2=a$s2[1])
-	}
-	do.call(grid.arrange, l)
-}
-
-
-
-mbnl1 <- subset(datHeatmapGp(subset(sig, probegene == "MBNL1")), cohort == "BSGS")
-mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
-mbnl1 <- GpMod(mbnl1, 2, "BSGS", flipGpRow)
-mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
-mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
-mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
-mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
-mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
-mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpRow)
-
-plot3dGpGrid(mbnl1, "BSGS")
-
-
-gp <- matrix(1:9, 3, 3) / 9
-gp
-as.table(gp)
-
-plot3dGp(as.table(gp))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-temp <- subset(sig, probegene == "MBNL1")
-temp <- subset(temp, !duplicated(paste(chr1, chr2)) & !is.na(pnest_egcut) & !is.na(pnest_fehr))
-mbnl1 <- datHeatmapGp(temp)
-mbnl1 <- GpMod(mbnl1, 1, "BSGS", flipGpCol)
-mbnl1 <- GpMod(mbnl1, 2, "BSGS", rotateGp, rotateGp)
-mbnl1 <- GpMod(mbnl1, 3, "BSGS", flipGpCol)
-mbnl1 <- GpMod(mbnl1, 4, "BSGS", rotateGp, rotateGp)
-mbnl1 <- GpMod(mbnl1, 5, "BSGS", flipGpCol)
-mbnl1 <- GpMod(mbnl1, 6, "BSGS", flipGpRow)
-mbnl1 <- GpMod(mbnl1, 6, "Fehrmann", flipGpCol)
-mbnl1 <- GpMod(mbnl1, 7, "BSGS", rotateGp, rotateGp)
-mbnl1 <- GpMod(mbnl1, 8, "BSGS", rotateGp, rotateGp)
-mbnl1 <- GpMod(mbnl1, 9, "BSGS", flipGpCol)
-mbnl1 <- GpMod(mbnl1, 10, "BSGS", flipGpCol)
-mbnl1 <- GpMod(mbnl1, 11, "BSGS", flipGpCol)
-mbnl1 <- GpMod(mbnl1, 12, "BSGS", rotateGp, rotateGp)
-mbnl1 <- GpMod(mbnl1, 12, "Fehrmann", flipGpRow)
-mbnl1 <- GpMod(mbnl1, 13, "BSGS", flipGpCol)
-mbnl1 <- GpMod(mbnl1, 14, "BSGS", flipGpCol)
-mbnl1 <- GpMod(mbnl1, 14, "Fehrmann", flipGpRow)
-
-index <- match(mbnl1$code, sig$code)
-replicates <- rep("", length(index))
-replicates[with(sig[index, ], pnest_fehr > upper_fehr | pnest_egcut > upper_egcut)] <- "*"
-replicates[with(sig[index, ], pnest_fehr > upper_fehr & pnest_egcut > upper_egcut)] <- "**"
-mbnl1$code4 <- paste(sig$chr1[index], "x", sig$chr2[index], replicates)
-mbnl1 <- subset(mbnl1, !is.na(y))
-mbnl1$code3 <- mbnl1$code4
-
-plotTileGp(mbnl1)
-
-
-
-plot3dHairballsRep(sig, "TMEM149", "rs8106959", "", z=-45)
-plot3dHairballsRep(sig, "TMEM149", "rs8106959", "_egcut", z=45)
-plot3dHairballsRep(sig, "TMEM149", "rs8106959", "_fehr", z=45)
-
-pdf("~/repo/eQTL-2D/analysis/images/MBNL1.pdf", width=20, height=20)
-plot3dHairballsRep(subset(sig, code %in% mbnl1$code), "MBNL1", "rs13069559", "", z=-135)
+MBNL1 <- subset(datHeatmapGp(subset(sig, probegene == "MBNL1")), cohort == "BSGS")
+pdf(file="~/repo/eQTL-2D/analysis/images/MBNL1_3d.pdf", width=10, height=10)
+plot3dGpGrid(MBNL1, "BSGS", 3, c(45))
 dev.off()
 
-plot3dHairballsRep(subset(sig, code %in% mbnl1$code), "MBNL1", "rs13069559", "_egcut", z=45)
-plot3dHairballsRep(subset(sig, code %in% mbnl1$code), "MBNL1", "rs13069559", "_fehr", z=45)
+TMEM149 <- subset(datHeatmapGp(subset(sig, probegene == "TMEM149")), cohort == "BSGS")
+pdf(file="~/repo/eQTL-2D/analysis/images/TMEM149_3d.pdf", width=10, height=12.5)
+plot3dGpGrid(TMEM149, "BSGS", 19, c(-45, rep(135, 14), 45, 135, 135))
+dev.off()
 
-adk <- subset(sig, probegene=="ADK")[1,]
+CAST <- subset(datHeatmapGp(subset(sig, probegene == "CAST")), cohort == "BSGS")
+pdf(file="~/repo/eQTL-2D/analysis/images/CAST_3d.pdf", width=10, height=10)
+plot3dGpGrid(CAST, "BSGS", 5, c(rep(135, 4), 225, 135, 135, 225, 225, 135, 135, 135, 225, 135, 135))
+dev.off()
 
-par(mfrow=c(2,2))
-print(plot3dGp(adk$gcm[[1]], z=45))
-print(plot3dGp(adk$gcm_fehr[[1]], z=45))
-print(plot3dGp(adk$gcm_egcut[[1]], z=45))
+NAPRT1 <- subset(datHeatmapGp(subset(sig, probegene == "NAPRT1")), cohort == "BSGS")
+pdf(file="~/repo/eQTL-2D/analysis/images/NAPRT1_3d.pdf", width=7.5, height=7.5)
+plot3dGpGrid(NAPRT1, "BSGS", 8, c(135, 135, 135, 135, 45, 135, 135, 45))
+dev.off()
 
-
-
-m <- subset(marginal_list, pval < 10^-15.51 & chr %in% 1:22)
-dim(m)
-m1 <- subset(m, !duplicated(probename) & probename %in% probeinfo$PROBE_ID)
-dim(m1)
-m2 <- merge(m1, probeinfo, by.x="probename", by.y="PROBE_ID")
-m3 <- subset(m2, CHR %in% 1:22)
-dim(m3)
-m3 <- subset(m3, !duplicated(ILMN_GENE))
-dim(m3)
-
-517 to 453
-
-vg <- 
+TRAPPC5 <- subset(datHeatmapGp(subset(sig, probegene == "TRAPPC5")), cohort == "BSGS")
+pdf(file="~/repo/eQTL-2D/analysis/images/TRAPPC5_3d.pdf", width=10, height=10)
+plot3dGpGrid(TRAPPC5, "BSGS", 19, c(-45, 225, -45, -45, -45, 225))
+dev.off()
 
 
-
-
-
-
+#=================================================================================================#
+#=================================================================================================#
 
