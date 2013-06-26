@@ -246,6 +246,15 @@ plot3dGpGrid(TRAPPC5, "BSGS", 19, c(-45, 225, -45, -45, -45, 225))
 dev.off()
 
 
+
+
+SH3BGRL2 <- subset(datHeatmapGp(subset(sig, probegene == "SH3BGRL2")), cohort == "BSGS")
+plot3dGpGrid(SH3BGRL2, "BSGS", 8, c(NA))
+
+THBS3 <- subset(datHeatmapGp(subset(sig, probegene == "THBS3")), cohort == "BSGS")
+plot3dGpGrid(THBS3, "BSGS", 1, c(NA))
+
+
 #=================================================================================================#
 #=================================================================================================#
 

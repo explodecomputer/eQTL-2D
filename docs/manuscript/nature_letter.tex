@@ -66,7 +66,7 @@ Methods are now available to overcome the computational problems involved in sea
 
 
 % \subsection{Initial search in discovery set and replication}
-In our discovery dataset (Brisbane Systems Genetics Study, BSGS \cite{Powell2012}) of 846 individuals genotyped at 528,509 SNPs, we exhaustively tested every pair of SNPs for genetic interactions against each of 7339 expression traits in whole blood. After stringent filtering and multiple testing correction (Methods) we identified 501 putative genetic interactions influencing the expression levels of 238 genes. Of the 501 discovery interactions, 434 had available data and passed filtering (Methods) in two independent replication datasets, Fehrmann \cite{Fehrmann2011} and the Estonian Genomics Centre University of Tartu (EGCUT) \cite{Metspalu2004}, in which we saw convincing evidence for replication. We used the summary statistics from the replication datasets to perform a meta analysis to obtain an independent $p$-value for the putative interactions, and 30 were significant after applying a Bonferroni correction for multiple testing (Table \ref{tab:bonferroni}). These significant interactions exhibited remarkable similarity in GP maps between all three datasets (Figure \ref{fig:gpmaps}).
+In our discovery dataset (Brisbane Systems Genetics Study, BSGS \cite{Powell2012}) of 846 individuals genotyped at 528,509 SNPs, we exhaustively tested every pair of SNPs for genetic interactions against each of 7339 expression traits in whole blood. After stringent filtering and multiple testing correction (Methods) we identified 501 putative genetic interactions influencing the expression levels of 238 genes (Supplementary Table \ref{tab:results}). Of the 501 discovery interactions, 434 had available data and passed filtering (Methods) in two independent replication datasets, Fehrmann \cite{Fehrmann2011} and the Estonian Genomics Centre University of Tartu (EGCUT) \cite{Metspalu2004}, in which we saw convincing evidence for replication. We used the summary statistics from the replication datasets to perform a meta analysis to obtain an independent $p$-value for the putative interactions, and 30 were significant after applying a Bonferroni correction for multiple testing (Table \ref{tab:bonferroni}). These significant interactions exhibited remarkable similarity in GP maps between all three datasets (Figure \ref{fig:gpmaps}).
 
 In addition, we observed that 316 of the remaining 404 discovery SNPs had replication interaction $p$-values exceeding the one-tailed 2.5\% confidence interval under the null distribution of no effects ($p << 1.0 \times 10^{-16}$, Figure \ref{fig:qqMeta} and Supplementary Figure \ref{fig:qqMetaNonsig}). The congruence of the epistatic networks in discovery and replication datasets is shown in Figure \ref{fig:fireworks}, demonstrating that these complex genetic patterns are common even across independent datasets. A further replication was attempted using the Centre for Health Discovery and Wellbeing (CHDWB) dataset \cite{Preininger2013}, but only 185 of the SNP pairs passed filtering because the sample size was small ($n=139$), and likely due to insufficient power we found no evidence for replication. It should be noted that although it is a necessary step to establish the veracity of the signals from the discovery set, replication of epistasis is theoretically difficult because the dependence on LD between observed SNPs and causal variants is up to four orders of magnitude higher than it is for independent additive effects \cite{Weir2008, Hemani2013}. Therefore these results are encouraging with regards to the detection and replication of epistasis.
 
@@ -101,7 +101,7 @@ We searched for pairwise epistasis exhaustively in the BSGS discovery dataset \c
 
 We are grateful to the volunteers for their generous participation in these studies. We thank Bill Hill, Chris Haley and Lars Ronnegard for helpful discussions and comments.
 
-This work could not have been completed without access to high performance GPGPU compute clusters. We acknowledge iVEC for the use of advanced computing resources located at iVEC@UWA (www.ivec.org), and the Multi-modal Australian ScienceS Imaging and Visualisation Environment (MASSIVE) (www.massive.org.au). We also acknowledge Jake Carroll and Irek Porebski from the Queensland Brain Institute Information Technology Group for HPC support.
+This work could not have been completed without access to high performance GPGPU compute clusters. We acknowledge iVEC for the use of advanced computing resources located at iVEC@UWA (www.ivec.org), and the Multi-modal Australian ScienceS Imaging and Visualisation Environment (MASSIVE) (www.massive.org.au). We also thank Jake Carroll and Irek Porebski from the Queensland Brain Institute Information Technology Group for HPC support.
 
 The University of Queensland group is supported by the Australian Research Council (DP130102666, DE130100691), the Australian National Health and Medical Research Council (APP1011506, APP1047956, APP1048853) and the National Institutes of Health (GM099568, GM075091).
 
@@ -226,8 +226,8 @@ The EGCUT study received targeted financing from Estonian Government SF0180142s0
 
 \begin{figure}
 	\centering
-	\includegraphics[width=5in]{OLapWithGenomicFeaturesFinal}
-	\caption{\textbf{Location of SNPs relative to genomic features} All SNPs within 1kb and $r^2 > 0.8$ of each \emph{cis}- and \emph{trans}-SNP were taken to find which genomic features (\emph{x}-axis) were covered by the SNPs that compose the 501 significant interactions. Green bars represent the proportion (\emph{y}-axis) of the 528,509 SNPs used in the analysis that fall within the range of the different genomic features. There is enrichment for \emph{cis}-acting SNPs (red bars) in promotor regions, but \emph{trans}-acting SNPs (blue bars) are not enriched for genomic features.}
+	\includegraphics[width=5in]{ChromatinStatesOverlap}
+	\caption{\textbf{Location of SNPs relative to genomic features} All SNPs within 1Mb and $r^2 > 0.8$ of each \emph{cis}- and \emph{trans}-SNP were taken to find which genomic features (\emph{x}-axis) were covered by the SNPs that compose the 501 significant interactions. Green bars represent the proportion (\emph{y}-axis) of the 528,509 SNPs used in the analysis that fall within the range of the different genomic features. There is enrichment for \emph{cis}-acting SNPs (red bars) in promotor regions, but \emph{trans}-acting SNPs (blue bars) are not enriched for genomic features. The labels on the $x$-axis are as follows: TSS = Predicted promoter region including TSS, PF = Predicted promoter flanking region, E = Predicted enhancer, WE = Predicted weak enhancer or open chromatin cis regulatory element, CTCF = CTCF enriched element, T = Predicted transcribed region, R = Predicted Repressed or Low Activity region}
 	\label{fig:snplocations}
 \end{figure}
 \clearpage
@@ -320,6 +320,7 @@ The EGCUT study received targeted financing from Estonian Government SF0180142s0
 {\tiny
 
 \begin{ThreePartTable}
+\label{tab:results}
 \begin{longtable}{|llr|lrrl|lrrl|rrrr|r|}
 
 \caption{\textbf{Details on 501 interactions discovered in BSGS dataset}}\\
