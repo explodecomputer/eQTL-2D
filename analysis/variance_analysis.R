@@ -6,14 +6,20 @@ library(ggplot2)
 #================================================================================#
 
 
-standardiseVg <- function(dat)
+summariseVg <- function(dat)
 {
-	vG <- apply(dat, 1, sum)
-	dat <- dat / vG
 	dat <- as.data.frame(dat)
 	dat$varA <- dat$a. + dat$.a
 	dat$varD <- dat$d. + dat$.d
 	dat$varI <- dat$aa + dat$ad + dat$da + dat$dd
+	return(dat)	
+}
+
+standardiseVg <- function(dat)
+{
+	vG <- apply(dat, 1, sum)
+	dat <- dat / vG
+	dat <- summariseVg(dat)
 	return(dat)
 }
 
@@ -112,12 +118,15 @@ bsgs <- do.call(rbind, sig$vc)
 fehr <- do.call(rbind, sig$vc_fehr)
 egcut <- do.call(rbind, sig$vc_egcut)
 
-bsgs <- standardiseVg(bsgs)
-fehr <- standardiseVg(fehr)
-egcut <- standardiseVg(egcut)
+bsgs <- summariseVg(bsgs)
+fehr <- summariseVg(fehr)
+egcut <- summariseVg(egcut)
 
 dat <- sortVar(bsgs, fehr, egcut, "fehr")
 dat2 <- sortVar2(bsgs, fehr, egcut)
+
+dat3 <- dat2[with(dat2, order(dataset, Component, Variance)), ]
+dat3$index <- rep(1:501, 9)
 
 
 #================================================================================#
@@ -127,11 +136,19 @@ dat2 <- sortVar2(bsgs, fehr, egcut)
 plotvarG(dat2)
 ggsave(file="~/repo/eQTL-2D/analysis/images/compare_vc.pdf", width=7, height=7)
 
+ggplot(dat3, aes(y=Variance, x=index)) +
+	geom_bar(stat="identity", position=position_stack(width=0)) +
+	ylab("Proportion of phenotypic variance explained") + 
+	xlab("") +
+	facet_grid(Component ~ dataset, scales="free_y")
+ggsave(file="~/repo/eQTL-2D/analysis/images/compare_vc2.pdf", width=7, height=7)
+
+
 #================================================================================#
 #================================================================================#
 
 
-
+ggplot(dat2, aes(x=Variance)) + geom_histogram(binwidth=0.01) + facet_grid(dataset ~ Component)
 
 
 

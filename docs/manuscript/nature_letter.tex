@@ -74,7 +74,7 @@ In addition, using the meta analysis from the replication samples only, we obser
 % \subsection{Patterns of epistasis}
 Though seldom the focus of association studies, SNPs with known main effects are often tested for additive $\times$ additive genetic interactions \cite{Cordell2009}, but our analysis shows that this is unlikely to be the most effective strategy for its detection. The majority of our discovery interactions comprised of one SNP that was significantly associated with the gene expression level in the discovery dataset, and one SNP that had no previous association \cite{Powell2013} (439 out of 501, Methods). Only nine interactions were between SNPs that both had known main effects while 64 were between SNPs that had no known main effects. Additionally, we observed that the largest epistatic variance component for the 501 interactions was equally divided amongst additive $\times$ additive, additive $\times$ dominance, dominance $\times$ additive and dominance $\times$ dominance at the discovery stage ($p = 0.22$ for departure from expectation). This is not surprising because the patterns of epistasis used for statistical decomposition are not designed to resemble biological function \cite{Cockerham1954}.
 
-Of the discovery interactions, 47 were \emph{cis}-\emph{cis} acting (both SNPs were on the same chromosome as the expression gene), 441 were \emph{cis}-\emph{trans}-acting, and 13 were \emph{trans}-\emph{trans}-acting. We observed a wide range of significant GP maps (Figure \ref{fig:gpmaps}) but the most common pattern of epistasis that we detected involved a \emph{trans}-SNP masking the effect of an additive \emph{cis}-SNP. For example, MBNL1 (involved in RNA modification and regulation of splicing \cite{Ho2004}) has a \emph{cis} effect at rs13069559 which in turn is controlled by 13 \emph{trans}-SNPs and one \emph{cis}-SNP that each exhibit a masking pattern, such that when the \emph{trans}-SNP is homozygous for the masking allele the decreasing allele of the \emph{cis}-SNP no longer has an effect (Supplementary Figure \ref{fig:MBNL1_3D}. Each of these interactions have evidence for replication in at least one dataset and six are significant at the Bonferroni level (Supplementary Figure \ref{fig:circleplots}). We see similar epistatic networks involving multiple \emph{trans}-acting SNPs for other gene expresson levels too, for example TMEM149 (Supplementary Figure \ref{fig:TMEM149_3D}), NAPRT1 (Supplementary Figure \ref{fig:NAPRT1_3D}), TRAPPC5 (Supplementary Figure \ref{fig:TRAPPC5_3D}), and CAST (Supplementary Figure \ref{fig:CAST_3D}).
+Of the discovery interactions, 47 were \emph{cis}-\emph{cis} acting (both SNPs were on the same chromosome as the expression gene), 441 were \emph{cis}-\emph{trans}-acting, and 13 were \emph{trans}-\emph{trans}-acting. We observed a wide range of significant GP maps (Figure \ref{fig:gpmaps}) but the most common pattern of epistasis that we detected involved a \emph{trans}-SNP masking the effect of an additive \emph{cis}-SNP. For example, MBNL1 (involved in RNA modification and regulation of splicing \cite{Ho2004}) has a \emph{cis} effect at rs13069559 which in turn is controlled by 13 \emph{trans}-SNPs and one \emph{cis}-SNP that each exhibit a masking pattern, such that when the \emph{trans}-SNP is homozygous for the masking allele the decreasing allele of the \emph{cis}-SNP no longer has an effect (Supplementary Figure \ref{fig:MBNL1_3D}. Each of these interactions have evidence for replication in at least one dataset and six are significant at the Bonferroni level (Supplementary Figure \ref{fig:circleplots}). We see similar epistatic networks involving multiple (eight or more) \emph{trans}-acting SNPs for other gene expresson levels too, for example TMEM149 (Supplementary Figure \ref{fig:TMEM149_3D}), NAPRT1 (Supplementary Figure \ref{fig:NAPRT1_3D}), TRAPPC5 (Supplementary Figure \ref{fig:TRAPPC5_3D}), and CAST (Supplementary Figure \ref{fig:CAST_3D}). We observed that these five gene expression phenotypes had whole-genome non-additive variance component estimates within the 95th percentile of the 17,994 gene expression phenotypes that were analysed in Powell \emph{et al} 2013 (Supplementary Table \ref{tab:vc}, Methods) \cite{Powell2013}.
 
 
 % \subsection{Functional annotation}
@@ -86,11 +86,11 @@ We also demonstrate spacial organisation of interacting loci suggesting a mechan
 % \subsection{Contribution of epistatic variance}
 Though we present many instances of epistasis, quantifying its relative importance to complex traits in humans remains an open question. In this study we are able to identify 238 gene expression traits with at least one significant interaction given our experiment-wide threshold. How does this compare to the number of traits influenced by additive effects? The BSGS dataset has been previously analysed for additive effects at all expression traits \cite{Powell2012}, and if we take all the additive eQTLs that were significant at the epistatic threshold of $p < 2.91 \times 10^{-16}$ we find that 453 gene expression levels out of the 7339 analysed had at least one significant expression quantitative trait locus (eQTL). Therefore it can be argued that the number of instances of detectable epistasis are substantial.
 
-However in terms of their contribution to complex traits a more important metric might be the proportion of the variance that the epistatic loci explain \cite{Hill2008a}. Ideally one would approach this question from a whole genome perspective \cite{Visscher2008} but this is intractable for non-additive variance components. Nevertheless, some inference can be made from the ascertained effects in these analyses and it is evident that additive variance is overall a larger component than epistatic variance, as has been argued previously \cite{Hill2008a, Crow2010}. Taking the additive effects detected in Powell \emph{et al} (2012) at the $p < 2.91 \times 10^{-16}$ threshold, we calculate that on average they explain 1.73\% of the phenotypic variance of each of the 7339 probes. By contrast, the epistatic variance from the interacting SNPs detected in this study on average explain 0.25\% of phenotypic variance, approximately seven times lower than the additive variance (Methods). There are several caveats to this comparison. Firstly, the ratio of additive to epistatic variance may differ at different effect sizes, and our estimate is determined by the threshold used. Secondly, the power of a 1 \emph{d.f.} test exceeds that of an 8 \emph{d.f.} test. And thirdly, the non-additive variance at causal variants is expected to be underestimated by observed SNPs in comparison to estimates for additive variance, due to differences in the rate of decay of the estimate of the genetic variance of the causal SNPs as LD decreases with the observed SNPs.
+However in terms of their contribution to complex traits a more important metric might be the proportion of the variance that the epistatic loci explain \cite{Hill2008a}. Ideally one would approach this question from a whole genome perspective \cite{Visscher2008} but this is intractable for non-additive variance components. Nevertheless, some inference can be made from the ascertained effects in these analyses and it is evident that additive variance is overall a larger component than epistatic variance, as has been argued previously \cite{Hill2008a, Crow2010}. Taking the additive effects detected in Powell \emph{et al} (2012) at the $p < 2.91 \times 10^{-16}$ threshold, we calculate that on average they explain 1.73\% of the phenotypic variance of each of the 7339 probes. By contrast, the epistatic variance from the interacting SNPs detected in this study on average explain 0.25\% of phenotypic variance, approximately seven times lower than the additive variance. If we use the effect estimates taken from the Fehrmann or EGCUT datasets to perform the same comparison we obtain ratios of additive to epistatic variance of 36:1 and 34:1, respectively (Supplementary Figure \ref{fig:compare_vc}, Methods). There are several caveats to this comparison. Firstly, the ratio of additive to epistatic variance may differ at different effect sizes, and our estimate is determined by the threshold used. Secondly, the power of a 1 \emph{d.f.} test exceeds that of an 8 \emph{d.f.} test. And thirdly, the non-additive variance at causal variants is expected to be underestimated by observed SNPs in comparison to estimates for additive variance, due to differences in the rate of decay of the estimate of the genetic variance of the causal SNPs as LD decreases with the observed SNPs.
 
 
 % \subsection{Discussion}
-Overall, we have demonstrated that it is possible to identify and replicate epistasis in complex traits amongst common human variants. The bioinformatic analysis of the significant epistatic loci suggests that there are a large number of possible mechanisms that can lead to non-additive genetic variation. Further research into such epistatic effects may provide a useful framework to understanding molecular mechanisms and complex trait variation in greater detail. With computational techniques and data now widely available the search for epistasis in larger datasets for traits of broader interest is warranted.
+Overall, we have demonstrated that it is possible to identify and replicate epistasis in complex traits amongst common human variants, despite the relative contribution of pairwise epistasis to phenotypic variation being small. The bioinformatic analysis of the significant epistatic loci suggests that there are a large number of possible mechanisms that can lead to non-additive genetic variation. Further research into such epistatic effects may provide a useful framework to understanding molecular mechanisms and complex trait variation in greater detail. With computational techniques and data now widely available the search for epistasis in larger datasets for traits of broader interest is warranted.
 
 
 \subsection{Methods Summary}
@@ -298,8 +298,8 @@ The EGCUT study received targeted financing from Estonian Government SF0180142s0
 
 \begin{figure}
 	\centering
-	\includegraphics[width=5in]{compare_vc}
-	\caption{\textbf{Comparison of variance distribution from different cohorts} How does the estimated variance decomposition change in different cohorts? The cumulative proportion of the genetic variance that is additive, dominant, or epistatic for each putative interaction is shown on the $y$-axis. BSGS has 501 interactions whereas Fehrmann and EGCUT have 434 ($x$-axis). The variance estimates are ordered from lowest additive to highest additive proportion. This is done independently for each cohort to depict the distribution of estimated effects.}
+	\includegraphics[width=5in]{compare_vc2}
+	\caption{\textbf{Comparison of variance explained by additive, dominant and epistatic effects from different cohorts} How does the estimated variance decomposition change in different cohorts? The proportion of the phenotypic variance that is additive (A), dominant (D), or epistatic (I) for each putative interaction is shown on the $y$-axis (Note: different scales for each row). BSGS has 501 interactions whereas Fehrmann and EGCUT have 434 ($x$-axis). The variance estimates in each plot are ordered from lowest additive to highest. This is done independently for each cohort to depict the distribution of estimated effects.}
 	\label{fig:compare_vc}
 \end{figure}
 
@@ -889,24 +889,6 @@ ABCA7 & ILMN\_1743205 & 19 & rs3752237 & 19 & 1047161 & ABCA7 & rs596183 & 6 & 1
    \hline
 \end{longtable}
 
-
-% Gene ID\tnote{a} & 
-% Probe ID\tnote{b} & 
-% Chr. & 
-% rs ID & 
-% Chr. & 
-% Position\tnote{c} & 
-% Association\tnote{d} & 
-% rs ID & 
-% Chr. & 
-% Position\tnote{c} & 
-% Association\tnote{d} & 
-% BSGS\tnote{e} & 
-% Fehrmann\tnote{f} & 
-% EGCUT\tnote{f} & 
-% Meta\tnote{g} & 
-% Distance / Mb\tnote{h} \\
-
 \begin{tablenotes}
 \item[a] Phenotypes are expression levels of RefSeq Genes
 \item[b] Illumina probe ID used to measure gene expression
@@ -923,6 +905,32 @@ ABCA7 & ILMN\_1743205 & 19 & rs3752237 & 19 & 1047161 & ABCA7 & rs596183 & 6 & 1
 \end{ThreePartTable}
 }
 \end{landscape}
+
+
+
+\begin{table}[ht]
+\begin{threeparttable}
+\caption{\textbf{Estimation of additive and non-additive variance components from pedigree information}}
+\label{tab:vc}
+\begin{tabular}{llrrrr}
+
+\hline
+& & \multicolumn{2}{c}{Additive} & \multicolumn{2}{c}{Non-additive} \\
+Gene & Probe & Variance & s.e. & Variance & s.e. \\
+\hline
+NAPRT1 & ILMN\_1710752 & 0.37 & 0.03 & 0.14 & 0.05 \\
+  TMEM149 & ILMN\_1786426 & 0.41 & 0.04 & 0.09 & 0.04 \\
+  MBNL1 & ILMN\_2313158 & 0.18 & 0.03 & 0.11 & 0.04 \\
+  TRAPPC5 & ILMN\_2372639 & 0.32 & 0.04 & 0.13 & 0.05 \\
+  CAST & ILMN\_1717234 & 0.31 & 0.03 & 0.10 & 0.04 \\
+\hline
+
+\end{tabular}
+\end{threeparttable}
+\end{table}
+
+
+
 
 \clearpage
 % \section{References}
