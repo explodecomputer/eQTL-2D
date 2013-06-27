@@ -218,37 +218,13 @@ createAverageGp <- function(gcm, gcs)
 
 
 
-
-#=============================================================#
-#=============================================================#
-
-# Read in data
-
-load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
-
-load("~/repo/eQTL-2D/replication/results/replication_GrngHT12v3.RData")
-newsig$code <- with(newsig, paste(probename, snp1, snp2))
-fehr <- mod
-names(fehr) <- newsig$code
-
-load("~/repo/eQTL-2D/replication/results/replication_EGCUT.RData")
-newsig$code <- with(newsig, paste(probename, snp1, snp2))
-egcut <- mod
-names(egcut) <- newsig$code
-
-
-#=============================================================#
-#=============================================================#
-
-# Perform meta analysis on replication data
-
-sig_all <- performMeta(sig_all, egcut, fehr)
+load(file="~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
 
 thresh <- -log10(0.05 / 442)
-with(sig_all, table(filter, pnest_meta > thresh))
-with(sig_all, table(filter, pnest_meta2 > thresh))
-with(sig_all, table(filter, pnest_meta_vc > thresh))
-with(sig_all, table(filter, is.na(pnest_meta)))
+with(meta, table(filter, pnest_meta > thresh))
+with(meta, table(filter, pnest_meta2 > thresh))
+with(meta, table(filter, pnest_meta_vc > thresh))
+with(meta, table(filter, is.na(pnest_meta)))
 
 
 #=============================================================#
@@ -256,19 +232,18 @@ with(sig_all, table(filter, is.na(pnest_meta)))
 
 # Make Q-Q plots for meta analysis
 
-meta <- makeQqDat(sig_all, 0.05, "pnest_meta")
+
 qqPlot(meta, thresh)
-ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaNonsig.pdf", width=15, height=7.5)
+ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaNonsig.pdf", width=10, height=5)
 qqPlot(meta, max(meta$pnest_meta))
-ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaAll.pdf", width=15, height=7.5)
+ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaAll.pdf", width=5, height=10)
 qqPlot2(meta, thresh)
-ggsave(file="~/repo/eQTL-2D/analysis/images/qqMeta.pdf", width=7.5, height=15)
+ggsave(file="~/repo/eQTL-2D/analysis/images/qqMeta.pdf", width=5, height=10)
 
 with(meta, table(filter == 3, pnest_meta > upper))
 with(meta, table(filter == 3, pnest_fehr > upper_fehr))
 with(meta, table(filter == 3, pnest_egcut > upper_egcut))
 
-save(meta, file="~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
 
 
 #=============================================================#
@@ -324,8 +299,12 @@ af_bsgs <- 1 - do.call(rbind, lapply(sig_all$gcs, alleleFreq))
 af_egcut <- do.call(rbind, lapply(sig_all$gcs_egcut, alleleFreq))
 af_fehr <- do.call(rbind, lapply(sig_all$gcs_fehr, alleleFreq))
 
+pdf("~/repo/eQTL-2D/analysis/images/alleleFreq.pdf")
 pairs(data.frame(BSGS = af_bsgs[,1], EGCUT = af_egcut[,1], Fehrmann = af_fehr[,1]))
-pairs(data.frame(BSGS = af_bsgs[,2], EGCUT = af_egcut[,2], Fehrmann = af_fehr[,2]))
+dev.off()
+
+
+pairs(data.frame(BSGS = c(af_bsgs), EGCUT = c(af_egcut), Fehrmann = c(af_fehr)))
 
 
 x_fehr <- cbind(abs(af_bsgs[,1] - af_fehr[,1]), abs(af_bsgs[,2] - af_fehr[,2]))

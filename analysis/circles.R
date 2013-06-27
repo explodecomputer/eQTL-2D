@@ -100,10 +100,11 @@ makeDot <- function(x, gr)
 plotCircos <- function(gr, links, dot)
 {
 	a <- ggplot() + 
+		layout_circle(gr, geom = "ideo", radius = 7, trackWidth = 2, colour="white", fill="white") +
 		layout_circle(gr, geom = "ideo", radius = 6, trackWidth = 1) +
 		layout_circle(links, geom = "link", linked.to = "links2", radius = 3.5, trackwidth = 1, aes(colour=col)) +
-		layout_circle(dot, geom = "point", radius = 6, trackwidth = 1, colour="red", size=3, aes(y = score)) +
-		layout_circle(dot, geom = "text", radius = 7, trackWidth = 1, colour = "black", size=2.5, aes(label = gene)) +
+		layout_circle(dot, geom = "point", radius = 4, trackwidth = 0, colour="red", size=2, aes(y = score)) +
+		layout_circle(dot, geom = "text", radius = 7.2, trackWidth = 1, colour = "black", size=3, aes(label = gene)) +
 		scale_colour_manual(values=c("light grey", "blue", "red"), drop = FALSE) +
 		theme(legend.position="false")
 
@@ -114,8 +115,8 @@ plotCircos <- function(gr, links, dot)
 linkColour <- function(sig)
 {
 	sig$rep <- 0
-	sig$rep[sig$pnest_fehr > sig$upper_fehr | sig$pnest_egcut > sig$upper_egcut] <- 1
-	sig$rep[sig$pnest_fehr > sig$upper_fehr & sig$pnest_egcut > sig$upper_egcut] <- 2
+	sig$rep[sig$pnest_meta > sig$upper] <- 1
+	sig$rep[sig$pnest_meta > -log10(0.05/nrow(sig))] <- 2
 	sig$rep <- as.factor(sig$rep)
 	return(sig)
 }
@@ -141,9 +142,9 @@ multipleSnps <- function(sig)
 
 # Load data 
 
-load("~/repo/eQTL-2D/analysis/interaction_list_replication_summary.RData")
+load("~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
+sig <- subset(meta, filter != 3)
 sig <- linkColour(sig)
-sig <- subset(sig, filter != 3)
 
 # Circles 
 
@@ -151,18 +152,7 @@ gr <- makeGr()
 index <- table(sig$probename)
 sig_mult <- subset(sig, probename %in% names(index)[index > 3])
 
-thresh <- -log10(0.05 / 549)
-
-sig_mult2 <- subset(sig, pnest_egcut > thresh | pnest_fehr > thresh)
-sig_mult2$rep <- 1
-sig_mult2$rep[sig_mult2$pnest_fehr > thresh & sig_mult2$pnest_egcut > thresh] <- 2
-sig_mult2 <- subset(sig_mult2, !is.na(vc_fehr))
-sig_mult2$rep <- as.factor(sig_mult2$rep)
-
-# sig_mult <- subset(sig, probegene == "MBNL1")
-# links <- makeLinks(sig_mult[1:13,], gr)
-
-a <- dlply(sig_mult, .(probename), .progress="text", function(x)
+a <- dlply(subset(sig_mult), .(probename), .progress="text", function(x)
 {
 	x <- mutate(x)
 	links <- makeLinks(x, gr)
@@ -171,74 +161,7 @@ a <- dlply(sig_mult, .(probename), .progress="text", function(x)
 	return(a)
 })
 
-b <- dlply(sig_mult2, .(probename), .progress="text", function(x)
-{
-	x <- mutate(x)
-	links <- makeLinks(x, gr)
-	dot <- makeDot(x, gr)
-	a <- plotCircos(gr, links, dot)
-	return(a)
-})
-
-
-pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication2.pdf", width=25, height=20)
-multiplot(plotlist=a, cols=6)
+pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication2.pdf", width=10, height=8)
+multiplot(plotlist=a, cols=5)
 dev.off()
 
-
-pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication_bonf.pdf", width=25, height=20)
-multiplot(plotlist=b, cols=5)
-dev.off()
-
-
-
-key <- subset(sig, !duplicated(probename), select=c(probename, probegene))
-nom <- subset(key, duplicated(probegene))$probename
-
-sig2 <- subset(sig, ! probename %in% nom)
-
-# More circles
-a <- subset(sig2, select=c(snp1, snp2))
-names(a) <- c("from", "to")
-a$thickness <- 1
-a$col <- as.character(sig2$rep)
-a$col[a$col == 0] <- "white"
-a$col[a$col == 1] <- "black"
-a$col[a$col == 2] <- "black"
-a$col2 <- a$col
-a$col2[sig2$rep == 1] <- "white"
-a$col3 <- as.character(sig2$rep)
-a$col3[a$col3 == 0] <- ""
-a$col3[a$col3 == 1] <- "black"
-a$col3[a$col3 == 2] <- "red"
-a$thickness2 <- a$thickness
-a$thickness2[a$col3 == "red"] <- 1.5
-a$cistrans <- "blue"
-a$cistrans[sig2$c]
-
-
-pdf(file="~/repo/eQTL-2D/analysis/images/hairballs_all.pdf")
-qgraph(a, curve=0.1, borders=FALSE, esize=1, color="grey", edge.color=a$thickness, labels=FALSE, vsize=0.2, arrows=FALSE)
-dev.off()
-pdf(file="~/repo/eQTL-2D/analysis/images/hairballs_rep.pdf")
-qgraph(a, curve=0.1, borders=FALSE, esize=1, color="grey", edge.color=a$col, labels=FALSE, vsize=0.2, arrows=FALSE)
-dev.off()
-pdf(file="~/repo/eQTL-2D/analysis/images/hairballs_rep2.pdf")
-qgraph(a, curve=0.1, borders=FALSE, esize=1, color="grey", edge.color=a$col2, labels=FALSE, vsize=0.2, arrows=FALSE)
-dev.off()
-pdf(file="~/repo/eQTL-2D/analysis/images/hairballs_allrep.pdf")
-qgraph(a, curve=0.1, borders=FALSE, esize=a$thickness2, color="grey", edge.color=a$col3, labels=FALSE, vsize=0.2, arrows=FALSE)
-dev.off()
-
-pdf(file="~/repo/eQTL-2D/analysis/images/hairballs_all_reps.pdf", width=18, height=6)
-par(mfrow=c(1,3))
-qgraph(a, curve=0.1, borders=FALSE, esize=1, color="red", edge.color=a$thickness, labels=FALSE, vsize=0.3, arrows=FALSE)
-qgraph(a, curve=0.1, borders=FALSE, esize=1, color="red", edge.color=a$col, labels=FALSE, vsize=0.2, arrows=FALSE)
-qgraph(a, curve=0.1, borders=FALSE, esize=1, color="red", edge.color=a$col2, labels=FALSE, vsize=0.2, arrows=FALSE)
-dev.off()
-
-
-# Are there SNP pairs that affect more than one probe?
-m <- multipleSnps(sig)
-
-# in all cases this is because the different probes tag the same gene
