@@ -43,7 +43,7 @@ The parameters $\sigma_a^2$ and $\sigma_e^2$ are variance components for additiv
 
 \section{Exhaustive 2D-eQTL analysis}
 
-We used epiGPU \cite{Hemani2011} software to perform an exhaustive scan for pairwise interactions, such that each SNP is tested against all other SNPs for statistical association with the expression values for each of the 7339 probes. For each SNP pair there are 9 possible genotype classes. We treat each genotype class as a fixed effect and fit an 8 \emph{d.f.} $F$-test to test the following hypotheses:
+We used epiGPU \cite{Hemani2011} software to perform an exhaustive scan for pairwise interactions, such that each SNP is tested against all other SNPs for statistical association with the expression values for each of the 7339 probes. This uses the massively parallel computational architecture of graphical processing units (GPUs) to speed up the exhaustive search. For each SNP pair there are 9 possible genotype classes. We treat each genotype class as a fixed effect and fit an 8 \emph{d.f.} $F$-test to test the following hypotheses:
 
 \begin{equation}
 H _0 : \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \mu) ^2 = 0; 
