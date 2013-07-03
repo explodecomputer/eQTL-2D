@@ -43,7 +43,7 @@ The parameters $\sigma_a^2$ and $\sigma_e^2$ are variance components for additiv
 
 \section{Exhaustive 2D-eQTL analysis}
 
-We used epiGPU \cite{Hemani2011} software to perform an exhaustive scan for pairwise interactions, such that each SNP is tested against all other SNPs for statistical association with the expression values for each of the 7339 probes. For each SNP pair there are 9 possible genotype classes. We treat each genotype class as a fixed effect and fit an 8 \emph{d.f.} $F$-test to test the following hypotheses:
+We used epiGPU \cite{Hemani2011} software to perform an exhaustive scan for pairwise interactions, such that each SNP is tested against all other SNPs for statistical association with the expression values for each of the 7339 probes. This uses the massively parallel computational architecture of graphical processing units (GPUs) to speed up the exhaustive search. For each SNP pair there are 9 possible genotype classes. We treat each genotype class as a fixed effect and fit an 8 \emph{d.f.} $F$-test to test the following hypotheses:
 
 \begin{equation}
 H _0 : \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \mu) ^2 = 0; 
@@ -87,13 +87,20 @@ The 4 \emph{d.f.} interaction $p$-values for each independent replication datase
 
 
 
-\section{Additive vs epistatic variance comparison}
+\section{Additive and non-additive variance estimation}
+
+\subsection{Fixed effects}
 
 To compare the relative contribution to the phenotypic variance of gene expression levels between additive and epistatic effects we are constrained by the problem that non-additive variance components for a phenotype cannot be calculated directly. Here, we only have SNP pairs that exceed a threshold of $p < 2.91 \times 10^{-16} = T_{e}$. A strong conclusion cannot be made about the genome-wide variance contribution, but we can compare the variance explained by SNP effects at this threshold for additive scans and epistatic scans. 
 
 In Powell \emph{et al} 2012 \cite{Powell2012} an expression quantitative trait locus (eQTL) study was performed searching for additive effects in the same BSGS dataset as was used for the discovery here. Using the threshold $T_{e}$ for the additive eQTL study, 453 of the 7339 probes analysed here had at least one significant additive effect. Assuming that the phenotypic variance for each of the probes is normalised to 1, the total phenotypic variance of all 7339 explained by the significant additive effects was 1.73\%.
 
 Following the same procedure, at the threshold $T_{e}$ there were 238 gene expression probes with at least one significant pairwise epistatic interaction out of the 7339 tested. In total the proportion of the phenotypic variance explained by the epistatic effects at these SNP pairs was 0.25\%.
+
+
+\subsection{Pedigree estimates}
+
+The gene expression levels for MBNL1, TMEM149, NAPRT1, TRAPPC5 and CAST are influenced by large \emph{cis}-\emph{trans} epistatic networks (eight interactions or more). Though it is not possible to orthogonally estimate the non-additive genetic variance for non-clonal populations, an approximation of a component of non-additive variance can be estimated using pedigree information. The BSGS data is comprised of some related individuals and standard quantitative genetic analysis was used to calculate the additive and dominance variance components for each gene expression phenotype in Powell \emph{et al} 2013 \cite{Powell2013}. The dominance effect is likely to capture additive $\times$ additive genetic variance plus some fraction of other epistatic variance components. We found that the aforementioned genes had dominance variance component estimates within the top 5\% of all 17,994 gene expression probes that were analysed in Powell \emph{et al} 2013.
 
 
 \section{Functional enrichment analysis}

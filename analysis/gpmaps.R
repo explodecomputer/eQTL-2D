@@ -206,6 +206,8 @@ l <- GpMod(l, 15, "EGCUT", flipGpRow)
 l <- GpMod(l, 22, "BSGS", flipGpRow)
 l <- GpMod(l, 22, "EGCUT", flipGpRow)
 l <- GpMod(l, 22, "Fehrmann", flipGpRow)
+l$y <- l$y * -1
+
 
 
 pdf(file="~/repo/eQTL-2D/analysis/images/gpBonfRep.pdf", width=4, height=7)
@@ -213,7 +215,8 @@ plot1 <- plotTileGp(subset(l, code3 %in% 1:15))
 plot2 <- plotTileGp(subset(l, code3 %in% 16:30))
 grid.arrange(plot1, plot2, ncol=2)
 dev.off()
-plot1
+
+
 
 
 #=================================================================================================#
