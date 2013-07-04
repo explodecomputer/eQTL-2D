@@ -112,3 +112,27 @@ qqplot2 <- ggplot(dat2) +
 	theme(legend.position="none")
 ggsave(qqplot2, file="~/repo/eQTL-2D/analysis/images/qqfdr.pdf")
 
+
+
+
+load("~/repo/eQTL-2D/replication/run/gg_replication.RData")
+
+a <- subset(newsig, replication_nclass == 9 & replication_minclass > 4)
+dim(a)
+head(a)
+a$pnest <- a$replication_pnest
+
+dat3 <- qqDat(a, 0.05)
+dat3$ex <- FALSE
+dat3$ex[dat3$pnest > dat3$upper] <- TRUE
+dat3$fake <- "Null"
+dat3$fake[dat3$filter != 3] <- "Observed"
+
+qqplot3 <- ggplot(subset(dat3, filter != 3)) +
+	geom_ribbon(aes(x=expect, ymin=lower, ymax=upper), colour="white", alpha=0.5) +
+	geom_abline(intercept=0, slope=1) +
+	geom_point(aes(x=expect, y=replication_pnest), size=2) +
+	labs(colour="Above FDR 5% CI?", y="Observed", x="Expected") +
+	scale_colour_brewer(type="qual", palette=3) +
+	theme(legend.position="none")
+ggsave(qqplot3, file="~/repo/eQTL-2D/analysis/images/qqgg.pdf")
