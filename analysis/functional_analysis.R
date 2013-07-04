@@ -469,6 +469,28 @@ counts[3] <- sum((!is.na(a3$int1) | !is.na(a3$int2)))
 a4 <- ciOverlap(ci, sig2, 5000000)
 counts[4] <- sum((!is.na(a4$int1) | !is.na(a4$int2)))
 
+chrint <- subset(a4, !is.na(int1), select=c(snp1, snp2, code, position1, position2, chr1, chr2, probegene, int1, int2))
+
+head(chrint)
+chrint$int1[1]
+dim(chrint)
+
+chrint <- ddply(chrint, .(code), function(x)
+{
+	x <- mutate(x)
+	temp <- x$int1[[1]] 
+	temp$a <- abs(temp$loci1_position - x$position1)
+	temp$b <- abs(temp$loci2_position - x$position2)
+	temp$d <- temp$a + temp$b
+	temp <- subset(temp, d == min(d))$cluster[1]
+	return(temp)
+})
+
+names(chrint)[2] <- "cluster"
+save(chrint, file="cluster.RData")
+
+table(chrint$cluster)
+
 
 # Permutations performed on cluster. Plot results
 
