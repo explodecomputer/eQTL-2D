@@ -45,7 +45,7 @@ Epistasis is the process whereby the effect of one genetic loci on a phenotype i
 
 \subsection{Challenges}
 
-[Initially outline the challenges, then address each in turn] \\
+[Initially outline the challenges in the introduction. These can be address through the methods section] \\
 \newline
 1. Computational \\ 
 \newline
@@ -56,14 +56,39 @@ One of the first obstacles that make epistatic searches difﬁcult is the comput
 2. Model choice \\
 \newline
 From a 2d 8df biallelic SNP model there are 4 epistatic variance components; additive x additive, additive x
-dominance, dominance x additive and dominance x dominance. Within the literature there has been considerable discussion as to the likely degree of epistatsis variance components and whether statistical power could be increased by parameterizing models for only a subset. \\  
+dominance, dominance x additive and dominance x dominance. Within the literature there has been considerable discussion as to the likely degree of epistatsis variance components and whether statistical power could be increased by parameterizing models for only a subset. We have shown then estimates of parameters repressenting the 4 variance components are proportionally represented amongst the significant epistatis pairs. This implys a full model is preferential, particularly if we are agonostic about the mechanism by which epistasis might arise. \\  
 \newline
 3. Statistical \\
-A complete exhaustive scan of $m$ phenotypes and $n$ SNPs comprises of $((n*(n-1))^2/2)*m$ $8df$ F-tests. Given the high correlation structure inherent in genotype data as well as between multiple phenotypes, choices regarding multiple testing need to be carefully considered. [what can we say about tails of the distributions?]  \\
 \newline
-4. Interpretation / filtering 
+A complete exhaustive scan of $m$ phenotypes and $n$ SNPs comprises of $((n*(n-1))^2/2)*m$ $8df$ F-tests. Given the high correlation structure inherent in genotype data as well as between multiple phenotypes, choices regarding multiple testing need to be carefully considered. [what can we say about tails of the distributions?]
+[Perhaps this is a good point to outline out a 2-step procedure where main effects are initially corrected for] \\
+The 8df F-test includes parameters for main (additive) effects of the two SNPs. Therefore it is important to test that test statistic isn't driven my marginal effects - something that is quite likely for a trait such as gene expression. Thus one should really consider a nested test.  \\
+\newline
+4. Interpretation / filtering \\
+\newline
+Things to consider and address during the analysis and output, particularly given    
+\newline
+\section{Methods}
 
-The total output from an 
+I think one approach for this paper (which is in keeping with other Nature Protocol manuscripts) is to go through the whole study design and show how we have done things - discussing choices in terms of the challenges mentioned above. For many steps we can show example (pseudo) code or give it in the supporting material  
+
+\subsection{Stages of an epistasis analysis}
+
+\subsubsection{Data}
+
+QC \\
+Normalisation (distributon with respect to models used) \\
+Statistical model choice \\
+
+\subsubsection{Computational / Statistics}
+
+
+
+\subsubsection{Multiple testing}
+
+
+
+
 
 
 
