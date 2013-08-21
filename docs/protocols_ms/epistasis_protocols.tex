@@ -76,28 +76,33 @@ I think one approach for this paper (which is in keeping with other Nature Proto
 
 \subsubsection{Data}
 
-QC - probably want to use a hight MAF cut-off than a standard GWAS in order to as anything with low MAF is going to increase the probability of $p_1^2 * p_2^2 * n$ being less than a required level. \\
+QC - probably want to use a high MAF cut-off than a standard GWAS in order to as anything with low MAF is going to increase the probability of $p_1^2 * p_2^2 * n$ being less than a required level. \\
 Normalisation (distribution with respect to models used). Normal data. Is it worth discussing the potential problems caused by a skew in $y$ and its effect on the tail of the test statistic distribution?  \\
 
 \subsubsection{Computational / Statistics}
 
-Reiterate the distinction between CPU and GPU. I guess we can re-calculate some of the speed differences based on current GPU hardware and show speed difference with relation to cpu based software. (God place for a figure)
+Reiterate the distinction between CPU and GPU. I guess we can re-calculate some of the speed differences based on current GPU hardware and show speed difference with relation to cpu based software. (Good place for a figure)
 
 Outline the 2 stage models; 8df followed by (nested) 4df; or initial correction for main effects followed by a interaction term. This would also be the place to point out the importance of a) running a full 2d scan rather than initially search for marginal effects and b) including all epistasis variance component parameters in the interaction model. 
 
 \subsubsection{Multiple testing}
 
-
+How to deal with multiple testing [what is the current state of your manuscript?]. Using GPUs it's not unrealistic that a researcher with access to a GPU cluster could run a permutation analysis for a single phenotype 2D scan. However, that should compare to your theoretically derived threshold. Therefore, the problem lies when we have multiple, correlated phenotypes such as expression. 
 
 \subsubsection{Potential artifacts}
 
+Remove SNP pairs that are in LD greater than (threshold). Could lead in appearance of effects. Threshold determined based on....?
+
+Population stratification and cryptic relatedness - look for inflation of LD between snp pairs.
 
 
+\section{Discussion}
 
 
 
 
 \end{document}
+
 
 
 
