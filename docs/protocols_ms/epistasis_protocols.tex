@@ -51,12 +51,12 @@ Epistasis is the process whereby the effect of one genetic loci on a phenotype i
 \newline
 [I think it would be worth re-discussing some of the computational problems of 2d scans. and highlighting the software + hardware solutions] \\
 \newline
-One of the first obstacles that make epistatic searches difﬁcult is the computational demands of the statistical analyses. When searching for independent additive effects, as is done for the majority of GWA studies, each SNP is tested for association with the phenotype. However, in order to most powerfully identify epistatic effects, the search must be increased to multiple dimensions (ref). Here the scale of the computational demand increases by $~(n^x)/2$ where $n$ is the numer of snps and $x$ is the number of epistatsis dimensions fitted. For example, testing for 2 loci interactions using SNP data from a 1 million SNP chip would require $1000000 * 999999/2 \approx 5e11$ individual tests. \\     
+One of the first obstacles that make epistatic searches difﬁcult is the computational demands of the statistical analyses. When searching for independent additive effects, as is done for the majority of GWA studies, each SNP is tested for association with the phenotype. However, in order to most powerfully identify epistatic effects, the search must be increased to multiple dimensions (ref). Here the scale of the computational demand increases by $~(n^x)/2$ where $n$ is the number of SNPs and $x$ is the number of epistasis dimensions fitted. For example, testing for 2 loci interactions using SNP data from a 1 million SNP chip would require $1000000 * 999999/2 \approx 5e11$ individual tests. \\     
 \newline 
 2. Model choice \\
 \newline
 From a 2d 8df biallelic SNP model there are 4 epistatic variance components; additive x additive, additive x
-dominance, dominance x additive and dominance x dominance. Within the literature there has been considerable discussion as to the likely degree of epistatsis variance components and whether statistical power could be increased by parameterizing models for only a subset. We have shown then estimates of parameters repressenting the 4 variance components are proportionally represented amongst the significant epistatis pairs. This implys a full model is preferential, particularly if we are agonostic about the mechanism by which epistasis might arise. \\  
+dominance, dominance x additive and dominance x dominance. Within the literature there has been considerable discussion as to the likely degree of epistasis variance components and whether statistical power could be increased by parameterizing models for only a subset. We have shown then estimates of parameters representing the 4 variance components are proportionally represented amongst the significant epistatic pairs. This implies a full model is preferential, particularly if we are agonistic about the mechanism by which epistasis might arise. \\  
 \newline
 3. Statistical \\
 \newline
@@ -66,7 +66,7 @@ The 8df F-test includes parameters for main (additive) effects of the two SNPs. 
 \newline
 4. Interpretation / filtering \\
 \newline
-Things to consider and address during the analysis and output, particularly given    
+Things to consider and address during the analysis and output, particularly given the massive multiple testing and inability to easily evaluate the tails of the test-statistic distribution. Why we require at least 5 (or more) individuals in the smallest classt size for the genotypes. The choice of number is partly based total sample size. Assuming Hardy-Weinberg equilibrium, the frequency of the smallest class size is $p_1^2 * p_2^2$ where $p_1$ and $p_2$ are the frequencies of the minor alleles for SNPs 1 and 2 respectivly.      
 \newline
 \section{Methods}
 
@@ -76,11 +76,14 @@ I think one approach for this paper (which is in keeping with other Nature Proto
 
 \subsubsection{Data}
 
-QC \\
-Normalisation (distributon with respect to models used) \\
-Statistical model choice \\
+QC - probably want to use a hight MAF cut-off than a standard GWAS in order to as anything with low MAF is going to increase the probability of $p_1^2 * p_2^2 * n$ being less than a required level. \\
+Normalisation (distribution with respect to models used). Normal data. Is it worth discussing the potential problems caused by a skew in $y$ and its effect on the tail of the test statistic distribution?  \\
 
 \subsubsection{Computational / Statistics}
+
+Reiterate the distinction between CPU and GPU. I guess we can re-calculate some of the speed differences based on current GPU hardware and show speed difference with relation to cpu based software. (God place for a figure)
+
+Outline the 2 stage models; 8df followed by (nested) 4df; or initial correction for main effects followed by a interection term. This would also be the place to point out the importance of a) running a full 2d scan rather than initially search for marginal effects and b) including all epistasis variance component parameters in the interection model. 
 
 
 
@@ -88,7 +91,7 @@ Statistical model choice \\
 
 
 
-
+\subsubsection{Potential artifacts}
 
 
 
@@ -97,4 +100,5 @@ Statistical model choice \\
 
 
 \end{document}
+
 
