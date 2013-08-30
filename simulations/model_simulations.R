@@ -58,6 +58,7 @@ sim1.fun <- function(
 # Need to apply and have a testable outcome for lack of correlation at the tails. 
 
 
+
 tmp=order(-log10(pval), decreasing=T)
 out <- c()
 for(i in 1:(length(pval)-29)) {
@@ -74,38 +75,53 @@ for(i in 1:(length(pval)-29)) {
 
 sim2.fun <- function(
 	h2, 					# heritability of cis effect
-	thres.8df 	<- 100, 
-	n 			<- 500
+	thres.8df, 
+	n,
+	sim
+	
 	){
 
-
 	NCP <- n*(h2/(1-h2))
+	chi8 <- array(0, sim)
+	chi4 <- array(0, sim)
+	p8 <- array(0, sim)
+	p4 <- array(0, sim)
 
-	# simulate z^2 normal deviates
+	for(i in 1:sim) {
 
-	z1 <- rnorm(1, 0, 1)
-	z2 <- rnorm(1, 0, 1)
-	z3 <- rnorm(1, 0, 1)
-	z4 <- rnorm(1, 0, 1)
-	z5 <- rnorm(1, 0, 1)
-	z6 <- rnorm(1, 0, 1)
-	z7 <- rnorm(1, 0, 1)
+		# simulate z^2 normal deviates
+		zs <- rnorm(7, 0, 1)^2
+		z8 <- rnorm(1, sqrt(NCP), 1)^2
 
-	z8 <- rnorm(1, sqrt(NCP), 1)
+		chi8[i] <- sum(c(zs,z8))
+		chi4[i] <- sum(zs[1:4])
 
-	chi8 <- z1+z2+z3+z4+z5+z6+z7+z8
-	chi4 <- z1+z2+z3+z4
+		p8[i] <- -log10(pchisq(chi8[i], df=8, lower.tail=F))
+		p4[i] <- -log10(pchisq(chi4[i], df=4, lower.tail=F))
+	}
 
-	anova(lm(y~z1+z2+z3+z4+z5+z6+z7+z8))
+	out <- as.data.frame(cbind(chi8, chi4, p8, p4))
+	names(out) <- c("chi8", "chi4", "p8", "p4")
+#	return(out)
 
-
-
+	thres.index <- which(out$p8 > thres.8df)
+	type1 <- length(which(out$p4[thres.index] > -log10(0.05))) / length(thres.index)
+	list(above.thres=length(thres.index), type1=type1, ncp=NCP, fullresults=out)
 }
 
 
 
+tmp <- sim2.fun(0.09, 16, 846, 1000000)
+tmp$ncp
+tmp$type1
+
+qchisq(10^-16, 8, lower.tail=F)
 
 
+
+#################
+# Peter's email.
+#################
 
 Dear both,
 
