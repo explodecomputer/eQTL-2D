@@ -559,6 +559,8 @@ noiad <- rbind.fill(noiad)
 dim(noiad)
 head(noiad, 20)
 
+save(noiad, file = "~/repo/eQTL-2D/analysis/noiad.RData")
+
 
 
 els <- ddply(noiad, .(interaction), function(x){
@@ -620,7 +622,6 @@ binom.test(n=434, x=79, p=1/8)
 
 binom.test(n=434, x=434*0.65, p=0.5)
 binom.test(n=434, x=round(434*0.7), p=0.5)
-
 
 
 
