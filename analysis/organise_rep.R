@@ -489,7 +489,7 @@ pairs(f3[,2:4])
 ##
 
 genolist <- gl3
-save(genolist, phenlist, file="bsgs_egcut_fehr_data.RData")
+save(genolist, phenlist, file="~/repo/eQTL-2D/data/bsgs_egcut_fehr_data.RData")
 
 noia <- doAllTests(genolist, phenlist, sig, 1)
 bnoia <- doAllTests(genolist, phenlist, bsig, 1)

@@ -136,3 +136,17 @@ qqplot3 <- ggplot(subset(dat3, filter != 3)) +
 	scale_colour_brewer(type="qual", palette=3) +
 	theme(legend.position="none")
 ggsave(qqplot3, file="~/repo/eQTL-2D/analysis/images/qqgg.pdf")
+
+
+
+####
+
+# Take a SNP / probe combination in replication dataset
+# Choose another SNP randomly from remaining SNPs
+# Check that it doesn't already exist as a real signal
+# Perform test
+# Do this 1000 times
+# Keep the first 434
+
+
+
