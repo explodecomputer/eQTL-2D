@@ -64,3 +64,4 @@ head(a)
 
 print(xtable(a, digits=c(rep(0, 12), 2, 2, 2, 2, 3)), include.rownames=FALSE)
 write.csv(a, file="~/repo/eQTL-2D/analysis/results.csv", qu=F)
+

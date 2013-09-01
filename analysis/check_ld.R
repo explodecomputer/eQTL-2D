@@ -30,4 +30,4 @@ range(l)
 range(l)
 hist(l)
 
-
+ld$
