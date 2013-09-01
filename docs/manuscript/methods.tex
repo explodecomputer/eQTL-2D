@@ -32,16 +32,18 @@ y = \mu + \beta_{1}c + \beta_{2}p + \beta_{3}s + \beta_{4}a + g + e
 \end{equation}
 where $\mu$ is the population mean expression levels, $c$, $p$, $s$ and $a$ are vectors of chip, chip position, sex and generation respectively, fitted as fixed effects; and $g$ is a random additive polygenic effect with a variance covariance matrix 
 \begin{equation}
-G_{ijk} = \left \{ 
+G_{jk} = \left \{ 
 \begin{array}{ll}
-\sigma _a ^2 + \sigma _e ^2&        j = k \\ 
+\sigma _a ^2             &          j = k \\ 
 2\phi _{ijk} \sigma _a ^2& 			j \neq k \\
 \end{array} \right.
 \end{equation}
-The parameters $\sigma_a^2$ and $\sigma_e^2$ are variance components for additive background genetic and environmental effects respectively. Here, we are using family based pedigree information rather than SNP based IBD to account for relationships between individuals and so $\phi _{ijk}$ is the kinship coefficient between individuals $j$ and $k$. The residual, $e$, from equation \ref{eq:lm} is assumed to follow a multivariate normal distribution with a mean of zero. Residuals were normalised by rank transformation and used as the adjusted phenotype for the pairwise epistasis scan to remove any skewness and avoid results being driven by outliers. The GenABEL package for R was used to perform the normalisation \cite{Aulchenko2007}.
+The parameter $\sigma_a^2$ is the variance component for additive background genetic. Here, we are using family based pedigree information rather than SNP based IBD to account for relationships between individuals and so $\phi _{ijk}$ is the kinship coefficient between individuals $j$ and $k$. The residual, $e$, from equation \ref{eq:lm} is assumed to follow a multivariate normal distribution with a mean of zero. Residuals were normalised by rank transformation and used as the adjusted phenotype for the pairwise epistasis scan to remove any skewness and avoid results being driven by outliers. The GenABEL package for R was used to perform the normalisation \cite{Aulchenko2007}.
 
 
 \section{Exhaustive 2D-eQTL analysis}
+
+\subsection{Two stage search}
 
 We used epiGPU \cite{Hemani2011} software to perform an exhaustive scan for pairwise interactions, such that each SNP is tested against all other SNPs for statistical association with the expression values for each of the 7339 probes. This uses the massively parallel computational architecture of graphical processing units (GPUs) to speed up the exhaustive search. For each SNP pair there are 9 possible genotype classes. We treat each genotype class as a fixed effect and fit an 8 \emph{d.f.} $F$-test to test the following hypotheses:
 
@@ -57,13 +59,21 @@ where $\mu$ is the mean expression level and $x _{ij}$ is the pairwise genotype 
  
 The complete exhaustive scan for 7339 probes comprises $1.03 \times 10^{15}$ $F$-tests. We used permutation analysis to estimate an appropriate significance threshold for the study. To do this we performed a further 1600 exhaustive 2D scans on permuted phenotypes to generate a null distribution of the extreme $p$-values expected to be obtained from this number of multiple tests given the correlation structure between the SNPs. We took the most extreme $p$-value from each of the 1600 scans and set the 5\% FWER to be the 95\% most extreme of these $p$-values, $T_{*} = 2.13 \times 10^{-12}$. The effective number of tests in one 2D scan being performed is therefore $N_{*} = 0.05 / T_{*} \approx 2.33 \times 10^{10}$. To correct for the testing of multiple traits we established an experiment wide threshold of $T_{e} = 0.05 / (N_{*} \times 7339) = 2.91 \times 10^{-16}$. This is likely to be conservative as it assumes independence between probes.
 
-Following filtering on this threshold only SNP pairs with at least 5 data points in all 9 genotype classes were kept. We then calculated the LD between interacting SNPs (amongst unrelated individuals within the discovery sample and also from 1000 genomes data) and removed any pairs with $r^2 > 0.1$ or $D'^{2} > 0.1$ to avoid the inclusion of haplotype effects and to increase the accuracy of genetic variance decomposition. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinel SNP pair was retained, \emph{i.e.} if a probe had multiple SNP pairs that were on chromosomes one and two then only the SNP pair with the most significant $p$-value was retained. At this stage 6404 filtered SNP pairs remained. We then performed a second filtering screen that was identical to the first but an additional step was included where any SNPs that had previously been shown to have a significant additive or dominant effect ($p < 1.29 \times 10^{-11}$) was removed, creating a second set of 4751 filtered SNP pairs.
+Following filtering on this threshold only SNP pairs with at least 5 data points in all 9 genotype classes were kept. We then calculated the LD between interacting SNPs (amongst unrelated individuals within the discovery sample and also from 1000 genomes data) and removed any pairs with $r^2 > 0.1$ or $D'^{2} > 0.1$ to avoid the inclusion of haplotype effects and to increase the accuracy of genetic variance decomposition. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinel SNP pair was retained, \emph{i.e.} if a probe had multiple SNP pairs that were on chromosomes one and two then only the SNP pair with the most significant $p$-value was retained. At this stage 6404 filtered SNP pairs remained (filter 1). We then performed a second filtering screen that was identical to the first but an additional step was included where any SNPs that had previously been shown to have a significant additive or dominant effect ($p < 1.29 \times 10^{-11}$) was removed, creating a second set of 4751 filtered SNP pairs (filter 2).
 
 To ensure that interacting SNPs were driven by epistasis and not marginal effects we performed a nested ANOVA on each pair in the filtered set to test if the interaction terms were significant. We did this by contrasting the full genetic model (8 \emph{d.f.}) against the reduced marginal effects model which included the additive and dominance terms at both SNPs (4 \emph{d.f.}). Thus, a 4 \emph{d.f.} $F$-test was performed on the residual genetic variation, representing the contribution of epistatic variance. Significance of epistasis was determined using a Bonferroni threshold of $0.05 / (6404+4751) = 4.48 \times 10^{-6}$. This resulted in 406 and 95 SNP pairs with significant interaction terms from filters 1 and 2, respectively.
 
 We ruled out population stratification as a possible cause of inflated test statistics. To test for cryptic relatedness driving the interaction terms we tested for increased LD among the SNPs \cite{Yang2011}. We calculated the mean of the off-diagonal elements of the correlation matrix of all unique SNPs from the 501 interactions (731 SNPs) using only unrelated individuals, $\bar{r^2} = 0.0039$. This is not significantly different from the null hypothesis of zero (sampling error $= 1/n_{\textrm{unrelated}} = 0.0039$).
 
 All variance decompositions were calculated using the NOIA method \cite{Alvarez-Castro2008}.
+
+
+\subsection{Type 1 error rate}
+
+Using a Bonferroni correction of $0.05$ in the second stage of the two stage discovery scan implies a type 1 error rate of $\alpha = 0.05$. However, this could be underestimated because the number tests performed in the second stage depends on the number of tests in the first stage, and this depends on statistical power and model choice. We performed simulations to estimate the type 1 error rate of this study design.
+
+We assumed a null model where there was one true additive effect and 7 other terms with no effect. To simulate a test statistic we simulated 8 z-scores, $z_1 \sim N(\sqrt{NCP}, 1)$ and $z_{2..8} \sim N(0,1)$. Thus $z_{full} = \sum^8_{i=1}{z_i} \sim \chi^{2}_{8}$ (representing the 8 d.f. test) and $z_{int} = \sum^8_{i=5}{z_i} \sim \chi^{2}_{4}$ (representing the 4 d.f. test where the null hypothesis of no epistasis is true). For a particular value of $NCP$ we simulated 100,000 $z$ values, and calculated the $p_{full}$-value for the $z_{full}$ test statistic. The $n_{int}$ test statistics with $p_{full} < 2.31 \times 10^{-16}$ were kept for the second stage, where the type 1 error rate of stage 2 was calculated as the proportion of $p_{int} < 0.05 / n_{int}$. The power at stage 1 was calculated as $n_{int} / 100,000$. This procedure was performed for a range of $NCP$ parameters that represented power ranging from $\sim 0$ to $\sim 1$.
+
 
 
 \section{Replication}
@@ -85,6 +95,25 @@ The Center for Health Discovery and Well Being (CDHWB) Study \cite{Preininger201
 \subsection{Meta Analysis}
 
 The 4 \emph{d.f.} interaction $p$-values for each independent replication dataset were calculated using the same statistical test as was performed in the discovery dataset. We then took the interaction $p$-values from EGCUT and Fehrmann and calculated a joint $p$-value using Fisher's method of combining $p$-values for a meta analysis as $-2 \ln p_{1} - 2 \ln p_{2} \sim \chi^{2}_{4 d.f.}$. As in the discovery analysis, all gene expression levels were normalised using rank transformation to avoid skew or outliers in the distribution \cite{Westra2011}.
+
+
+\subsection{Concordance of direction of effects}
+
+We used four methods to calculate the concordance of the direction of effects between the discovery and replication datasets. 
+
+\begin{enumerate}
+
+\item [Test 1] Is the most significant epistatic effect in the discovery set in the same direction as the same epistatic effect in the replication sets? We decomposed the genetic variance into 8 orthogonal effects, four of which are epistatic ($A \times A$, $A \times D$, $D \times A$, $D \times D$). The sign of the epistatic effect that had the largest variance in the discovery was recorded, and then was compared to the same epistatic effect in the two replication datasets (regardless of whether or not the same epistatic effect was the largest in the replication datasets). The probability of the sign being the same in one dataset is $1/2$. The probability of the sign being the same in two is $1/4$.
+
+\item [Test 2] Is the most significant epistatic effect in the discovery the same as the largest epistatic effect in the replication set with the sign being concordant. As in Test 1, but this time we required that the largest effect was the same in the discovery and the replication, and that they had the same sign (\emph{e.g.} if the largest effect in the discovery is $A \times A$, with a positive effect, then concordance is achieved if the same is true in the replication). The probability of one replication dataset being concordant by chance is $1/8$, and concordance in both is $1/64$.
+
+\item [Test 3] Are all 4 epistatic effects in the same direction in the discovery and the replication datasets? This is a very conservative test as it is not realistic to assume that all four epistatic effects are significant in every interaction. The probability of concordance in one replication dataset is $1/16$, and the probability of concordance in both replication datasets is $1/256$. 
+
+\item [Test 4] Do the epistatic effects that are significant at nominal $p < 0.05$ in the discovery have the same direction of effect as in the replication? Here we count all the epistatic variance components in the discovery that have $p < 0.05$ (1133 amongst the 434 discovery SNP pairs, $i.e.$ each SNP pair has at least 1 and at most 4 significant epistatic variance components). Then we compare the direction of the effect in the replication dataset. The probability of the sign being the same in one dataset for any one significant effect is $1/2$. The probability of the sign being the same in two is $1/4$.
+
+\end{enumerate}
+
+The probability of observing the number of concordant signs is calculated using a binomial test.
 
 
 
