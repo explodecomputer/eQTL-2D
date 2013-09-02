@@ -76,7 +76,7 @@ In addition, using the meta analysis from the replication samples only, we obser
 % \subsection{Patterns of epistasis}
 Though seldom the focus of association studies, SNPs with known main effects are often tested for additive $\times$ additive genetic interactions \cite{Cordell2009}, but our analysis shows that this is unlikely to be the most effective strategy for its detection. The majority of our discovery interactions comprised of one SNP that was significantly associated with the gene expression level in the discovery dataset, and one SNP that had no previous association \cite{Powell2013} (439 out of 501, Methods). Only nine interactions were between SNPs that both had known main effects while 64 were between SNPs that had no known main effects. Additionally, we observed that the largest epistatic variance component for the 501 interactions was equally divided amongst additive $\times$ additive, additive $\times$ dominance, dominance $\times$ additive and dominance $\times$ dominance at the discovery stage ($p = 0.22$ for departure from expectation). This is not surprising because the patterns of epistasis used for statistical decomposition (\emph{i.e.} $A \times A$, $A \times D$, $D \times A$, $D \times D$) are simply convenient orthogonal parameterisations of a two locus model, and are not intended to model biological function \cite{Cockerham1954}.
 
-Of the discovery interactions, 47 were \emph{cis}-\emph{cis} acting (both SNPs were on the same chromosome as the expression gene), 441 were \emph{cis}-\emph{trans}-acting, and 13 were \emph{trans}-\emph{trans}-acting. We observed a wide range of significant GP maps (Figure \ref{fig:gpmaps}) but the most common pattern of epistasis that we detected involved a \emph{trans}-SNP masking the effect of an additive \emph{cis}-SNP. For example, MBNL1 (involved in RNA modification and regulation of splicing \cite{Ho2004}) has a \emph{cis} effect at rs13069559 which in turn is controlled by 13 \emph{trans}-SNPs and one \emph{cis}-SNP that each exhibit a masking pattern, such that when the \emph{trans}-SNP is homozygous for the masking allele the decreasing allele of the \emph{cis}-SNP no longer has an effect (Supplementary Figure \ref{fig:MBNL1_3D}). Each of these interactions has evidence for replication in at least one dataset and six are significantly replicated at the Bonferroni level (Supplementary Figure \ref{fig:circleplots}). We see similar epistatic networks involving multiple (eight or more) \emph{trans}-acting SNPs for other gene expresson levels too, for example TMEM149 (Supplementary Figure \ref{fig:TMEM149_3D}), NAPRT1 (Supplementary Figure \ref{fig:NAPRT1_3D}), TRAPPC5 (Supplementary Figure \ref{fig:TRAPPC5_3D}), and CAST (Supplementary Figure \ref{fig:CAST_3D}). We observed that from pedigree analysis these five gene expression phenotypes had non-additive variance component estimates within the 95th percentile of the 17,994 gene expression phenotypes that were analysed previously \cite{Powell2013} (Supplementary Table \ref{tab:vc}, Methods).
+Of the discovery interactions, 47 were \emph{cis}-\emph{cis} acting (both SNPs were on the same chromosome as the expression gene, median distance between interacting SNPs is 1.83Mb), 441 were \emph{cis}-\emph{trans}-acting, and 13 were \emph{trans}-\emph{trans}-acting. We observed a wide range of significant GP maps (Figure \ref{fig:gpmaps}) but the most common pattern of epistasis that we detected involved a \emph{trans}-SNP masking the effect of an additive \emph{cis}-SNP. For example, MBNL1 (involved in RNA modification and regulation of splicing \cite{Ho2004}) has a \emph{cis} effect at rs13069559 which in turn is controlled by 13 \emph{trans}-SNPs and one \emph{cis}-SNP that each exhibit a masking pattern, such that when the \emph{trans}-SNP is homozygous for the masking allele the decreasing allele of the \emph{cis}-SNP no longer has an effect (Supplementary Figure \ref{fig:MBNL1_3D}). Each of these interactions has evidence for replication in at least one dataset and six are significantly replicated at the Bonferroni level (Supplementary Figure \ref{fig:circleplots}). We see similar epistatic networks involving multiple (eight or more) \emph{trans}-acting SNPs for other gene expresson levels too, for example TMEM149 (Supplementary Figure \ref{fig:TMEM149_3D}), NAPRT1 (Supplementary Figure \ref{fig:NAPRT1_3D}), TRAPPC5 (Supplementary Figure \ref{fig:TRAPPC5_3D}), and CAST (Supplementary Figure \ref{fig:CAST_3D}). We observed that from pedigree analysis these five gene expression phenotypes had non-additive variance component estimates within the 95th percentile of the 17,994 gene expression phenotypes that were analysed previously \cite{Powell2013} (Supplementary Table \ref{tab:vc}, Methods).
 
 
 % \subsection{Functional annotation}
@@ -938,10 +938,10 @@ ZYX & ILMN\_1701875 & 7 & rs6056281 & 20 & 8935312 &  & rs2242601 & 7 & 14309382
 Gene & Probe & Variance & s.e. & Variance & s.e. \\
 \hline
 NAPRT1 & ILMN\_1710752 & 0.37 & 0.03 & 0.14 & 0.05 \\
-  TMEM149 & ILMN\_1786426 & 0.41 & 0.04 & 0.09 & 0.04 \\
-  MBNL1 & ILMN\_2313158 & 0.18 & 0.03 & 0.11 & 0.04 \\
-  TRAPPC5 & ILMN\_2372639 & 0.32 & 0.04 & 0.13 & 0.05 \\
-  CAST & ILMN\_1717234 & 0.31 & 0.03 & 0.10 & 0.04 \\
+TMEM149 & ILMN\_1786426 & 0.41 & 0.04 & 0.09 & 0.04 \\
+MBNL1 & ILMN\_2313158 & 0.18 & 0.03 & 0.11 & 0.04 \\
+TRAPPC5 & ILMN\_2372639 & 0.32 & 0.04 & 0.13 & 0.05 \\
+CAST & ILMN\_1717234 & 0.31 & 0.03 & 0.10 & 0.04 \\
 \hline
 
 \end{tabular}
@@ -956,43 +956,68 @@ NAPRT1 & ILMN\_1710752 & 0.37 & 0.03 & 0.14 & 0.05 \\
 \begin{tabular}{lllrrrr}
 
   \hline
-Test & Interactions & Dataset & $n$ & Expected & Observed & $p$-value \\
+Test & Interactions\tnote{a} & Dataset & $n$\tnote{b} & Expected\tnote{c} & Observed\tnote{d} & $p$-value \\
   \hline
-1\tnote{a} & All & EGCUT & 434 & 217.00 & 306 & $6.69 \times 10^{18}$ \\
-&  & Fehrmann & 434 & 217.00 & 278 & $5.04 \times 10^{09}$ \\
-&  & Both & 434 & 108.50 & 221 & $5.56 \times 10^{31}$ \\
-& Significant & EGCUT & 30 & 15.00 & 25 & $3.25 \times 10^{04}$ \\
-&  & Fehrmann & 30 & 15.00 & 24 & $1.43 \times 10^{03}$ \\
-&  & Both & 30 & 7.50 & 22 & $3.76 \times 10^{08}$ \\
+1\tnote{e} & All & EGCUT & 434 & 217.00 & 306 & $6.69 \times 10^{-18}$ \\
+&  & Fehrmann & 434 & 217.00 & 278 & $5.04 \times 10^{-9}$ \\
+&  & Both & 434 & 108.50 & 221 & $5.56 \times 10^{-31}$ \\
+& Significant & EGCUT & 30 & 15.00 & 25 & $3.25 \times 10^{-4}$ \\
+&  & Fehrmann & 30 & 15.00 & 24 & $1.43 \times 10^{-3}$ \\
+&  & Both & 30 & 7.50 & 22 & $3.76 \times 10^{-8}$ \\
   \hline
-2\tnote{b} & All & EGCUT & 434 & 54.25 & 92 & $4.22 \times 10^{07}$ \\
-&  & Fehrmann & 434 & 54.25 & 79 & $6.18 \times 10^{04}$ \\
-&  & Both & 434 & 6.78 & 30 & $2.55 \times 10^{11}$ \\
-& Significant & EGCUT & 30 & 3.75 & 19 & $9.46 \times 10^{11}$ \\
-&  & Fehrmann & 30 & 3.75 & 19 & $9.46 \times 10^{11}$ \\
-&  & Both & 30 & 0.47 & 18 & $2.23 \times 10^{25}$ \\
+2\tnote{f} & All & EGCUT & 434 & 54.25 & 92 & $4.22 \times 10^{-7}$ \\
+&  & Fehrmann & 434 & 54.25 & 79 & $6.18 \times 10^{-4}$ \\
+&  & Both & 434 & 6.78 & 30 & $2.55 \times 10^{-11}$ \\
+& Significant & EGCUT & 30 & 3.75 & 19 & $9.46 \times 10^{-11}$ \\
+&  & Fehrmann & 30 & 3.75 & 19 & $9.46 \times 10^{-11}$ \\
+&  & Both & 30 & 0.47 & 18 & $2.23 \times 10^{-25}$ \\
   \hline
-3\tnote{c} & All & EGCUT & 434 & 27.12 & 34 & $1.65 \times 10^{01}$ \\
-&  & Fehrmann & 434 & 27.12 & 35 & $1.35 \times 10^{01}$ \\
-&  & Both & 434 & 1.70 &  2 & $6.89 \times 10^{01}$ \\
-& Significant & EGCUT & 30 & 1.88 &  8 & $3.92 \times 10^{04}$ \\
-&  & Fehrmann & 30 & 1.88 &  9 & $6.22 \times 10^{05}$ \\
-&  & Both & 30 & 0.12 &  1 & $1.11 \times 10^{01}$ \\
-  \hline
-4\tnote{d} & All & EGCUT & 1133 & 566.50 & 775 & $7.10 \times 10^{36}$ \\
-&  & Fehrmann & 1133 & 566.50 & 726 & $1.90 \times 10^{21}$ \\
-&  & Both & 1133 & 283.25 & 562 & $1.39 \times 10^{70}$ \\
-& Significant & EGCUT & 73 & 36.50 & 55 & $1.69 \times 10^{05}$ \\
-&  & Fehrmann & 73 & 36.50 & 55 & $1.69 \times 10^{05}$ \\
-&  & Both & 73 & 18.25 & 46 & $7.86 \times 10^{12}$ \\
+3\tnote{g} & All & EGCUT & 1133 & 566.50 & 775 & $7.10 \times 10^{-36}$ \\
+&  & Fehrmann & 1133 & 566.50 & 726 & $1.90 \times 10^{-21}$ \\
+&  & Both & 1133 & 283.25 & 562 & $1.39 \times 10^{-70}$ \\
+& Significant & EGCUT & 73 & 36.50 & 55 & $1.69 \times 10^{-5}$ \\
+&  & Fehrmann & 73 & 36.50 & 55 & $1.69 \times 10^{-5}$ \\
+&  & Both & 73 & 18.25 & 46 & $7.86 \times 10^{-12}$ \\
    \hline
 \end{tabular}
 
 \begin{tablenotes}
-\item[a] The sign of the most significant epistatic variance component in discovery is the same as the corresponding variance component in the replication data.
-\item[b] The largest epistatic variance component in the discovery is the same as in the replication with the same sign in both.
-\item[c] The sign of all four epistatic variance components are identical in the discovery and the replication.
-\item[d] The sign of all epistatic variance components in the discovery with $p < 0.05$ are the same as the corresponding variance components in the replication data.
+\item[a] ``All'' denotes 434 discovery interactions and ``Significant'' denotes 30 interactions with significant replication $p$-values
+\item[b] Number of tests for concordance
+\item[c] Expected number of concordant cases under the null hypothesis of no interactions
+\item[d] Observed number of concordant cases
+\item[e] The sign of the most significant epistatic variance component in discovery is the same as the corresponding variance component in the replication data.
+\item[f] The largest epistatic variance component in the discovery is the same as in the replication with the same sign in both.
+\item[g] The sign of all epistatic variance components in the discovery with $p < 0.05$ are the same as the corresponding variance components in the replication data.
+\end{tablenotes}
+
+\end{threeparttable}
+\end{table}
+
+
+
+\begin{table}[ht]
+\begin{threeparttable}
+\caption{\textbf{Concordance of sign of epistatic variance components between discovery and replication datasets using test 4}}
+\label{tab:sign2}
+\begin{tabular}{llrrrrrrr}
+\hline
+Interactions\tnote{a} & Dataset & $n$\tnote{b} & 0\tnote{c} & 1\tnote{c} & 2\tnote{c} & 3\tnote{c} & 4\tnote{c} & $p$ \\
+\hline
+Expected\tnote{d} & - & - & 0.06 & 0.25 & 0.38 & 0.25 & 0.06 & - \\
+All & EGCUT & 434 & 0.06 & 0.22 & 0.41 & 0.23 & 0.08 & $0.194$ \\
+All & Fehrmann & 434 & 0.07 & 0.22 & 0.39 & 0.24 & 0.08 & $0.385$ \\
+All & Combined & 868 & 0.07 & 0.22 & 0.40 & 0.23 & 0.08 & $0.0448$ \\
+Significant & EGCUT & 30 & 0.07 & 0.03 & 0.30 & 0.33 & 0.27 & $4.72 \times 10^{-4}$ \\
+Significant & Fehrmann & 30 & 0.03 & 0.07 & 0.33 & 0.27 & 0.30 & $6.69 \times 10^{-4}$ \\
+Significant & Combined & 60 & 0.05 & 0.05 & 0.32 & 0.30 & 0.28 & $5.49 \times 10^{-8}$ \\
+\hline\end{tabular}
+
+\begin{tablenotes}
+\item[a] ``All'' denotes 434 discovery interactions and ``Significant'' denotes 30 interactions with significant replication $p$-values.
+\item[b] Number of tests for concordance.
+\item[c] Proportion of tests that have 0, 1, 2, 3 or 4 concordant signs between discovery and replication.
+\item[d] Expected proportion of concordant signs under the null hypothesis of no epistasis.
 \end{tablenotes}
 
 \end{threeparttable}
@@ -1006,55 +1031,53 @@ Test & Interactions & Dataset & $n$ & Expected & Observed & $p$-value \\
 \caption{\textbf{Details on linkage disequilibrium and relative positions of all discovery \emph{cis-cis} interactions}}
 \label{tab:ld}
 \begin{tabular}{llllrrrrr}
-
-
-  \hline
+\hline
 Chr & Gene & SNP 1 & SNP 2 & Position 1 & Position 2 & Distance / Mb & $R^2$ & $D'$ \\
-  \hline
-19 & TMEM149 & rs807491 & rs7254601 & 36268923 & 36147315.0 & 0.122 & 0.000 & 0.001 \\
-  17 & FN3KRP & rs898095 & rs9892064 & 80890638 & 80827903.0 & 0.063 & 0.063 & 0.088 \\
-  21 & CSTB & rs9979356 & rs3761385 & 45230974 & 45198355.0 & 0.033 & 0.041 & 0.066 \\
-  3 & MBNL1 & rs16864367 & rs13079208 & 152234166 & 152116652.0 & 0.118 & 0.041 & 0.117 \\
-  10 & ADK & rs2395095 & rs10824092 & 76446305 & 75929517.0 & 0.517 & 0.013 & 0.020 \\
-  11 & CTSC & rs7930237 & rs556895 & 88117962 & 88077479.0 & 0.040 & 0.012 & 0.045 \\
-  17 & GAA & rs11150847 & rs12602462 & 78153130 & 78146016.0 & 0.007 & 0.000 & 0.001 \\
-  8 & NAPRT1 & rs2123758 & rs3889129 & 144663661 & 144613680.0 & 0.050 & 0.053 & 0.060 \\
-  1 & LAX1 & rs1891432 & rs10900520 & 203877662 & 203780591.0 & 0.097 & 0.065 & 0.106 \\
-  18 & MBP & rs8092433 & rs4890876 & 74747424 & 74732087.0 & 0.015 & 0.035 & 0.053 \\
-  11 & SNORD14A & rs2634462 & rs6486334 & 17339127 & 17015557.0 & 0.324 & 0.008 & 0.012 \\
-  21 & C21ORF57 & rs9978658 & rs11701361 & 48027084 & 47764477.0 & 0.263 & 0.032 & 0.065 \\
-  16 & RPL13 & rs352935 & rs2965817 & 89648580 & 89513234.0 & 0.135 & 0.054 & 0.060 \\
-  19 & ATP13A1 & rs4284750 & rs873870 & 19810050 & 19738554.0 & 0.071 & 0.008 & 0.015 \\
-  2 & NCL & rs7563453 & rs4973397 & 232301670 & 232291471.0 & 0.010 & 0.027 & 0.029 \\
-  5 & HNRPH1 & rs6894268 & rs4700810 & 179032488 & 178991794.0 & 0.041 & 0.000 & 0.001 \\
-  19 & VASP & rs1264226 & rs2276470 & 46063167 & 45974668.0 & 0.088 & 0.018 & 0.022 \\
-  7 & TRA2A & rs7776572 & rs11770192 & 23528927 & 23498358.0 & 0.031 & 0.064 & 0.064 \\
-  21 & PRMT2 & rs2839372 & rs11701058 & 48063862 & 47776382.0 & 0.287 & 0.100 & 0.122 \\
-  12 & OAS1 & rs13311 & rs2072133 & 113448652 & 113409260.0 & 0.039 & 0.002 & 0.016 \\
-  16 & N4BP1 & rs12444224 & rs11649236 & 87580855 & 48632478.0 & 38.948 & 0.007 & 0.021 \\
-  5 & CAST & rs12719343 & rs7733671 & 125369113 & 96000269.0 & 29.369 & 0.001 & 0.001 \\
-  7 & DNAJB6 & rs2286842 & rs3779589 & 157216093 & 157163614.0 & 0.052 & 0.005 & 0.006 \\
-  1 & OVGP1 & rs10802822 & rs1264898 & 240132968 & 111992823.0 & 128.140 & 0.008 & 0.030 \\
-  20 & CD93 & rs2868504 & rs1884655 & 37771578 & 23074375.0 & 14.697 & 0.000 & 0.002 \\
-  11 & PHCA & rs493642 & rs10736812 & 123097386 & 76708086.0 & 46.389 & 0.002 & 0.008 \\
-  21 & MX1 & rs459498 & rs8130120 & 42795027 & 29363604.0 & 13.431 & 0.000 & 0.000 \\
-  16 & AKTIP & rs2896940 & rs13332406 & 57721127 & 53489705.0 & 4.231 & 0.000 & 0.001 \\
-  17 & CDK5R1 & rs9905940 & rs11655031 & 46614102 & 30833162.0 & 15.781 & 0.000 & 0.000 \\
-  2 & CYBRD1 & rs888427 & rs7591849 & 172368120 & 160112881.0 & 12.255 & 0.000 & 0.000 \\
-  8 & HMBOX1 & rs587639 & rs7837237 & 132725731 & 28876221.0 & 103.850 & 0.001 & 0.001 \\
-  11 & TRAPPC4 & rs1793823 & rs3916581 & 131018917 & 118887887.0 & 12.131 & 0.001 & 0.002 \\
-  12 & PEX5 & rs10444467 & rs4329748 & 128052636 & 7364442.0 & 120.688 & 0.000 & 0.000 \\
-  12 & FLJ20489 & rs17615703 & rs3782908 & 117036766 & 48169526.0 & 68.867 & 0.001 & 0.002 \\
-  16 & PRKCB1 & rs2188355 & rs10492793 & 23867776 & 12639800.0 & 11.228 & 0.000 & 0.000 \\
-  14 & MRPL52 & rs1950857 & rs3811188 & 26710271 & 23299135.0 & 3.411 & 0.002 & 0.004 \\
-  17 & C17ORF60 & rs9907897 & rs7405659 & 63502633 & 59874129.0 & 3.629 & 0.004 & 0.011 \\
-  6 & FLJ43093 & rs6906101 & rs13214069 & 36667610 & 32705248.0 & 3.962 & 0.000 & 0.000 \\
-  19 & TRAPPC5 & rs17159840 & rs17763599 & 7758194 & 2369415.0 & 5.389 & 0.000 & 0.000 \\
-  22 & PISD & rs715572 & rs6518754 & 33234931 & 32097775.0 & 1.137 & 0.001 & 0.003 \\
-  12 & DIP2B & rs871257 & rs12427378 & 117994348 & 51074199.0 & 66.920 & 0.001 & 0.001 \\
-  12 & GPR162 & rs2272500 & rs2707210 & 79685913 & 6902002.0 & 72.784 & 0.003 & 0.005 \\
-  17 & USP36 & rs2279308 & rs7225546 & 76794981 & 75151717.0 & 1.643 & 0.000 & 0.000 \\
-   \hline
+\hline
+19 & TMEM149 & rs807491 & rs7254601 & 36268923 & 36147315 & 0.122 & 0.000 & 0.001 \\
+17 & FN3KRP & rs898095 & rs9892064 & 80890638 & 80827903 & 0.063 & 0.063 & 0.088 \\
+21 & CSTB & rs9979356 & rs3761385 & 45230974 & 45198355 & 0.033 & 0.041 & 0.066 \\
+3 & MBNL1 & rs16864367 & rs13079208 & 152234166 & 152116652 & 0.118 & 0.041 & 0.117 \\
+10 & ADK & rs2395095 & rs10824092 & 76446305 & 75929517 & 0.517 & 0.013 & 0.020 \\
+11 & CTSC & rs7930237 & rs556895 & 88117962 & 88077479 & 0.040 & 0.012 & 0.045 \\
+17 & GAA & rs11150847 & rs12602462 & 78153130 & 78146016 & 0.007 & 0.000 & 0.001 \\
+8 & NAPRT1 & rs2123758 & rs3889129 & 144663661 & 144613680 & 0.050 & 0.053 & 0.060 \\
+1 & LAX1 & rs1891432 & rs10900520 & 203877662 & 203780591 & 0.097 & 0.065 & 0.106 \\
+18 & MBP & rs8092433 & rs4890876 & 74747424 & 74732087 & 0.015 & 0.035 & 0.053 \\
+11 & SNORD14A & rs2634462 & rs6486334 & 17339127 & 17015557 & 0.324 & 0.008 & 0.012 \\
+21 & C21ORF57 & rs9978658 & rs11701361 & 48027084 & 47764477 & 0.263 & 0.032 & 0.065 \\
+16 & RPL13 & rs352935 & rs2965817 & 89648580 & 89513234 & 0.135 & 0.054 & 0.060 \\
+19 & ATP13A1 & rs4284750 & rs873870 & 19810050 & 19738554 & 0.071 & 0.008 & 0.015 \\
+2 & NCL & rs7563453 & rs4973397 & 232301670 & 232291471 & 0.010 & 0.027 & 0.029 \\
+5 & HNRPH1 & rs6894268 & rs4700810 & 179032488 & 178991794 & 0.041 & 0.000 & 0.001 \\
+19 & VASP & rs1264226 & rs2276470 & 46063167 & 45974668 & 0.088 & 0.018 & 0.022 \\
+7 & TRA2A & rs7776572 & rs11770192 & 23528927 & 23498358 & 0.031 & 0.064 & 0.064 \\
+21 & PRMT2 & rs2839372 & rs11701058 & 48063862 & 47776382 & 0.287 & 0.100 & 0.122 \\
+12 & OAS1 & rs13311 & rs2072133 & 113448652 & 113409260 & 0.039 & 0.002 & 0.016 \\
+16 & N4BP1 & rs12444224 & rs11649236 & 87580855 & 48632478 & 38.948 & 0.007 & 0.021 \\
+5 & CAST & rs12719343 & rs7733671 & 125369113 & 96000269 & 29.369 & 0.001 & 0.001 \\
+7 & DNAJB6 & rs2286842 & rs3779589 & 157216093 & 157163614 & 0.052 & 0.005 & 0.006 \\
+1 & OVGP1 & rs10802822 & rs1264898 & 240132968 & 111992823 & 128.140 & 0.008 & 0.030 \\
+20 & CD93 & rs2868504 & rs1884655 & 37771578 & 23074375 & 14.697 & 0.000 & 0.002 \\
+11 & PHCA & rs493642 & rs10736812 & 123097386 & 76708086 & 46.389 & 0.002 & 0.008 \\
+21 & MX1 & rs459498 & rs8130120 & 42795027 & 29363604 & 13.431 & 0.000 & 0.000 \\
+16 & AKTIP & rs2896940 & rs13332406 & 57721127 & 53489705 & 4.231 & 0.000 & 0.001 \\
+17 & CDK5R1 & rs9905940 & rs11655031 & 46614102 & 30833162 & 15.781 & 0.000 & 0.000 \\
+2 & CYBRD1 & rs888427 & rs7591849 & 172368120 & 160112881 & 12.255 & 0.000 & 0.000 \\
+8 & HMBOX1 & rs587639 & rs7837237 & 132725731 & 28876221 & 103.850 & 0.001 & 0.001 \\
+11 & TRAPPC4 & rs1793823 & rs3916581 & 131018917 & 118887887 & 12.131 & 0.001 & 0.002 \\
+12 & PEX5 & rs10444467 & rs4329748 & 128052636 & 7364442 & 120.688 & 0.000 & 0.000 \\
+12 & FLJ20489 & rs17615703 & rs3782908 & 117036766 & 48169526 & 68.867 & 0.001 & 0.002 \\
+16 & PRKCB1 & rs2188355 & rs10492793 & 23867776 & 12639800 & 11.228 & 0.000 & 0.000 \\
+14 & MRPL52 & rs1950857 & rs3811188 & 26710271 & 23299135 & 3.411 & 0.002 & 0.004 \\
+17 & C17ORF60 & rs9907897 & rs7405659 & 63502633 & 59874129 & 3.629 & 0.004 & 0.011 \\
+6 & FLJ43093 & rs6906101 & rs13214069 & 36667610 & 32705248 & 3.962 & 0.000 & 0.000 \\
+19 & TRAPPC5 & rs17159840 & rs17763599 & 7758194 & 2369415 & 5.389 & 0.000 & 0.000 \\
+22 & PISD & rs715572 & rs6518754 & 33234931 & 32097775 & 1.137 & 0.001 & 0.003 \\
+12 & DIP2B & rs871257 & rs12427378 & 117994348 & 51074199 & 66.920 & 0.001 & 0.001 \\
+12 & GPR162 & rs2272500 & rs2707210 & 79685913 & 6902002 & 72.784 & 0.003 & 0.005 \\
+17 & USP36 & rs2279308 & rs7225546 & 76794981 & 75151717 & 1.643 & 0.000 & 0.000 \\
+\hline
 \end{tabular}
 \end{threeparttable}
 }
