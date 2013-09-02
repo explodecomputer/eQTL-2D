@@ -35,10 +35,10 @@ where $\mu$ is the population mean expression levels, $c$, $p$, $s$ and $a$ are 
 G_{jk} = \left \{ 
 \begin{array}{ll}
 \sigma _a ^2             &          j = k \\ 
-2\phi _{ijk} \sigma _a ^2& 			j \neq k \\
+2\phi _{jk} \sigma _a ^2& 			j \neq k \\
 \end{array} \right.
 \end{equation}
-The parameter $\sigma_a^2$ is the variance component for additive background genetic. Here, we are using family based pedigree information rather than SNP based IBD to account for relationships between individuals and so $\phi _{ijk}$ is the kinship coefficient between individuals $j$ and $k$. The residual, $e$, from equation \ref{eq:lm} is assumed to follow a multivariate normal distribution with a mean of zero. Residuals were normalised by rank transformation and used as the adjusted phenotype for the pairwise epistasis scan to remove any skewness and avoid results being driven by outliers. The GenABEL package for R was used to perform the normalisation \cite{Aulchenko2007}.
+The parameter $\sigma_a^2$ is the variance component for additive background genetic. Here, we are using family based pedigree information rather than SNP based IBD to account for relationships between individuals and so $\phi _{jk}$ is the kinship coefficient between individuals $j$ and $k$. The residual, $e$, from equation \ref{eq:lm} is assumed to follow a multivariate normal distribution with a mean of zero. Residuals were normalised by rank transformation and used as the adjusted phenotype for the pairwise epistasis scan to remove any skewness and avoid results being driven by outliers. The GenABEL package for R was used to perform the normalisation \cite{Aulchenko2007}.
 
 
 \section{Exhaustive 2D-eQTL analysis}
@@ -56,16 +56,22 @@ H _1 : \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \mu) ^2 > 0;
 \label{eq:8df}
 \end{equation}
 where $\mu$ is the mean expression level and $x _{ij}$ is the pairwise genotype class mean for genotype $i$ at SNP 1 and genotype $j$ at SNP 2. This type of test does not parameterize for specific types of epistasis, rather it tests for the joint genetic effects at two loci. This has been demonstrated to be statistically more efficient when searching for a wide range of epistatic patterns, although will also include any marginal effects of SNPs which must be dealt with post-hoc \cite{Hemani2013}.
+
+\subsubsection{Stage 1}
  
 The complete exhaustive scan for 7339 probes comprises $1.03 \times 10^{15}$ $F$-tests. We used permutation analysis to estimate an appropriate significance threshold for the study. To do this we performed a further 1600 exhaustive 2D scans on permuted phenotypes to generate a null distribution of the extreme $p$-values expected to be obtained from this number of multiple tests given the correlation structure between the SNPs. We took the most extreme $p$-value from each of the 1600 scans and set the 5\% FWER to be the 95\% most extreme of these $p$-values, $T_{*} = 2.13 \times 10^{-12}$. The effective number of tests in one 2D scan being performed is therefore $N_{*} = 0.05 / T_{*} \approx 2.33 \times 10^{10}$. To correct for the testing of multiple traits we established an experiment wide threshold of $T_{e} = 0.05 / (N_{*} \times 7339) = 2.91 \times 10^{-16}$. This is likely to be conservative as it assumes independence between probes.
 
-Following filtering on this threshold only SNP pairs with at least 5 data points in all 9 genotype classes were kept. We then calculated the LD between interacting SNPs (amongst unrelated individuals within the discovery sample and also from 1000 genomes data) and removed any pairs with $r^2 > 0.1$ or $D'^{2} > 0.1$ to avoid the inclusion of haplotype effects and to increase the accuracy of genetic variance decomposition. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinel SNP pair was retained, \emph{i.e.} if a probe had multiple SNP pairs that were on chromosomes one and two then only the SNP pair with the most significant $p$-value was retained. At this stage 6404 filtered SNP pairs remained (filter 1). We then performed a second filtering screen that was identical to the first but an additional step was included where any SNPs that had previously been shown to have a significant additive or dominant effect ($p < 1.29 \times 10^{-11}$) was removed, creating a second set of 4751 filtered SNP pairs (filter 2).
+\subsubsection{Filtering}
+
+We used two approaches to filter SNPs from stage 1 to be tested for significant interaction effects in stage 2.
+
+\paragraph{Filter 1} After keeping SNP pairs that surpassed the $2.91 \times 10^{-16}$ threshold in stage 1 only SNP pairs with at least 5 data points in all 9 genotype classes were kept. We then calculated the LD between interacting SNPs (amongst unrelated individuals within the discovery sample and also from 1000 genomes data) and removed any pairs with $r^2 > 0.1$ or $D'^{2} > 0.1$ to avoid the inclusion of haplotype effects and to increase the accuracy of genetic variance decomposition. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinel SNP pair was retained, \emph{i.e.} if a probe had multiple SNP pairs that were on chromosomes one and two then only the SNP pair with the most significant $p$-value was retained. At this stage 6404 filtered SNP pairs remained. 
+
+\paragraph{Filter 2} We also performed a second filtering screen applied to the list of SNP pairs from stage 1 that was identical to filter 1 but an additional step was included where any SNPs that had previously been shown to have a significant additive or dominant effect ($p < 1.29 \times 10^{-11}$) was removed \cite{Powell2013}, creating a second set of 4751 unique filtered SNP pairs.
+
+\subsubsection{Stage 2}
 
 To ensure that interacting SNPs were driven by epistasis and not marginal effects we performed a nested ANOVA on each pair in the filtered set to test if the interaction terms were significant. We did this by contrasting the full genetic model (8 \emph{d.f.}) against the reduced marginal effects model which included the additive and dominance terms at both SNPs (4 \emph{d.f.}). Thus, a 4 \emph{d.f.} $F$-test was performed on the residual genetic variation, representing the contribution of epistatic variance. Significance of epistasis was determined using a Bonferroni threshold of $0.05 / (6404+4751) = 4.48 \times 10^{-6}$. This resulted in 406 and 95 SNP pairs with significant interaction terms from filters 1 and 2, respectively.
-
-We ruled out population stratification as a possible cause of inflated test statistics. To test for cryptic relatedness driving the interaction terms we tested for increased LD among the SNPs \cite{Yang2011}. We calculated the mean of the off-diagonal elements of the correlation matrix of all unique SNPs from the 501 interactions (731 SNPs) using only unrelated individuals, $\bar{r^2} = 0.0039$. This is not significantly different from the null hypothesis of zero (sampling error $= 1/n_{\textrm{unrelated}} = 0.0039$).
-
-All variance decompositions were calculated using the NOIA method \cite{Alvarez-Castro2008}.
 
 
 \subsection{Type 1 error rate}
@@ -74,6 +80,15 @@ Using a Bonferroni correction of $0.05$ in the second stage of the two stage dis
 
 We assumed a null model where there was one true additive effect and 7 other terms with no effect. To simulate a test statistic we simulated 8 z-scores, $z_1 \sim N(\sqrt{NCP}, 1)$ and $z_{2..8} \sim N(0,1)$. Thus $z_{full} = \sum^8_{i=1}{z_i} \sim \chi^{2}_{8}$ (representing the 8 d.f. test) and $z_{int} = \sum^8_{i=5}{z_i} \sim \chi^{2}_{4}$ (representing the 4 d.f. test where the null hypothesis of no epistasis is true). For a particular value of $NCP$ we simulated 100,000 $z$ values, and calculated the $p_{full}$-value for the $z_{full}$ test statistic. The $n_{int}$ test statistics with $p_{full} < 2.31 \times 10^{-16}$ were kept for the second stage, where the type 1 error rate of stage 2 was calculated as the proportion of $p_{int} < 0.05 / n_{int}$. The power at stage 1 was calculated as $n_{int} / 100,000$. This procedure was performed for a range of $NCP$ parameters that represented power ranging from $\sim 0$ to $\sim 1$.
 
+
+\subsection{Population stratification}
+
+We ruled out population stratification as a possible cause of inflated test statistics. To test for cryptic relatedness driving the interaction terms we tested for increased LD among the SNPs \cite{Yang2011}. We calculated the mean of the off-diagonal elements of the correlation matrix of all unique SNPs from the 501 interactions (731 SNPs) using only unrelated individuals, $\bar{r^2} = 0.0039$. This is not significantly different from the null hypothesis of zero (sampling error $= 1/n_{\textrm{unrelated}} = 0.0039$).
+
+
+\subsection{Probe mapping}
+
+To avoid possibility that epistatic signals might arise due to expression probes hybridising in multiple locations we verified that probe sequences for genes with significant interactions mapped to only a single location. As an initial verification we performed a BLAST search of the full probe sequence against 1000 genomes phase 1 version 3 human genome reference and ensured that only one genomic location aligned significantly ($p < 0.05$). As a second step, to mitigate the possibility of weak hybridisation elsewhere in the genome we divided the probe sequence into three sections (1-25bp, 13-37bp, 26-50bp) and performed a BLAST search of these probe sequence fragments. No probe sequemces or probe sequence fragments mapped to positions other than the single expected genomic target ($p < 0.05$).
 
 
 \section{Replication}
@@ -113,8 +128,7 @@ We used four methods to calculate the concordance of the direction of effects be
 
 \end{enumerate}
 
-The probability of observing the number of concordant signs is calculated using a binomial test.
-
+The probability of observing the number of concordant signs is calculated using a binomial test. All variance decompositions were calculated using the NOIA method \cite{Alvarez-Castro2008}.
 
 
 \section{Additive and non-additive variance estimation}
