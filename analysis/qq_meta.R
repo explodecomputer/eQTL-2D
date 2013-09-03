@@ -15,6 +15,7 @@ studies. Under the null, -2*ln(p) follows a chi(2) distribution, so T =
 -2ln(p from cohort1) - 2ln(p from cohort2) follows a chi(4) distribution.
 
 
+library(ggplot2)
 
 nestedTestVars <- function(mod)
 {
@@ -219,12 +220,22 @@ createAverageGp <- function(gcm, gcs)
 
 
 load(file="~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
+load(file="~/repo/eQTL-2D/data/replication_null.RData")
 
-thresh <- -log10(0.05 / 442)
-with(meta, table(filter, pnest_meta > thresh))
-with(meta, table(filter, pnest_meta2 > thresh))
-with(meta, table(filter, pnest_meta_vc > thresh))
-with(meta, table(filter, is.na(pnest_meta)))
+meta2 <- subset(meta, filter != 3)
+meta3 <- subset(meta, filter != 3)
+meta3$filter <- 3
+meta3$fake <- "Null"
+meta3$pnest_meta <- meta3$observed <- sort(-log10(pnull$meta), decreasing=T)
+meta3$ex <- meta3$observed > meta3$upper
+meta1 <- rbind(meta2, meta3)
+
+
+thresh <- -log10(0.05 / 434)
+with(meta1, table(filter, pnest_meta > thresh))
+with(meta1, table(filter, pnest_meta2 > thresh))
+with(meta1, table(filter, pnest_meta_vc > thresh))
+with(meta1, table(filter, is.na(pnest_meta)))
 
 
 #=============================================================#
@@ -233,7 +244,7 @@ with(meta, table(filter, is.na(pnest_meta)))
 # Make Q-Q plots for meta analysis
 
 
-qqPlot(meta, thresh)
+qqPlot(meta1, thresh)
 ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaNonsig.pdf", width=10, height=5)
 qqPlot(meta, max(meta$pnest_meta))
 ggsave(file="~/repo/eQTL-2D/analysis/images/qqMetaAll.pdf", width=5, height=10)
