@@ -5,29 +5,94 @@
 # Calculate sampling variance of R^8
 
 
-r = (x11 - p1q1) / sqrt(p1q1p2q2)
-r = (x12 - p1q2) / sqrt(p1q1p2q2)
+# r = (x11 - p1q1) / sqrt(p1q1p2q2)
+# r = (x12 - p1q2) / sqrt(p1q1p2q2)
+
+# given p1, q1, r we can calculate expected x11, x12, x21, x22
 
 
-# given p1, q1, r we can calculate expected x1, x2, x3, x4
+library(plyr)
+library(ggplot2)
 
 
+#=================================================================#
 
-sampleSnp <- function(r, n, p1, p2)
+
+sampleSnp <- function(r, n, p1, q1)
 {
-	q1 <- 1 - p1
-	q2 <- 1 - p2
+	p2 <- 1 - p1
+	q2 <- 1 - q1
 
 	x11 <- r * sqrt(p1*q1*p2*q2) + p1*q1
 	x12 <- p1*q2 - r * sqrt(p1*q1*p2*q2)
 	x21 <- p2*q1 - r * sqrt(p1*q1*p2*q2)
 	x22 <- r * sqrt(p1*q1*p2*q2) + p2*q2
 
-	x <- sample(1:4, n, replace=T, prob=c(x11, x12, x21, x22))
+	xs <- c(x11, x12, x21, x22)
+	if(any(xs < 0))
+	{
+		return(NA)
+	}
 
-	r_empirical <- (sum(x == 1)/n - p1*q1) / sqrt(p1*q1*p2*q2)
-	return(r_empirical)
+	x <- sample(1:4, n, replace=T, prob=xs)
+	r_obs <- (sum(x == 1)/n - p1*q1) / sqrt(p1*q1*p2*q2)
+	return(r_obs)
 }
 
 
-sampleSnp(0.8, 1200, 0.5, 0.5)
+doSim <- function(param)
+{
+	for(i in 1:nrow(param))
+	{
+		param$r_obs[i] <- with(param, sampleSnp(r[i], n[i], p1[i], q1[i]))
+	}
+	return(param)
+}
+
+
+#=================================================================#
+
+# Create parameters
+param <- expand.grid(
+	r = seq(0.5, 0.95, 0.1), 
+	n = c(900, 1200, 20000), 
+	p1 = c(0.25, 0.5, 0.75), 
+	q1 = c(0.25, 0.5, 0.75), 
+	sim = 1:100, r_obs = NA
+)
+param <- subset(param, p1 >= q1)
+
+# Run simulations
+param <- doSim(param)
+
+
+#=================================================================#
+
+
+# Summarise results
+p <- subset(param, !is.na(r_obs), select=c(r, r_obs, n))
+ps <- rbind(p, p, p, p, p)
+ps$pow <- rep(c(1,2,4,6,8), each=nrow(p))
+ps$r_obs <- ps$r_obs^ps$pow
+
+ps_summary <- ddply(ps, .(pow, r, n), summarise, 
+	N    = length(r_obs),
+	sd   = sd(r_obs),
+	se   = sd(r_obs) / sqrt(length(r_obs)),
+	qu1  = quantile(r_obs, prob=0.25, na.rm=T),
+	mean = mean(r_obs),
+	qu3  = quantile(r_obs, prob=0.75, na.rm=T)	
+)
+
+
+#=================================================================#
+
+# Plot
+ggplot(ps_summary, aes(x = pow, y = sd)) +
+geom_point() +
+geom_line(aes(colour=factor(n))) +
+facet_grid(. ~ r) + 
+labs(x = "Power term", y = "Standard deviation", colour = "Sample size") 
+ggsave(file="~/repo/eQTL-2D/analysis/images/ld_sampling.pdf", width=10, height=6)
+
+
