@@ -34,8 +34,15 @@ sampleSnp <- function(r, n, p1, q1)
 		return(NA)
 	}
 
-	x <- sample(1:4, n, replace=T, prob=xs)
-	r_obs <- (sum(x == 1)/n - p1*q1) / sqrt(p1*q1*p2*q2)
+	x <- sample(1:4, n*2, replace=T, prob=xs)
+	
+	p1 <- (sum(x == 1) + sum(x == 2)) / (n*2)
+	p2 <- (sum(x == 3) + sum(x == 4)) / (n*2)
+	q1 <- (sum(x == 1) + sum(x == 3)) / (n*2)
+	q2 <- (sum(x == 2) + sum(x == 4)) / (n*2)
+	
+	r_obs <- (sum(x == 1)/(n*2) - p1*q1) / sqrt(p1*q1*p2*q2)
+	
 	return(r_obs)
 }
 
@@ -54,7 +61,7 @@ doSim <- function(param)
 
 # Create parameters
 param <- expand.grid(
-	r = seq(0.5, 0.95, 0.1), 
+	r = c(0, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99), 
 	n = c(900, 1200, 20000), 
 	p1 = c(0.25, 0.5, 0.75), 
 	q1 = c(0.25, 0.5, 0.75), 
@@ -93,6 +100,12 @@ geom_point() +
 geom_line(aes(colour=factor(n))) +
 facet_grid(. ~ r) + 
 labs(x = "Power term", y = "Standard deviation", colour = "Sample size") 
-ggsave(file="~/repo/eQTL-2D/analysis/images/ld_sampling.pdf", width=10, height=6)
+ggsave(file="~/repo/eQTL-2D/analysis/images/ld_sampling_sd.pdf", width=10, height=6)
 
+ggplot(ps_summary, aes(x = pow, y = mean)) +
+geom_point() +
+geom_line(aes(colour=factor(n))) +
+facet_grid(. ~ r) + 
+labs(x = "Power term", y = "Mean", colour = "Sample size") 
+ggsave(file="~/repo/eQTL-2D/analysis/images/ld_sampling_mean.pdf", width=10, height=6)
 
