@@ -4,9 +4,17 @@ write.table(replicated_ids, file = "DATA/replicated_ids.txt", row.names = FALSE,
 #---------------------------------------------------------------
 # bsgs_imputed_R2_80_cleaned_stage2_chr_all files come from Joseph
 #---------------------------------------------------------------
+# replicated SNPs and SNPs in LD
  plink --bfile bsgs_imputed_R2_80_cleaned_stage2_chr_all \
        --r2 \
        --ld-snp-list replicated_ids.txt \
        --ld-window-kb 1000 \
        --ld-window-r2 0.2 \
        --out replicated_ld_1mb.txt
+# All genotyped/QCed snps and SNPs in LD
+ plink --bfile bsgs_imputed_R2_80_cleaned_stage2_chr_all \
+       --r2 \
+       --ld-snp-list clean_geno_ids.txt \
+       --ld-window-kb 1000 \
+       --ld-window-r2 0.8 \
+       --out all_in
