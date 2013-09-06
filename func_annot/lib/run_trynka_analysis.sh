@@ -4,7 +4,7 @@
 
 # Moved all data over to the nemo cluster
 # trynka scripts found here www.broadinstitute.org/mpg/epigwas/
-# The data comes from folder DATA/inal_h3k4me3_lists
+# The data comes from folder DATA/final_h3k4me3_lists
 
 # -rw-r--r--  1 kshakhbazov   1.2K 11 Jun 18:48 bonf_all.snpmappings.txt
 # -rw-r--r--  1 kshakhbazov   1.0K 11 Jun 18:48 bonf_cis.snpmappings.txt
