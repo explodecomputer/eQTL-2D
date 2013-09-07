@@ -1,0 +1,11 @@
+Oi here is k.shakhbazov@uq.edu.au
+all R scripts may depend on what is in my .Rprofile:
+
+# Load packages
+library(plyr)
+library(reshape2)
+library(stringr)
+library(ggplot2)
+
+BTW the folder is for functional annotation of epiQTL snps.
+

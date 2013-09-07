@@ -1,0 +1,1103 @@
+\documentclass{article}
+\usepackage[superscript,biblabel]{cite}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage{authblk}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{lscape}
+
+\makeatletter
+\renewcommand\AB@affilsepx{. \protect\Affilfont}
+\makeatother
+
+\graphicspath{{../../analysis/images/}}
+\bibliographystyle{naturemag}
+
+\title{Detection and replication of epistasis influencing transcription in humans}
+\date{}
+
+\author[1,2,*]{Gibran Hemani}
+\author[1,2]{Konstantin Shakhbazov}
+\author[3]{Harm-Jan Westra}
+\author[4,5,6]{Tonu Esko}
+\author[7]{Anjali K Henders}
+\author[1,2]{Allan F. McRae}
+\author[2]{Jian Yang}
+\author[8]{Greg Gibson}
+\author[7]{Nicholas G Martin}
+\author[4]{Andres Metspalu}
+\author[3]{Lude Franke}
+\author[7,+]{Grant W Montgomery}
+\author[1,2,+]{Peter M Visscher}
+\author[1,2,+]{Joseph E Powell}
+
+\affil[1]{University of Queensland Diamantina Institute, University of Queensland, Princess Alexandra Hospital, Brisbane, Queensland, Australia}
+\affil[2]{Queensland Brain Institute, University of Queensland, Brisbane, QLD, Australia}
+\affil[3]{Department of Genetics, University Medical Center Groningen, University of Groningen, Hanzeplein 1, Groningen, the Netherlands}
+\affil[4]{Estonian Genome Center, University of Tartu, Tartu, 51010, Estonia}
+\affil[5]{Medical and Population Genetics, Broad Institute, Cambridge, MA, 02142, US}
+\affil[6]{Divisions of Endocrinology, Children's Hospital, Boston, MA, 02115, US}
+\affil[7]{Queensland Institute of Medical Research, Brisbane, Queensland, Australia}
+\affil[8]{School of Biology and Centre for Integrative Genomics, Georgia Institute of Technology, Atlanta, Georgia United States of America}
+\affil[+]{These authors contributed equally}
+\affil[*]{Corresponding author: g.hemani@uq.edu.au}
+
+\begin{document}
+
+
+\maketitle
+
+\clearpage
+
+\begin{abstract}
+
+Epistasis is the phenomenon whereby one polymorphism's effect on a trait depends on other polymorphisms present in the genome. The extent to which epistasis influences complex traits \cite{Carlborg2004} and contributes to their variation \cite{Hill2008a, Crow2010} is a fundamental question in evolution and human genetics. Though epistasis has been demonstrated in artificial gene manipulation studies in model organisms \cite{Costanzo2010, Bloom2013}, and examples have been reported in other species \cite{Carlborg2006}, few convincing examples with independent replication exist for epistasis amongst natural polymorphisms in human traits \cite{Strange2010, Evans2011}. Its absence from empirical findings may simply be due to its low incidence in the genetic control of complex traits \cite{Hill2008a, Crow2010}, but an alternative view is that it has previously been too technically challenging to detect due to statistical power and computational issues \cite{Cordell2009}. Here we show that, using advanced computation techniques \cite{Hemani2011} and a gene expression study design, many instances of epistasis are found between common single nucleotide polymorphisms (SNPs). In a cohort of 846 individuals with data on 7339 gene expression levels in peripheral blood, we found 501 significant pairwise epistatic interactions between common SNPs acting on the expression levels of 238 genes ($p < 2.91 \times 10^{-16}$). Replication of these signals in two independent data sets \cite{Metspalu2004, Fehrmann2011} showed both concordance of direction of epistatic effects ($p = 5.56 \times 10^{-31}$) and enrichment of interaction $p$-values, with 30 being significant at a conservative threshold of $p < 0.05 / 434$. There was evidence of functional enrichment for the interacting SNPs, for instance 44 of the genetic interactions are located within 5Mb of regions of known physical chromosome interactions \cite{Lieberman-Aiden2009} ($p = 1.8 \times 10^{-10}$). Epistatic networks of three SNPs or more influence the expression levels of 129 genes, whereby one \emph{cis}-acting SNP is modulated by several \emph{trans}-acting SNPs. For example MBNL1 is influenced by an additive effect at rs13069559 which itself is masked by \emph{trans}-SNPs on 14 different chromosomes, with nearly identical genotype-phenotype (GP) maps for each \emph{cis}-\emph{trans} interaction. This study presents the first evidence for multiple instances of natural genetic polymorphisms interacting to influence human traits.
+
+\end{abstract}
+
+
+\section*{Main text}
+
+% \subsection{Introduction}
+In the genetic analysis of complex traits it is usual for SNP effects to be estimated using an additive model where they are assumed to contribute independently and cumulatively to the mean of a trait. This framework has been successful in identifying thousands of associations \cite{Visscher2012}. But to date, though its contribution to phenotypic variance is frequently the subject of debate \cite{Carlborg2004, Hill2008a, Crow2010}, there is little empirical exploration of the role that epistasis plays in the architecture of complex traits in humans \cite{Strange2010, Evans2011}. Beyond the prism of human association studies there is evidence for epistasis, not only at the molecular scale from artificially induced mutations \cite{Costanzo2010} but also at the evolutionary scale in fitness adaptation \cite{Weinreich2006} and speciation \cite{Breen2012}.
+
+Methods are now available to overcome the computational problems involved in searching for epistasis, but its detection still remains problematic due to reduced statistical power. For example increased dependence on linkage disequilibrium (LD) between causal SNPs and observed SNPs \cite{Weir2008, Hemani2013}, increased model complexity in fitting interaction terms \cite{Marchini2005}, and more extreme significance thresholds to account for increased multiple testing \cite{Cordell2009} all make it more difficult to detect epistasis in comparison to additive effects. Thus, when combined with small genetic effect sizes, as is expected in most complex traits of interest \cite{Visscher2012}, the power to detect epistasis diminishes rapidly. There are two simple ways to overcome this problem. One is by using extremely large sample sizes \cite{LangoAllen2010}; another is by analysing traits that are likely to have large effect sizes among common variants. Because our focus was to ascertain the extent to which instances of epistasis occur amongst natural genetic variation we designed a study around the latter approach and searched for epistatic genetic effects that influence gene expression levels. Transcription levels can be measured for thousands of genes. These traits are largely heritable but on average less polygenic than high level phenotypes, thus many genetic effects are relatively large \cite{Powell2013}, maximising the chance at detecting epistasis, should it exist.
+
+
+% \subsection{Initial search in discovery set and replication}
+In our discovery dataset (Brisbane Systems Genetics Study, BSGS \cite{Powell2012}) of 846 individuals genotyped at 528,509 SNPs, we used a two stage approach to identify genetic interactions. First, we exhaustively test every pair of SNPs for pairwise effects against each of 7339 expression traits in peripheral blood (5\% significance threshold $ p < 2.91 \times 10^{-16}$, Methods). Second, we filtered the SNP pairs from stage 1 on LD and genotype class counts, and tested the remaining pairwise effects for significant interaction terms and used a Bonferroni correction for multiple testing (estimated type 1 error rate $\alpha \approx 0.07$, Methods, Supplementary Figure \ref{fig:type1}). Using this design we identified 501 putative genetic interactions influencing the expression levels of 238 genes (Supplementary Table \ref{tab:results}). Of the 501 discovery interactions, 434 had available data and passed filtering (Methods) in two independent replication datasets, Fehrmann \cite{Fehrmann2011} and the Estonian Genomics Centre University of Tartu (EGCUT) \cite{Metspalu2004}, in which we saw convincing evidence for replication. We used the summary statistics from the replication datasets to perform a meta analysis to obtain an independent $p$-value for the putative interactions, and 30 were significant after applying a Bonferroni correction for multiple testing (5\% significance threshold $p < 0.05/434$, Table \ref{tab:bonferroni}). To quantify the similarity of GP maps between the independent datasets (Figure \ref{fig:gpmaps}) we decomposed the genetic effects of each of the SNP pairs into orthogonal additive, dominance and epistatic effects ($A1$, $A2$, $D1$, $D2$, $A \times A$, $A \times D$, $D \times A$, $D \times D$) and tested for concordance of the sign of the most signicant effect (Supplementary Table \ref{tab:sign}, Methods). Sign concordance between the discovery and both replication datasets was observed in 22 out of the 30 significantly replicated interactions (expected value $= 7.5$ under the null hypothesis of no interactions, $p = 3.76 \times 10^{-8}$).
+
+In addition, using the meta analysis from the replication samples only, we observed that 316 of the remaining 404 discovery SNP pairs had replication interaction $p$-values more extreme than the 2.5\% confidence interval of the quantile-quantile plot against the null hypothesis of no interactions ($p << 1.0 \times 10^{-16}$, Figure \ref{fig:qqMeta} and Supplementary Figure \ref{fig:qqMetaNonsig}). Concordance of the direction of the effect of the largest variance component was also highly significant ($p = 5.71 \times 10^{-31}$, Supplementary Table \ref{tab:sign}). The congruence of the epistatic networks in discovery and replication datasets is shown in Figure \ref{fig:fireworks}, demonstrating that these complex genetic patterns are common even across independent datasets. A further replication was attempted using the Centre for Health Discovery and Wellbeing (CHDWB) dataset \cite{Preininger2013}, but only 20 of the SNP pairs passed filtering because the sample size was small ($n=139$), and likely due to insufficient power we found no evidence for replication (Supplementary Figure \ref{fig:qqgg}). It should be noted that although it is a necessary step to establish the veracity of the signals from the discovery set, replication of epistasis is difficult in practice because the dependence on LD between observed SNPs and causal variants is up to three orders of magnitude higher than it is for independent additive effects (Supplementary Figure \ref{fig:ld_mean}) \cite{Weir2008, Hemani2013}, and for higher power terms of LD $r$ the sampling variance increases (Methods, Supplementary Figure \ref{fig:ld_sd}). Therefore these results are encouraging with regards to the detection and replication of epistasis.
+
+
+% \subsection{Patterns of epistasis}
+Though seldom the focus of association studies, SNPs with known main effects are often tested for additive $\times$ additive genetic interactions \cite{Cordell2009}, but our analysis shows that this is unlikely to be the most effective strategy for its detection. The majority of our discovery interactions comprised of one SNP that was significantly associated with the gene expression level in the discovery dataset, and one SNP that had no previous association \cite{Powell2013} (439 out of 501, Methods). Only nine interactions were between SNPs that both had known main effects while 64 were between SNPs that had no known main effects. Additionally, we observed that the largest epistatic variance component for the 501 interactions was equally divided amongst additive $\times$ additive, additive $\times$ dominance, dominance $\times$ additive and dominance $\times$ dominance at the discovery stage ($p = 0.22$ for departure from expectation). This is not surprising because the patterns of epistasis used for statistical decomposition (\emph{i.e.} $A \times A$, $A \times D$, $D \times A$, $D \times D$) are simply convenient orthogonal parameterisations of a two locus model, and are not intended to model biological function \cite{Cockerham1954}.
+
+Of the discovery interactions, 47 were \emph{cis}-\emph{cis} acting (both SNPs were on the same chromosome as the expression gene, median distance between interacting SNPs is 1.83Mb), 441 were \emph{cis}-\emph{trans}-acting, and 13 were \emph{trans}-\emph{trans}-acting. We observed a wide range of significant GP maps (Figure \ref{fig:gpmaps}) but the most common pattern of epistasis that we detected involved a \emph{trans}-SNP masking the effect of an additive \emph{cis}-SNP. For example, MBNL1 (involved in RNA modification and regulation of splicing \cite{Ho2004}) has a \emph{cis} effect at rs13069559 which in turn is controlled by 13 \emph{trans}-SNPs and one \emph{cis}-SNP that each exhibit a masking pattern, such that when the \emph{trans}-SNP is homozygous for the masking allele the decreasing allele of the \emph{cis}-SNP no longer has an effect (Supplementary Figure \ref{fig:MBNL1_3D}). Each of these interactions has evidence for replication in at least one dataset and six are significantly replicated at the Bonferroni level (Supplementary Figure \ref{fig:circleplots}). We see similar epistatic networks involving multiple (eight or more) \emph{trans}-acting SNPs for other gene expresson levels too, for example TMEM149 (Supplementary Figure \ref{fig:TMEM149_3D}), NAPRT1 (Supplementary Figure \ref{fig:NAPRT1_3D}), TRAPPC5 (Supplementary Figure \ref{fig:TRAPPC5_3D}), and CAST (Supplementary Figure \ref{fig:CAST_3D}). We observed that from pedigree analysis these five gene expression phenotypes had non-additive variance component estimates within the 95th percentile of the 17,994 gene expression phenotypes that were analysed previously \cite{Powell2013} (Supplementary Table \ref{tab:vc}, Methods).
+
+
+% \subsection{Functional annotation}
+In total the 501 interactions comprised 781 unique SNPs, which we analysed for functional enrichment (Methods). We tested the SNPs for cell-type specific overlap with transcriptionally active chromatin regions, tagged by histone-3-lysine-4,tri-methylation (H3K4me3) chromatin marks, in 34 cell types \cite{Trynka2013} (Supplementary Figure \ref{fig:h3k4me3}). There was significant enrichment for \emph{cis}-acting SNPs in haematopoietic cell types only ($p < 1 \times 10^{-4}$ for the three tissues with the strongest enrichment after adjusting for multiple testing). However \emph{trans}-acting SNPs did not show any tissue specific enrichment ($p > 0.1$ for all tissues). This difference between \emph{cis} and \emph{trans} SNPs suggests different roles in epistatic interactions where tissue specificity is provided by the \emph{cis} SNPs. There is also enrichment for \emph{cis}-SNPs to be localised in regions with regulatory genomic features as measured by chromatin states \cite{Hoffman2012} (Supplementary Figure \ref{fig:snplocations}).
+
+We also demonstrate physical organisation of interacting loci within the cell, suggesting a mechanism by which biological function can lead to epistatic genetic variance. It has been shown that different chromosomal regions spatially colocalise in the cell through chromatin interactions \cite{Lieberman-Aiden2009}. We cross-referenced our epistatic SNPs with a map of chromosome interacting regions ($n = 96,139$) in K562 blood cell lines \cite{Lan2012} (Methods) and found that 44 epistatic interactions mapped to within 5Mb ($p < 1.8 \times 10^{-10}$), (Supplementary Figure \ref{fig:chromosomeinteractions}). Interaction of distant loci may occur through physical proximity in transcriptional factories that organise across different chromosome regions and can regulate transcription of related genes \cite{Osborne2004, Rieder2012}.
+
+
+% \subsection{Contribution of epistatic variance}
+Though we present many instances of epistasis, quantifying its relative importance to complex traits in humans remains an open question. In this study we are able to identify 238 gene expression traits with at least one significant interaction given our experiment-wide threshold. How does this compare to the number of traits influenced by additive effects? The BSGS dataset has been previously analysed for additive effects at all expression traits \cite{Powell2012}, and if we take all the additive eQTLs that were significant at the epistatic threshold of $p < 2.91 \times 10^{-16}$ we find that 453 gene expression levels out of the 7339 analysed had at least one significant expression quantitative trait locus (eQTL). Therefore it can be argued that the number of instances of detectable epistasis is substantial.
+
+However in terms of their contribution to complex traits a more important metric might be the proportion of the variance that the epistatic loci explain \cite{Hill2008a}. Ideally one would approach this question from a whole genome perspective \cite{Visscher2008} but this is intractable for non-additive variance components. Nevertheless, some inference can be made from the ascertained effects in these analyses and it is evident that additive variance is overall a larger component than epistatic variance, as has been argued previously \cite{Hill2008a, Crow2010}. Taking the additive effects detected in Powell \emph{et al} (2012) at the $p < 2.91 \times 10^{-16}$ threshold, we calculate that on average they explain 1.73\% of the phenotypic variance of each of the 7339 probes. By contrast, the epistatic variance from the interacting SNPs detected in this study on average explain 0.25\% of phenotypic variance, approximately seven times lower than the additive variance. There are several caveats to this comparison. Firstly, the ratio of additive to epistatic variance may differ at different effect sizes, and our estimate is determined by the threshold used. Secondly, the power of a 1 \emph{d.f.} test exceeds that of an 8 \emph{d.f.} test. And thirdly, the non-additive variance at causal variants is expected to be underestimated by observed SNPs in comparison to estimates for additive variance, due to differences in the rate of decay of the estimate of the genetic variance of the causal SNPs as LD decreases with the observed SNPs.
+
+
+% \subsection{Discussion}
+Overall, we have demonstrated that it is possible to identify and replicate epistasis in complex traits amongst common human variants, despite the relative contribution of pairwise epistasis to phenotypic variation being small. The bioinformatic analysis of the significant epistatic loci suggests that there are a large number of possible mechanisms that can lead to non-additive genetic variation. Further research into such epistatic effects may provide a useful framework to understanding molecular mechanisms and complex trait variation in greater detail. With computational techniques and data now widely available the search for epistasis in larger datasets for traits of broader interest is warranted.
+
+
+\subsection*{Methods Summary}
+We searched for pairwise epistasis exhaustively in the BSGS discovery dataset \cite{Powell2012}, which comprises 846 individuals who are genotyped at 528,509 autosomal SNPs. Each individual had gene expression levels measured in peripheral blood at 47,323 probes. Only the probes that passed quality control and had significant expression in $\geq 90\%$ of individuals were used in the analysis (7,339 probes representing 6,158 RefSeq genes). Recent hardware and software \cite{Hemani2011} advances that use graphics processing units (GPUs) made it possible to perform the $1.03 \times 10^{15}$ statistical tests to complete this analysis. We used permutation analysis \cite{Churchill1994a} to calculate an experiment-wide significance threshold of $T_{e} = 2.91 \times 10^{-16}$ at the 5\% family-wise error rate (FWER). SNP pairs were modelled for full genetic effects, including marginal additive and dominance at both SNPs plus four interaction terms. Though we could have used a less complex model to improve statistical efficiency, we deemed it important to be agnostic about the type of epistasis that might exist, and therefore chose not to over-parameterise the test \cite{Marchini2005, Hemani2013}. Because there are many large marginal effects present in these data it was necessary to perform several filtering steps to exclude SNP pairs that were significant due to marginal effects alone. All SNP pairs with LD $r^2 > 0.1$ and $D'^{2} > 0.1$ were removed to minimise the possibility of haplotype effects. All SNP pairs were required to have at least five data points in all nine genotype classes. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinel SNP pair was retained. Finally, a nested test contrasting the full genetic model against the marginal additive and dominance model was performed for each remaining SNP pair (Methods), resulting in 501 significant interactions after Bonferroni correction for multiple testing of the filtered SNPs. The significant SNP pairs were carried forward for replication in two independent datasets that used the same expression assays for analysing transcription in peripheral blood, the Fehrmann dataset \cite{Fehrmann2011} ($n=1240$) and the Estonian Genome Centre University of the University of Tartu (EGCUT) dataset \cite{Metspalu2004} ($n=891$). Of these, 434 passed filtering in both replication datasets. A meta analysis on the interaction $p$-values from each replication dataset was performed to provide an overall replication statistic for each putative interaction.
+
+
+\subsection*{Acknowledgements}
+
+We are grateful to the volunteers for their generous participation in these studies. We thank Bill Hill, Chris Haley and Lars Ronnegard for helpful discussions and comments.
+
+This work could not have been completed without access to high performance GPGPU compute clusters. We acknowledge iVEC for the use of advanced computing resources located at iVEC@UWA (www.ivec.org), and the Multi-modal Australian ScienceS Imaging and Visualisation Environment (MASSIVE) (www.massive.org.au). We also thank Jake Carroll and Irek Porebski from the Queensland Brain Institute Information Technology Group for HPC support.
+
+The University of Queensland group is supported by the Australian National Health and Medical Research Council (NHMRC) grants 389892, 496667, 613601, 1010374 and 1046880, the Australian Research Council (ARC) grant (DE130100691), and by National Institutes of Health (NIH) grants GM057091 and GM099568.
+
+The QIMR researchers acknowledge funding from the Australian National Health and Medical Research Council (grants 241944, 389875, 389891, 389892, 389938, 442915, 442981, 496739, 496688 and 552485), the and the National Institutes of Health (grants AA07535, AA10248, AA014041, AA13320, AA13321, AA13326 and DA12854). We thank Anthony Caracella and Lisa Bowdler for technical assistance with the micro-array hybridisations.
+
+The CHDWB study funding support from the Georgia Institute of Technology Research Foundation. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript
+
+The Fehrmann study was supported by grants from the Celiac Disease Consortium (an innovative cluster approved by the Netherlands Genomics Initiative and partly funded by the Dutch Government (grant BSIK03009), the Netherlands Organization for Scientific Research (NWO-VICI grant 918.66.620, NWO-VENI grant 916.10.135 to L.F.), the Dutch Digestive Disease Foundation (MLDS WO11-30), and a Horizon Breakthrough grant from the Netherlands Genomics Initiative (grant 92519031 to L.F.). This project was supported by the Prinses Beatrix Fonds, VSB fonds, H. Kersten and M. Kersten (Kersten Foundation), The Netherlands ALS Foundation, and J.R. van Dijk and the Adessium Foundation. The research leading to these results has received funding from the European Community’s Health Seventh Framework Programme (FP7/2007-2013) under grant agreement 259867.
+
+The EGCUT study received targeted financing from Estonian Government SF0180142s08, Center of Excellence in Genomics (EXCEGEN) and University of Tartu (SP1GVARENG). We acknowledge EGCUT technical personnel, especially Mr V. Soo and S. Smit. Data analyzes were carried out in part in the High Performance Computing Center of University of Tartu.
+
+
+
+
+\clearpage
+\section*{Tables}
+
+\begin{table}[ht]
+	\centering
+	\begin{threeparttable}
+		\caption{Epistatic interactions significant at the Bonferroni level in two replication sets}
+		\label{tab:bonferroni}
+		{\footnotesize
+		\begin{tabular}{rlllrrrr}
+  \hline
+ & Gene (chr.) & SNP 1 (chr.) & SNP 2 (chr.) & BSGS\tnote{2} & Fehrmann\tnote{3} & EGCUT\tnote{3} & Meta\tnote{4} \\
+  \hline
+1 & ADK (10)  & rs2395095 (10)  & rs10824092 (10)  & 6.69\tnote{1} & 18.33\tnote{1} & 21.21\tnote{1} & 39.82\tnote{1} \\
+  2 & ATP13A1 (19)  & rs4284750 (19)  & rs873870 (19)  & 5.30 & 12.18 & 3.25 & 14.23 \\
+  3 & C21ORF57 (21)  & rs9978658 (21)  & rs11701361 (21)  & 9.42 & 6.08 & 16.36 & 21.67 \\
+  4 & CSTB (21)  & rs9979356 (21)  & rs3761385 (21)  & 11.99 & 25.20 & 16.72 & 42.27 \\
+  5 & CTSC (11)  & rs7930237 (11)  & rs556895 (11)  & 7.16 & 18.76 & 15.06 & 33.53 \\
+  6 & FN3KRP (17)  & rs898095 (17)  & rs9892064 (17)  & 16.16 & 28.24 & 29.39 & 59.95 \\
+  7 & GAA (17)  & rs11150847 (17)  & rs12602462 (17)  & 13.91 & 19.98 & 12.99 & 32.60 \\
+  8 & HNRPH1 (5)  & rs6894268 (5)  & rs4700810 (5)  & 15.38 & 8.55 & 3.01 & 10.37 \\
+  9 & LAX1 (1)  & rs1891432 (1)  & rs10900520 (1)  & 19.16 & 18.60 & 11.22 & 29.24 \\
+  10 & MBNL1 (3)  & rs16864367 (3)  & rs13079208 (3)  & 13.49 & 16.25 & 24.74 & 41.56 \\
+  11 & MBNL1 (3)  & rs7710738 (5)  & rs13069559 (3)  & 7.92 & 2.55 & 7.89 & 9.28 \\
+  12 & MBNL1 (3)  & rs2030926 (6)  & rs13069559 (3)  & 7.10 & 0.91 & 5.80 & 5.53 \\
+  13 & MBNL1 (3)  & rs2614467 (14)  & rs13069559 (3)  & 5.74 & 4.13 & 2.22 & 5.30 \\
+  14 & MBNL1 (3)  & rs218671 (17)  & rs13069559 (3)  & 7.63 & 0.62 & 5.82 & 5.23 \\
+  15 & MBNL1 (3)  & rs11981513 (7)  & rs13069559 (3)  & 7.71 & 0.43 & 5.36 & 4.58 \\
+  16 & MBP (18)  & rs8092433 (18)  & rs4890876 (18)  & 5.40 & 7.06 & 21.91 & 28.73 \\
+  17 & NAPRT1 (8)  & rs2123758 (8)  & rs3889129 (8)  & 8.45 & 15.12 & 16.08 & 30.77 \\
+  18 & NCL (2)  & rs7563453 (2)  & rs4973397 (2)  & 7.31 & 7.51 & 6.33 & 12.70 \\
+  19 & PRMT2 (21)  & rs2839372 (21)  & rs11701058 (21)  & 4.81 & 0.69 & 4.47 & 4.06 \\
+  20 & RPL13 (16)  & rs352935 (16)  & rs2965817 (16)  & 4.98 & 3.79 & 14.41 & 17.24 \\
+  21 & SNORD14A (11)  & rs2634462 (11)  & rs6486334 (11)  & 7.31 & 13.11 & 10.96 & 23.22 \\
+  22 & TMEM149 (19)  & rs807491 (19)  & rs7254601 (19)  & 12.16 & 81.55 & 45.78 & 145.78 \\
+  23 & TMEM149 (19)  & rs8106959 (19)  & rs6926382 (6)  & 5.80 & 3.06 & 8.80 & 10.72 \\
+  24 & TMEM149 (19)  & rs8106959 (19)  & rs914940 (1)  & 6.22 & 3.36 & 6.96 & 9.20 \\
+  25 & TMEM149 (19)  & rs8106959 (19)  & rs2351458 (4)  & 7.30 & 0.04 & 9.61 & 8.00 \\
+  26 & TMEM149 (19)  & rs8106959 (19)  & rs6718480 (2)  & 8.55 & 3.31 & 5.15 & 7.36 \\
+  27 & TMEM149 (19)  & rs8106959 (19)  & rs1843357 (8)  & 6.21 & 3.72 & 3.33 & 6.00 \\
+  28 & TMEM149 (19)  & rs8106959 (19)  & rs9509428 (13)  & 9.44 & 0.10 & 5.75 & 4.47 \\
+  29 & TRA2A (7)  & rs7776572 (7)  & rs11770192 (7)  & 8.23 & 3.19 & 1.89 & 4.09 \\
+  30 & VASP (19)  & rs1264226 (19)  & rs2276470 (19)  & 5.09 & 0.94 & 5.14 & 4.95 \\
+   \hline
+		\end{tabular}
+		}
+		\begin{tablenotes}
+			\item [1] $-\log_{10} p$-values for 4 \emph{d.f.} interaction tests
+			\item [2] Discovery dataset
+			\item [3] Independent replication dataset
+			\item [4] Meta analysis of interaction terms between replication datasets only
+		\end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+
+\clearpage
+\section*{Figures}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=2.5in]{gpbonfrep.pdf}
+	\caption{\textbf{Replication of GP maps in two independent populations} The GP maps for each epistatic interaction that is significant at the Bonferroni level in both replication datasets are shown. Each GP map consists of nine tiles where each tile represents the expression level for that two-locus genotype class. Phenotypes are for gene transcript levels (dark coloured tiles = high expression, light coloured tiles = low expression). Columns of GP maps are for each independent dataset. Rows of GP maps are for each of 30 significantly replicated interactions at the Bonferroni level, corresponding to the rows in Table \ref{tab:bonferroni}. There is a clear trend of the GP maps replicating across all three datasets.}
+	\label{fig:gpmaps}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=2.5in]{qqMeta.pdf}
+	\caption{\textbf{Q-Q plots of interaction $p$-values from replication datasets} The top panel shows all 434 discovery SNPs that were tested for interactions. Observed $p$-values ($y$-axis, $-\log_{10}$ scale) are plotted against the expected $p$-values ($x$-axis, $-\log_{10}$ scale). The multiple testing correction threshold for significance following Bonferroni correction is denoted by a dotted line. The bottom panel shows the same data as the top panel but excluding the 30 interactions that were significant at the Bonferroni level in the replication datasets. The shaded grey area represents the 5\% confidence interval for the expected distribution of $p$-values. Dark blue points represent $p$-values that exceed the confidence interval, light blue are within the confidence interval.}
+	\label{fig:qqMeta}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=5in]{pale_gray_graph_of_interactions_2_lists_GrayEdges}
+	\caption{\textbf{Discovery and replication of epistatic networks} All 434 putative genetic interactions (edges) with data common to discovery and replication sets is shown, where black nodes represent SNPs and red nodes represent traits (gene expression probes). Three hundred and forty-five interactions had $p$-values exceeding the 2.5\% confidence interval following meta analysis of the replication data The remaining 89 interactions that did not replicate are depicted in grey. It is evident that a large proportion of the complex networks identified in the discovery set also exist in independent populations.}
+	\label{fig:fireworks}
+\end{figure}
+
+\clearpage
+
+\bibliography{refs}
+\clearpage
+
+
+\section*{Supplementary Figures}
+\setcounter{figure}{0}
+\makeatletter 
+\renewcommand{\thefigure}{S\@arabic\c@figure} 
+\makeatletter 
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=5in]{type1}
+	\caption{\textbf{Type 1 error rate of two stage design} In stage 1 SNPs are tested for full genetic effects (8 d.f.) and those that surpass a threshold for multiple testing are then tested for significant interaction terms in stage 2. These interaction $p$-values are then adjusted (Bonferroni) for the total number of tests that passed stage 1. The type 1 error rate of this two stage design is dependent on the power, which is not known empirically.}
+\label{fig:type1}
+\end{figure}
+\clearpage
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=5in]{qqMetaNonsig}
+	\caption{\textbf{Q-Q plots of interaction $p$-values from replication datasets, excluding the 30 points significant at the Bonferroni level} The right panel (Null) shows the interaction $p$-values from a meta analysis across two independent datasets on 434 randomly drawn SNP pairs. The left panel (Empirical) shows the interaction $p$-values from the 404 putative interactions that were not significant at the Bonferroni correction threshold. Dark blue points represent $p$-values that surpass the 2.5\% FDR level, as in Figure \ref{fig:qqMeta}.}
+\label{fig:qqMetaNonsig}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{circles_replication2}
+	\caption{\textbf{Gene expression traits with four or more genetic interactions} Circle plots represent the genomic positions for SNPs (linking lines) and expression probes (red points). Chromosomes are represented by black blocks and ordered from 1 to 22 clockwise, starting from the top. Grey lines represent no evidence for replication, blue lines denote interactions that are outside the 97.5\% confidence interval or the Q-Q plot (Figure \ref{fig:qqMeta}), and red lines denote replication at the Bonferroni correction level. Most interactions are characterised as being \emph{cis}-\emph{trans} to the expression probe.}
+	\label{fig:circleplots}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{ChromatinStatesOverlapFixedOrder}
+	\caption{\textbf{Location of SNPs relative to genomic features} We used chromatin segmentation \cite{Hoffman2012} as a method for labelling genomic features. All SNPs within 1Mb and $r^2 > 0.8$ of each \emph{cis}- and \emph{trans}-SNP were taken to find which genomic features (\emph{x}-axis) were covered by the SNPs that compose the 501 significant interactions. Green bars represent the proportion (\emph{y}-axis) of the 528,509 SNPs used in the analysis that fall within the range of the different genomic features. There is enrichment for \emph{cis}-acting SNPs (red bars) in promotor regions, but \emph{trans}-acting SNPs (blue bars) are not enriched for genomic features. The labels on the $x$-axis are as follows: E = Predicted enhancer, CTCF = CTCF enriched element, WE = Predicted weak enhancer or open chromatin cis regulatory element, PF = Predicted promoter flanking region, TSS = Predicted promoter region including transcriptional start site, T = Predicted transcribed region, R = Predicted Repressed or Low Activity region}
+	\label{fig:snplocations}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{H3K4me3Enrichment501_list}
+	\caption{\textbf{Tissue specific enrichment of SNPs in transcriptionally active regions} The locations of transcriptional activity can be predicted by chromatin marks, assayed by H3K4me3 \cite{Trynka2013}. Enrichment $p$-values are calculated using permutation analysis for 34 different cell types ($y$-axis) in four tissue types (Rows of boxes). The dotted red line denotes significance (Bonferroni correction for 34 cell types, $x$-axis). There is enrichment for \emph{cis}-acting SNPs in Haematopoietic tissue types only. \emph{Trans}-acting SNPs have no tissue specificity.}
+	\label{fig:h3k4me3}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{qqgg}
+	\caption{\textbf{Q-Q plot of interaction $p$-values in the CDHWB dataset} Twenty of the 501 discovery SNP pairs passed filtering in the CDHWB dataset (mainly due to small sample size). There is no evidence for enrichment of interaction terms, most likely due to insufficient power given the limited sample size.}
+	\label{fig:qqgg}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{ld_sampling_mean}
+	\caption{\textbf{Sampling mean for different power terms of population $r$ values} Power of detection and replication of epistatic signals depends not on $r^2$ between causal variants and observed SNPs, but on $r^4, r^6, r^8$. For a given a population value of LD $r$ (columns of plots), plotted is the sample mean ($y$-axis) of $\hat{r}$, $\hat{r}^2$ (additive), $\hat{r}^4$ (dominance, A$\times$A), $\hat{r}^6$ (A$\times$D), $\hat{r}^8$ (D$\times$D) ($x$-axis) for different sample sizes (coloured lines). As true $r$ reduces the statistical power to detect epistatic variants drops dramatically under the assumption that statistical power is proportional to higher moments of $r$.}
+	\label{fig:ld_mean}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{ld_sampling_sd}
+	\caption{\textbf{Sampling standard deviation for different power terms of population $r$ values} Power of detection and replication of epistatic signals depends not on $r^2$ between causal variants and observed SNPs, but on $r^4, r^6, r^8$. For a given a population value of LD $r$ (columns of plots), plotted is the sampling standard deviation ($y$-axis) of $\hat{r}$, $\hat{r}^2$ (additive), $\hat{r}^4$ (dominance, A$\times$A), $\hat{r}^6$ (A$\times$D), $\hat{r}^8$ (D$\times$D) ($x$-axis) for different sample sizes (coloured lines). As the power term of $r$ increases the sampling variance also increases. Supposing that there is sufficiently high $r^x$ in the discovery sample for detection of epistasis, the replication sample is less likely to have similarly high $r^x$ as $x$ increases, leading to an expectation of reduced replication rates.}
+	\label{fig:ld_sd}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{MBNL1_3D}
+	\caption{\textbf{Genotype-phenotype maps for 14 interactions influencing the expression of MBNL1} Each bar represents the mean phenotypic value for individuals in that genotype class. The rs13069559 SNP typically has a \emph{cis}-additive decreasing effect on the expression of MBNL1, but in many of these interactions the \emph{cis} effect is masked when the \emph{trans} SNP is homozygous for the masking allele.}
+	\label{fig:MBNL1_3D}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{TMEM149_3D}
+	\caption{\textbf{Genotype-phenotype maps for 19 interactions influencing the expression of TMEM149} Each bar represents the mean phenotypic value for individuals in that genotype class. The rs13069559 SNP typically has a \emph{cis}-additive decreasing effect on the expression of TMEM149, but in many of these interactions the \emph{cis} effect is masked when the \emph{trans} SNP is homozygous for the masking allele.}
+	\label{fig:TMEM149_3D}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{NAPRT1_3D}
+	\caption{\textbf{Genotype-phenotype maps for 8 interactions influencing the expression of NAPRT1} Each bar represents the mean phenotypic value for individuals in that genotype class.}
+	\label{fig:NAPRT1_3D}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{TRAPPC5_3D}
+	\caption{\textbf{Genotype-phenotype maps for 16 interactions influencing the expression of TRAPPC5} Each bar represents the mean phenotypic value for individuals in that genotype class.}
+	\label{fig:TRAPPC5_3D}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{CAST_3D}
+	\caption{\textbf{Genotype-phenotype maps for 15 interactions influencing the expression of CAST} Each bar represents the mean phenotypic value for individuals in that genotype class.}
+	\label{fig:CAST_3D}
+\end{figure}
+\clearpage
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{chromosome_interactions}
+	\caption{\textbf{Number of overlaps between chromosome interactions and epistatic interactions} Interacting chromosome regions may be a possible mechanism underlying epistatic interactions. The number of epistatic interactions within 20kb, 500kb, 2Mb and 10Mb of known chromosome interacting regions are shown by red vertical lines. The histograms represent the null distribution based on random sampling of 1,000 datasets for each window size.}
+	\label{fig:chromosomeinteractions}
+\end{figure}
+\clearpage
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{alleleFreq}
+	\caption{\textbf{Comparison of allele frequencies for 781 SNPs involved in genetic interactions across independent populations} Outliers were removed from the analysis as part of the filtering stage during replication.}
+	\label{fig:allelefreq}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{compare_vc2}
+	\caption{\textbf{Comparison of variance explained by additive, dominant and epistatic effects from different cohorts} How does the estimated variance decomposition change in different cohorts? The proportion of the phenotypic variance that is additive (A), dominant (D), or epistatic (I) for each putative interaction is shown on the $y$-axis (Note: different scales for each row). BSGS has 501 interactions whereas Fehrmann and EGCUT have 434 ($x$-axis). The variance estimates in each plot are ordered from lowest additive to highest. This is done independently for each cohort to depict the distribution of estimated effects.}
+	\label{fig:compare_vc}
+\end{figure}
+
+
+
+
+
+\clearpage
+\section*{Supplementary Tables}
+\setcounter{table}{0}
+\makeatletter 
+\renewcommand{\thetable}{S\@arabic\c@table} 
+\makeatletter 
+
+
+\begin{landscape}
+
+{\tiny
+
+\begin{ThreePartTable}
+\begin{longtable}{|llr|lrrl|lrrl|rrrr|r|}
+
+\caption{\textbf{Details on 501 interactions discovered in BSGS dataset}}  \label{tab:results} \\
+
+\hline
+\multicolumn{3}{|c|}{Expression trait} & 
+\multicolumn{4}{|c|}{SNP 1} & 
+\multicolumn{4}{|c|}{SNP 2} & 
+\multicolumn{4}{|c|}{Interaction statistic / $-\log_{10}p$-values} & \\
+\hline
+Gene ID\tnote{a} & 
+Probe ID\tnote{b} & 
+Chr. & 
+rs ID & 
+Chr. & 
+Pos/Mb\tnote{c} & 
+Association\tnote{d} & 
+rs ID & 
+Chr. & 
+Pos/Mb\tnote{c} & 
+Association\tnote{d} & 
+BSGS\tnote{e} & 
+Fehrmann\tnote{f} & 
+EGCUT\tnote{f} & 
+Meta\tnote{g} & 
+Distance / Mb\tnote{h} \\
+\hline
+\endfirsthead
+
+
+\multicolumn{16}{c}{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\multicolumn{3}{|c|}{Expression trait} & 
+\multicolumn{4}{|c|}{SNP 1} & 
+\multicolumn{4}{|c|}{SNP 2} & 
+\multicolumn{4}{|c|}{Interaction statistic / $-\log_{10}p$-values} & \\
+\hline
+Gene ID\tnote{a} & 
+Probe ID\tnote{b} & 
+Chr. & 
+rs ID & 
+Chr. & 
+Pos/Mb\tnote{c} & 
+Association\tnote{d} & 
+rs ID & 
+Chr. & 
+Pos/Mb\tnote{c} & 
+Association\tnote{d} & 
+BSGS\tnote{e} & 
+Fehrmann\tnote{f} & 
+EGCUT\tnote{f} & 
+Meta\tnote{g} & 
+Distance / Mb\tnote{h} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{16}{r}{{Continued on next page}} \\
+\endfoot
+
+\hline \hline
+\endlastfoot
+
+
+ABCA7 & ILMN\_1743205 & 19 & rs3752237 & 19 & 1047161 & ABCA7 & rs596183 & 6 & 158100199 &  & 5.82 & 0.38\tnote{i} & 0.02\tnote{i} & 0.09\tnote{j} &  \\
+ABCA7 & ILMN\_1743205 & 19 & rs3752237 & 19 & 1047161 & ABCA7 & rs914737 & 9 & 139522101 &  & 5.50 &  &  &  &  \\
+ABCC3 & ILMN\_1677814 & 17 & rs9455 & 17 & 48771135 & ABCC3 & rs4732202 & 7 & 136057883 &  & 6.10 & 0.02 & 1.81 & 0.95 &  \\
+ACAT1 & ILMN\_1800008 & 11 & rs227064 & 11 & 108207393 & ACAT1 & rs4744894 & 9 & 72001517 &  & 6.59 & 1.04 & 1.78 & 2.02 &  \\
+ADCK1 & ILMN\_1698777 & 14 & rs12431896 & 14 & 78088813 & ADCK1 & rs4833241 & 4 & 122933691 &  & 5.59 & 0.36 & 1.14 & 0.87 &  \\
+ADCK1 & ILMN\_1698777 & 14 & rs8058066 & 16 & 88462550 &  & rs12431896 & 14 & 78088813 & ADCK1 & 6.58 & 2.04 & 0.83 & 2.05 &  \\
+ADK & ILMN\_2358626 & 10 & rs2395095 & 10 & 76446305 & ADK & rs10824092 & 10 & 75929517 &  & 6.69 & 18.33 & 21.21 & 39.82 & 0.517 \\
+AGAP6 & ILMN\_3239130 & 10 & rs2611512 & 10 & 51515534 & AGAP8 & rs2547996 & 5 & 95174319 &  & 6.22 &  &  &  &  \\
+AHSA2 & ILMN\_1798308 & 2 & rs10881585 & 9 & 137112421 &  & rs842647 & 2 & 61119471 &  & 7.15 & 1.83 & 1.93 & 2.88 &  \\
+AHSA2 & ILMN\_1798308 & 2 & rs2523971 & 6 & 29938258 & HLA-G & rs1177303 & 2 & 61388355 & AHSA2 & 5.45 & 0.92 & 0.64 & 0.94 &  \\
+AKTIP & ILMN\_1665982 & 16 & rs2896940 & 16 & 57721127 &  & rs13332406 & 16 & 53489705 & AKTIP & 6.91 & 0.16 & 0.99 & 0.57 & 4.231 \\
+AKTIP & ILMN\_1665982 & 16 & rs7189819 & 16 & 53536345 & AKTIP & rs1362032 & 7 & 125543391 &  & 5.93 & 0.71 & 0.20 & 0.42 &  \\
+AKTIP & ILMN\_1665982 & 16 & rs7189819 & 16 & 53536345 & AKTIP & rs1473017 & 4 & 179323762 &  & 6.18 & 0.27 & 0.30 & 0.23 &  \\
+ALDH3A2 & ILMN\_2401641 & 17 & rs3760489 & 17 & 19581009 & ALDH3A2 & rs11720112 & 3 & 161996349 &  & 6.26 & 0.33 & 1.37 & 1.01 &  \\
+ANG & ILMN\_1760727 & 14 & rs9322855 & 14 & 21153299 & ANG & rs4866516 & 5 & 3032625 &  & 5.75 & 0.02 & 0.20 & 0.04 &  \\
+ANPEP & ILMN\_1763837 & 15 & rs11073891 & 15 & 90363995 & ANPEP & rs3823523 & 7 & 154511163 &  & 5.85 & 0.44 & 1.09 & 0.90 &  \\
+ANPEP & ILMN\_1763837 & 15 & rs11073891 & 15 & 90363995 & ANPEP & rs6846031 & 4 & 178019148 &  & 6.31 & 0.47 & 0.17 & 0.26 &  \\
+AP3B1 & ILMN\_1768867 & 5 & rs6453374 & 5 & 77508159 & AP3B1 & rs4684443 & 3 & 4818792 &  & 5.94 & 0.05 &  &  &  \\
+APPL2 & ILMN\_1765076 & 12 & rs935251 & 12 & 105580918 & APPL2 & rs2769594 & 9 & 87918528 &  & 5.60 & 0.80 & 1.02 & 1.16 &  \\
+ARL17B & ILMN\_3231952 & 17 & rs12947580 & 17 & 75768225 &  & rs8079215 & 17 & 44064851 & ARL17B & 5.96 &  &  &  & 31.703 \\
+ARL17B & ILMN\_3231952 & 17 & rs2834541 & 21 & 35932619 &  & rs8079215 & 17 & 44064851 & ARL17B & 6.65 &  &  &  &  \\
+ARL17B & ILMN\_3231952 & 17 & rs8079215 & 17 & 44064851 & ARL17B & rs1950646 & 14 & 94722497 &  & 7.64 &  &  &  &  \\
+ARL17B & ILMN\_3231952 & 17 & rs8079215 & 17 & 44064851 & ARL17B & rs2197777 & 12 & 125831219 &  & 6.26 &  &  &  &  \\
+ARL17B & ILMN\_3231952 & 17 & rs8079215 & 17 & 44064851 & ARL17B & rs2684789 & 15 & 99492045 &  & 5.98 &  &  &  &  \\
+ARL17B & ILMN\_3231952 & 17 & rs8079215 & 17 & 44064851 & ARL17B & rs9834627 & 3 & 191203546 &  & 5.72 &  &  &  &  \\
+ATP13A1 & ILMN\_2134224 & 19 & rs4284750 & 19 & 19810050 &  & rs873870 & 19 & 19738554 &  & 5.30 & 12.18 & 3.25 & 14.23 & 0.071 \\
+BID & ILMN\_1763386 & 22 & rs8919 & 22 & 18213057 & BID & rs9804943 & 12 & 129906275 &  & 5.84 & 0.06 & 0.40 & 0.14 &  \\
+BID & ILMN\_2372413 & 22 & rs181405 & 22 & 18233000 &  & rs10888267 & 1 & 248059423 &  & 6.60 & 0.87 & 0.16 & 0.50 &  \\
+C11ORF17 & ILMN\_1752988 & 11 & rs2568061 & 11 & 8886260 & C11ORF17 & rs6553184 & 4 & 189150656 &  & 5.66 & 1.15 & 0.04 & 0.54 &  \\
+C13ORF18 & ILMN\_2196550 & 13 & rs2110603 & 16 & 6259852 &  & rs674754 & 13 & 46913416 & C13ORF18 & 6.66 & 0.28 & 0.28 & 0.22 &  \\
+C13ORF18 & ILMN\_2196550 & 13 & rs674754 & 13 & 46913416 & C13ORF18 & rs6857876 & 4 & 153610164 &  & 3.87 & 0.38 & 0.50 & 0.43 &  \\
+C14ORF173 & ILMN\_2393450 & 14 & rs11089825 & 22 & 37575398 &  & rs4983382 & 14 & 105189504 & C14ORF173 & 6.02 & 0.60 & 0.84 & 0.85 &  \\
+C14ORF173 & ILMN\_2393450 & 14 & rs3935344 & 15 & 92276674 &  & rs4983382 & 14 & 105189504 & C14ORF173 & 5.98 & 0.31 & 0.28 & 0.24 &  \\
+C14ORF173 & ILMN\_2393450 & 14 & rs4983382 & 14 & 105189504 & C14ORF173 & rs10754644 & 1 & 238724741 &  & 7.15 & 0.42 & 0.34 & 0.35 &  \\
+C14ORF4 & ILMN\_1804396 & 14 & rs1293455 & 18 & 13819673 &  & rs2655991 & 14 & 77574438 &  & 4.87 &  &  &  &  \\
+C14ORF4 & ILMN\_1804396 & 14 & rs2655991 & 14 & 77574438 &  & rs10972462 & 9 & 35427324 &  & 4.32 &  &  &  &  \\
+C14ORF4 & ILMN\_1804396 & 14 & rs2655991 & 14 & 77574438 &  & rs6445340 & 3 & 63371601 &  & 4.40 &  &  &  &  \\
+C14ORF4 & ILMN\_1804396 & 14 & rs2655991 & 14 & 77574438 &  & rs9787151 & 1 & 63179138 &  & 4.05 &  &  &  &  \\
+C14ORF4 & ILMN\_1804396 & 14 & rs4793445 & 17 & 70416307 &  & rs2655991 & 14 & 77574438 &  & 3.85 &  &  &  &  \\
+C14ORF4 & ILMN\_1804396 & 14 & rs6010061 & 22 & 51151724 &  & rs2655991 & 14 & 77574438 &  & 4.61 &  &  &  &  \\
+C14ORF4 & ILMN\_1804396 & 14 & rs7245800 & 19 & 52083552 &  & rs2655991 & 14 & 77574438 &  & 4.69 &  &  &  &  \\
+C17ORF60 & ILMN\_1747347 & 17 & rs9907897 & 17 & 63502633 &  & rs7405659 & 17 &  & C17ORF60 & 6.79 & 0.53 & 0.05 & 0.19 &  \\
+C1ORF86 & ILMN\_1726989 & 1 & rs2334323 & 6 & 110577257 &  & rs2257182 & 1 & 2082566 & C1ORF86 & 5.90 & 0.01 & 0.50 & 0.13 &  \\
+C1ORF86 & ILMN\_2097790 & 1 & rs2279474 & 18 & 46384412 &  & rs2460002 & 1 & 2119833 & C1ORF86 & 5.65 &  & 0.03 &  &  \\
+C1ORF86 & ILMN\_2097790 & 1 & rs7188668 & 16 & 25711358 &  & rs2460002 & 1 & 2119833 & C1ORF86 & 5.59 & 0.29 & 0.50 & 0.37 &  \\
+C21ORF57 & ILMN\_1795836 & 21 & rs4819271 & 21 & 48052838 &  & rs901964 & 12 & 48676038 & ZNF641 & 4.91 & 0.65 & 0.08 & 0.28 &  \\
+C21ORF57 & ILMN\_1795836 & 21 & rs9978658 & 21 & 48027084 &  & rs11701361 & 21 & 47764477 &  & 9.42 & 6.08 & 16.36 & 21.67 & 0.263 \\
+C5ORF4 & ILMN\_1728742 & 5 & rs1122762 & 18 & 45866512 &  & rs286595 & 5 & 154348552 & C5ORF4 & 5.55 & 0.72 & 0.04 & 0.27 &  \\
+C8ORF59 & ILMN\_1653205 & 8 & rs12429804 & 13 & 36577930 &  & rs2896452 & 8 & 86102223 & C8ORF59 & 5.49 & 0.29 & 0.02 & 0.07 &  \\
+C8ORF59 & ILMN\_1653205 & 8 & rs12454561 & 18 & 31272238 &  & rs2896452 & 8 & 86102223 & C8ORF59 & 5.45 & 0.31 &  &  &  \\
+C8ORF59 & ILMN\_1653205 & 8 & rs2896452 & 8 & 86102223 & C8ORF59 & rs1004564 & 4 & 55242625 &  & 7.62 & 0.38 & 0.18 & 0.21 &  \\
+C8ORF59 & ILMN\_1653205 & 8 & rs7152284 & 14 & 52273663 &  & rs2896452 & 8 & 86102223 & C8ORF59 & 5.67 & 2.18 & 0.07 & 1.33 &  \\
+C8ORF59 & ILMN\_1653205 & 8 & rs8051751 & 16 & 7188323 &  & rs2896452 & 8 & 86102223 & C8ORF59 & 5.79 & 1.39 & 0.18 & 0.87 &  \\
+C9ORF72 & ILMN\_1741881 & 9 & rs10122902 & 9 & 27556780 & C9ORF72 & rs2526698 & 1 & 242029101 &  & 6.36 & 0.96 & 0.01 & 0.37 &  \\
+CABC1 & ILMN\_1731064 & 1 & rs12765847 & 10 & 4353908 &  & rs3738725 & 1 & 227174210 & CABC1 & 6.36 & 0.94 & 0.00 & 0.34 &  \\
+CARD9 & ILMN\_1712532 & 9 & rs4266763 & 9 & 139289825 & INPP5E & rs684040 & 1 & 82128660 &  & 5.81 &  &  &  &  \\
+CARD9 & ILMN\_1712532 & 9 & rs4573661 & 11 & 6026661 &  & rs4077515 & 9 & 139266496 & INPP5E & 6.61 & 0.09 & 0.86 & 0.42 &  \\
+CAST & ILMN\_1717234 & 5 & rs1157079 & 20 & 6778978 &  & rs7733671 & 5 & 96000269 & CAST & 7.07 & 0.23 & 0.96 & 0.62 &  \\
+CAST & ILMN\_1717234 & 5 & rs12463169 & 19 & 17321669 &  & rs7733671 & 5 & 96000269 & CAST & 5.73 & 0.02 & 2.85 & 1.75 &  \\
+CAST & ILMN\_1717234 & 5 & rs12599264 & 16 & 81840122 &  & rs7733671 & 5 & 96000269 & CAST & 7.00 &  &  &  &  \\
+CAST & ILMN\_1717234 & 5 & rs12719343 & 5 & 125369113 &  & rs7733671 & 5 & 96000269 & CAST & 7.68 & 0.36 & 1.57 & 1.20 & 29.369 \\
+CAST & ILMN\_1717234 & 5 & rs1410575 & 9 & 78255630 &  & rs7733671 & 5 & 96000269 & CAST & 6.55 & 0.13 & 1.34 & 0.78 &  \\
+CAST & ILMN\_1717234 & 5 & rs166444 & 8 & 78392770 &  & rs7733671 & 5 & 96000269 & CAST & 7.01 & 0.27 & 0.52 & 0.37 &  \\
+CAST & ILMN\_1717234 & 5 & rs17648036 & 15 & 27311111 &  & rs7733671 & 5 & 96000269 & CAST & 7.81 & 0.97 & 0.03 & 0.41 &  \\
+CAST & ILMN\_1717234 & 5 & rs17818702 & 11 & 86107920 &  & rs7733671 & 5 & 96000269 & CAST & 6.62 & 1.15 & 0.59 & 1.09 &  \\
+CAST & ILMN\_1717234 & 5 & rs227402 & 14 & 70496867 &  & rs7733671 & 5 & 96000269 & CAST & 6.12 & 0.11 & 0.01 & 0.01 &  \\
+CAST & ILMN\_1717234 & 5 & rs2822124 & 21 & 15166804 &  & rs7733671 & 5 & 96000269 & CAST & 6.87 &  &  &  &  \\
+CAST & ILMN\_1717234 & 5 & rs3757155 & 6 & 136458593 &  & rs7733671 & 5 & 96000269 & CAST & 7.24 & 0.07 & 0.33 & 0.12 &  \\
+CAST & ILMN\_1717234 & 5 & rs4503014 & 7 & 31149140 &  & rs7733671 & 5 & 96000269 & CAST & 5.88 & 0.92 & 1.56 & 1.72 &  \\
+CAST & ILMN\_1717234 & 5 & rs7474890 & 10 & 59590078 &  & rs7733671 & 5 & 96000269 & CAST & 6.74 & 0.49 & 0.12 & 0.23 &  \\
+CAST & ILMN\_1717234 & 5 & rs7733671 & 5 & 96000269 & CAST & rs10802643 & 1 & 238120177 &  & 7.42 & 0.75 & 0.78 & 0.93 &  \\
+CAST & ILMN\_1717234 & 5 & rs7733671 & 5 & 96000269 & CAST & rs12650909 & 4 & 170192890 &  & 7.42 & 0.23 & 0.78 & 0.50 &  \\
+CAST & ILMN\_1717234 & 5 & rs7733671 & 5 & 96000269 & CAST & rs2203733 & 2 & 224093101 &  & 6.07 & 0.22 & 0.87 & 0.54 &  \\
+CAST & ILMN\_1717234 & 5 & rs7733671 & 5 & 96000269 & CAST & rs2641772 & 3 & 195531841 &  & 6.93 & 0.19 & 0.26 & 0.15 &  \\
+CAT & ILMN\_1651705 & 11 & rs872311 & 18 & 66175386 &  & rs11032695 & 11 & 34447586 & CAT & 6.41 & 0.26 & 0.30 & 0.22 &  \\
+CCDC88B & ILMN\_1772208 & 11 & rs2353203 & 19 & 17099980 &  & rs541207 & 11 & 64125142 & CCDC88B & 5.68 & 0.33 & 0.37 & 0.31 &  \\
+CCDC88B & ILMN\_1772208 & 11 & rs694739 & 11 & 64097233 & CCDC88B & rs12771349 & 10 & 96998193 &  & 5.62 & 0.23 & 0.18 & 0.14 &  \\
+CD36 & ILMN\_1784863 & 7 & rs3211834 & 7 & 80280117 &  & rs1254900 & 2 & 85816334 & VAMP8 & 6.93 & 0.15 & 0.01 & 0.02 &  \\
+CD55 & ILMN\_1800540 & 1 & rs750801 & 11 & 76033374 &  & rs6700168 & 1 & 207502534 & CD55 & 5.09 & 0.08 & 0.03 & 0.02 &  \\
+CD93 & ILMN\_1704730 & 20 & rs1884655 & 20 & 23074375 & CD93 & rs10255470 & 7 & 157182040 &  & 6.06 & 1.74 & 0.24 & 1.20 &  \\
+CD93 & ILMN\_1704730 & 20 & rs1884655 & 20 & 23074375 & CD93 & rs4696726 & 4 & 7992632 &  & 5.71 & 0.13 & 0.80 & 0.42 &  \\
+CD93 & ILMN\_1704730 & 20 & rs1884655 & 20 & 23074375 & CD93 & rs7622580 & 3 & 196721395 &  & 5.56 & 0.04 & 0.27 & 0.08 &  \\
+CD93 & ILMN\_1704730 & 20 & rs1884655 & 20 & 23074375 & CD93 & rs838875 & 12 & 125145394 &  & 6.31 & 0.24 & 1.67 & 1.16 &  \\
+CD93 & ILMN\_1704730 & 20 & rs1884655 & 20 & 23074375 & CD93 & rs9576388 & 13 & 38434472 &  & 7.88 & 0.71 & 0.22 & 0.45 &  \\
+CD93 & ILMN\_1704730 & 20 & rs2868504 & 20 & 37771578 &  & rs1884655 & 20 & 23074375 & CD93 & 5.71 & 0.64 & 0.75 & 0.81 & 14.697 \\
+CD93 & ILMN\_1704730 & 20 & rs4813479 & 20 & 23076914 & CD93 & rs10925747 & 1 & 238899903 &  & 7.43 &  &  &  &  \\
+CD93 & ILMN\_1704730 & 20 & rs4813479 & 20 & 23076914 & CD93 & rs2873420 & 8 & 136500554 &  & 7.02 &  &  &  &  \\
+CD93 & ILMN\_1704730 & 20 & rs4813479 & 20 & 23076914 & CD93 & rs4328531 & 18 & 74439542 &  & 6.13 &  &  &  &  \\
+CD93 & ILMN\_1704730 & 20 & rs4813479 & 20 & 23076914 & CD93 & rs4789981 & 17 & 77264482 &  & 6.08 &  &  &  &  \\
+CDC16 & ILMN\_2339796 & 13 & rs861544 & 14 & 104162263 &  & rs7324744 & 13 & 115008038 & CDC16 & 5.46 & 0.21 & 0.14 & 0.11 &  \\
+CDK5R1 & ILMN\_1730928 & 17 & rs9905940 & 17 & 46614102 & HOXB2 & rs11655031 & 17 & 30833162 & CDK5R1 & 5.47 & 0.95 & 0.07 & 0.45 & 15.781 \\
+CEACAM21 & ILMN\_1745949 & 19 & rs200609 & 20 & 51956250 &  & rs4803481 & 19 & 42066556 & CEACAM21 & 6.15 & 0.90 & 0.12 & 0.48 &  \\
+CEACAM21 & ILMN\_1745949 & 19 & rs4803481 & 19 & 42066556 & CEACAM21 & rs2421050 & 5 & 158943044 &  & 6.67 & 2.16 & 0.16 & 1.44 &  \\
+CEP192 & ILMN\_1703754 & 18 & rs6505780 & 18 & 13069782 & CEP192 & rs13132719 & 4 & 180265266 &  & 5.75 & 0.15 & 0.24 & 0.12 &  \\
+CEP63 & ILMN\_1787808 & 3 & rs3825569 & 14 & 101350298 &  & rs13079012 & 3 & 134247706 & ANAPC13 & 6.36 & 0.23 & 0.10 & 0.09 &  \\
+CES1 & ILMN\_2359945 & 16 & rs8192935 & 16 & 55861794 & CES1 & rs772788 & 2 & 235248562 &  & 5.65 &  &  &  &  \\
+CHPT1 & ILMN\_2202940 & 12 & rs591967 & 13 & 38838122 &  & rs2695290 & 12 & 102087844 & CHPT1 & 5.74 & 0.72 & 0.20 & 0.44 &  \\
+CHPT1 & ILMN\_2202940 & 12 & rs6539014 & 12 & 102277782 &  & rs867578 & 11 & 81937002 &  & 4.75 & 0.92 & 0.02 & 0.36 &  \\
+CLEC12A & ILMN\_1663142 & 12 & rs429790 & 16 & 84471642 &  & rs7313235 & 12 & 10132283 & CLEC12A & 5.55 & 0.07 & 1.28 & 0.67 &  \\
+CLEC12A & ILMN\_2403228 & 12 & rs7305054 & 12 & 10156646 &  & rs3903088 & 10 & 134236688 &  & 7.54 & 0.95 & 0.36 & 0.73 &  \\
+CLTB & ILMN\_1674609 & 5 & rs17129799 & 11 & 96929337 &  & rs6863172 & 5 & 175595960 & CLTB & 5.55 &  & 0.27 &  &  \\
+CNN2 & ILMN\_1770290 & 19 & rs3752237 & 19 & 1047161 & ABCA7 & rs169130 & 16 & 63121080 &  & 7.56 & 0.07 & 0.07 & 0.02 &  \\
+CNN2 & ILMN\_1770290 & 19 & rs3752237 & 19 & 1047161 & ABCA7 & rs7336017 & 13 & 67713633 &  & 6.33 & 1.92 & 0.28 & 1.39 &  \\
+CPSF1 & ILMN\_1654545 & 8 & rs4333645 & 8 & 145569535 &  & rs1455268 & 4 & 61738094 &  & 6.34 & 0.10 & 0.01 & 0.01 &  \\
+CPVL & ILMN\_1682928 & 7 & rs12596791 & 16 & 26115562 &  & rs245884 & 7 & 29188475 & CPVL & 5.74 & 0.06 & 0.57 & 0.23 &  \\
+CPVL & ILMN\_1682928 & 7 & rs2835998 & 21 & 39202070 &  & rs245884 & 7 & 29188475 & CPVL & 5.55 & 0.19 & 0.03 & 0.04 &  \\
+CRIPT & ILMN\_1813256 & 2 & rs2131290 & 4 & 188859908 &  & rs1531133 & 2 & 46843631 & CRIPT & 5.47 & 0.28 & 0.10 & 0.12 &  \\
+CRLS1 & ILMN\_1737685 & 20 & rs6139887 & 20 & 5986234 & CRLS1 & rs1473927 & 5 & 62406408 &  & 6.18 & 0.10 & 0.36 & 0.15 &  \\
+CSTB & ILMN\_1761797 & 21 & rs9979356 & 21 & 45230974 &  & rs3761385 & 21 & 45198355 &  & 11.99 & 25.20 & 16.72 & 42.27 & 0.033 \\
+CTNNA1 & ILMN\_1804854 & 5 & rs924943 & 18 & 69500505 &  & rs176382 & 5 & 138226767 & CTNNA1 & 5.74 & 0.02 & 0.41 & 0.11 &  \\
+CTSC & ILMN\_1696347 & 11 & rs2457684 & 11 & 88139983 & CTSC & rs7079264 & 10 & 108679892 &  & 5.67 & 0.92 & 0.74 & 1.03 &  \\
+CTSC & ILMN\_1696347 & 11 & rs5752236 & 22 & 26250645 &  & rs7128352 & 11 & 88087357 & CTSC & 5.84 & 0.49 & 0.80 & 0.73 &  \\
+CTSC & ILMN\_2242463 & 11 & rs7930237 & 11 & 88117962 &  & rs556895 & 11 & 88077479 &  & 7.16 & 18.76 & 15.06 & 33.53 & 0.040 \\
+CWF19L1 & ILMN\_1651886 & 10 & rs7108734 & 11 & 11456027 &  & rs12784396 & 10 & 102027407 & CWF19L1 & 5.42 & 0.21 & 0.01 & 0.03 &  \\
+CYBRD1 & ILMN\_1712305 & 2 & rs2592948 & 4 & 129994690 &  & rs888427 & 2 & 172368120 & CYBRD1 & 5.89 & 0.23 & 0.53 & 0.34 &  \\
+CYBRD1 & ILMN\_1712305 & 2 & rs7852475 & 9 & 140698856 &  & rs888427 & 2 & 172368120 & CYBRD1 & 5.68 & 0.20 & 0.02 & 0.04 &  \\
+CYBRD1 & ILMN\_2087692 & 2 & rs11257679 & 10 & 12318284 &  & rs888427 & 2 & 172368120 & CYBRD1 & 5.81 & 0.39 & 1.87 & 1.47 &  \\
+CYBRD1 & ILMN\_2087692 & 2 & rs6137908 & 20 & 23344590 &  & rs888427 & 2 & 172368120 & CYBRD1 & 5.53 & 0.05 & 0.83 & 0.36 &  \\
+CYBRD1 & ILMN\_2087692 & 2 & rs888427 & 2 & 172368120 & CYBRD1 & rs7591849 & 2 & 160112881 &  & 5.85 & 0.87 & 0.10 & 0.44 & 12.255 \\
+CYP27A1 & ILMN\_1704985 & 2 & rs6021982 & 20 & 36571928 &  & rs933994 & 2 & 219650616 & CYP27A1 & 5.42 & 0.29 & 0.86 & 0.60 &  \\
+DAB2 & ILMN\_2128428 & 5 & rs7778910 & 7 & 110451383 &  & rs835223 & 5 & 39381357 & DAB2 & 5.44 & 0.48 & 0.41 & 0.44 &  \\
+DCAKD & ILMN\_1811648 & 17 & rs9900173 & 17 & 43111688 &  & rs1343244 & 6 & 82076988 &  & 9.12 & 0.00 & 0.58 & 0.14 &  \\
+DDT & ILMN\_1690982 & 22 & rs5760102 & 22 & 24248761 & DDT & rs2378341 & 3 & 187475208 &  & 5.62 & 0.64 & 0.25 & 0.42 &  \\
+DDX58 & ILMN\_1797001 & 9 & rs4937097 & 11 & 125962645 &  & rs7042042 & 9 & 32451144 &  & 5.31 & 0.61 & 0.29 & 0.44 &  \\
+DEM1 & ILMN\_1783996 & 1 & rs10120023 & 9 & 137810259 & COQ10A & rs2519515 & 7 & 88204888 &  & 5.47 & 0.08 & 0.41 & 0.16 &  \\
+DEM1 & ILMN\_1783996 & 1 & rs12363827 & 11 & 106703727 &  & rs10120023 & 9 & 137810259 & COQ10A & 6.39 & 0.77 & 0.02 & 0.29 &  \\
+DHRS9 & ILMN\_1733998 & 2 & rs1519956 & 12 & 89468283 &  & rs7566044 & 2 & 169960422 & DHRS9 & 6.00 & 0.06 & 1.17 & 0.58 &  \\
+DHRS9 & ILMN\_1733998 & 2 & rs1528529 & 7 & 147132505 &  & rs7566044 & 2 & 169960422 & DHRS9 & 6.48 & 0.37 & 0.34 & 0.32 &  \\
+DHRS9 & ILMN\_2384181 & 2 & rs2831914 & 21 & 29959453 &  & rs2161037 & 2 & 169893419 & DHRS9 & 5.51 & 0.88 & 0.04 & 0.37 &  \\
+DHRS9 & ILMN\_2384181 & 2 & rs7661304 & 4 & 187776431 &  & rs2161037 & 2 & 169893419 & DHRS9 & 7.64 & 0.05 & 0.11 & 0.03 &  \\
+DIP2B & ILMN\_1755589 & 12 & rs11080134 & 17 & 29161503 &  & rs11169322 & 12 & 50610976 & LASS5 & 4.65 & 0.32 & 0.05 & 0.10 &  \\
+DIP2B & ILMN\_1755589 & 12 & rs11169335 & 12 & 50636364 & LASS5 & rs2872008 & 7 & 153134888 &  & 4.87 &  & 0.58 &  &  \\
+DIP2B & ILMN\_1755589 & 12 & rs338585 & 19 & 41711815 &  & rs7134595 & 12 & 50730458 & LASS5 & 5.31 & 0.30 & 0.22 & 0.19 &  \\
+DIP2B & ILMN\_1755589 & 12 & rs7134595 & 12 & 50730458 & LASS5 & rs1808634 & 8 & 61971140 &  & 4.40 & 0.37 &  &  &  \\
+DIP2B & ILMN\_1755589 & 12 & rs7312252 & 12 & 50744171 & LASS5 & rs4532958 & 10 & 115214154 &  & 5.03 & 0.09 & 0.02 & 0.01 &  \\
+DIP2B & ILMN\_1755589 & 12 & rs871257 & 12 & 117994348 &  & rs12427378 & 12 & 51074199 & LASS5 & 5.92 & 0.48 & 0.00 & 0.11 & 66.920 \\
+DNAJB6 & ILMN\_1793770 & 7 & rs2286842 & 7 & 157216093 &  & rs3779589 & 7 & 157163614 & DNAJB6 & 5.79 & 0.23 & 1.45 & 0.97 & 0.052 \\
+DPH3 & ILMN\_2349610 & 3 & rs12232308 & 15 & 93409054 &  & rs1566972 & 3 & 16320360 & DPH3 & 6.17 & 1.58 & 0.27 & 1.12 &  \\
+ECGF1 & ILMN\_2109708 & 22 & rs140522 & 22 & 50971266 & ECGF1 & rs4891884 & 18 & 64004670 &  & 4.81 & 0.15 & 1.18 & 0.70 &  \\
+ECHDC2 & ILMN\_1671568 & 1 & rs4234091 & 2 & 241911027 &  & rs11206043 & 1 & 53402552 & ECHDC2 & 6.19 & 0.22 & 0.35 & 0.22 &  \\
+ECHDC2 & ILMN\_1671568 & 1 & rs5992637 & 22 & 17675900 &  & rs11206043 & 1 & 53402552 & ECHDC2 & 5.58 & 0.64 & 0.16 & 0.35 &  \\
+EHD4 & ILMN\_1720083 & 15 & rs10403312 & 19 & 53244938 &  & rs1048166 & 15 & 42192040 & EHD4 & 6.98 & 0.90 & 0.47 & 0.79 &  \\
+EIF2B2 & ILMN\_1713380 & 14 & rs6567288 & 18 & 60218334 &  & rs175450 & 14 & 75590340 & EIF2B2 & 5.56 & 0.23 & 0.11 & 0.10 &  \\
+EIF5A & ILMN\_1794522 & 17 & rs7216490 & 17 & 7221707 & EIF5A & rs1269096 & 14 & 99603119 &  & 5.44 & 0.56 & 0.08 & 0.24 &  \\
+EIF5A & ILMN\_1794522 & 17 & rs7216490 & 17 & 7221707 & EIF5A & rs1553474 & 2 & 49359676 &  & 5.55 & 0.28 & 0.59 & 0.41 &  \\
+EIF5A & ILMN\_1794522 & 17 & rs7216490 & 17 & 7221707 & EIF5A & rs2197210 & 8 & 129624067 &  & 6.36 & 0.08 & 0.05 & 0.02 &  \\
+EIF5A & ILMN\_1794522 & 17 & rs7216490 & 17 & 7221707 & EIF5A & rs4471434 & 11 & 126387391 &  & 5.52 & 0.05 & 1.12 & 0.53 &  \\
+EMR2 & ILMN\_2353633 & 19 & rs2827076 & 21 & 23196249 &  & rs9305048 & 19 & 14879034 & EMR2 & 6.51 & 0.36 & 0.04 & 0.11 &  \\
+EMR2 & ILMN\_2353633 & 19 & rs6132112 & 20 & 18761714 &  & rs9305048 & 19 & 14879034 & EMR2 & 5.56 & 0.45 & 0.40 & 0.41 &  \\
+EMR2 & ILMN\_2353633 & 19 & rs9305048 & 19 & 14879034 & EMR2 & rs3007765 & 13 & 102480759 &  & 6.03 &  &  &  &  \\
+EPHX2 & ILMN\_1709237 & 8 & rs1107764 & 11 & 127909396 &  & rs13269963 & 8 & 27400604 & EPHX2 & 5.70 & 0.20 & 0.58 & 0.35 &  \\
+ERICH1 & ILMN\_1731001 & 8 & rs10894861 & 11 & 134611176 &  & rs12115088 & 8 & 578742 & ERICH1 & 5.43 & 0.25 & 1.20 & 0.81 &  \\
+ERICH1 & ILMN\_1731001 & 8 & rs5766218 & 22 & 45337329 &  & rs4735900 & 8 & 607161 & ERICH1 & 6.11 & 0.20 & 0.11 & 0.09 &  \\
+ERICH1 & ILMN\_1731001 & 8 & rs726145 & 18 & 31187910 &  & rs12115088 & 8 & 578742 & ERICH1 & 5.65 & 0.29 & 0.04 & 0.08 &  \\
+ERICH1 & ILMN\_2104696 & 8 & rs4735895 & 8 & 600729 & ERICH1 & rs1517297 & 4 & 182786760 &  & 5.63 & 0.67 & 1.03 & 1.06 &  \\
+EXOC3 & ILMN\_1789419 & 5 & rs187076 & 10 & 55228462 &  & rs12188164 & 5 & 428236 & EXOC3 & 6.83 & 0.74 & 0.19 & 0.44 &  \\
+FAHD1 & ILMN\_2246661 & 16 & rs1560104 & 16 & 12708208 &  & rs344363 & 16 & 1972548 & FAHD1 & 5.61 &  & 1.38 &  & 10.736 \\
+FCN1 & ILMN\_1668063 & 9 & rs12580388 & 12 & 129591144 &  & rs10120023 & 9 & 137810259 & COQ10A & 6.33 & 0.27 & 0.30 & 0.23 &  \\
+FEZ2 & ILMN\_1739586 & 2 & rs2356400 & 19 & 44321776 &  & rs13406184 & 2 & 36791226 & FEZ2 & 5.78 & 0.14 & 0.33 & 0.16 &  \\
+FEZ2 & ILMN\_1739586 & 2 & rs969010 & 4 & 159963132 &  & rs11691600 & 2 & 36810133 & FEZ2 & 6.59 & 0.14 & 0.28 & 0.14 &  \\
+FGD2 & ILMN\_2115005 & 6 & rs4803848 & 19 & 46205050 &  & rs831486 & 6 & 37001267 & FGD2 & 5.69 & 0.12 & 0.25 & 0.11 &  \\
+FGD2 & ILMN\_2115005 & 6 & rs902634 & 10 & 133943951 &  & rs831489 & 6 & 36999682 & FGD2 & 5.49 & 1.20 & 0.11 & 0.66 &  \\
+FLJ20489 & ILMN\_1778144 & 12 & rs17615703 & 12 & 117036766 &  & rs3782908 & 12 & 48169526 & FLJ20489 & 5.81 & 0.06 & 0.70 & 0.29 & 68.867 \\
+FLJ20489 & ILMN\_1778144 & 12 & rs3782908 & 12 & 48169526 & FLJ20489 & rs897511 & 4 & 167695661 &  & 5.53 & 0.03 & 0.11 & 0.02 &  \\
+FLJ20489 & ILMN\_1778144 & 12 & rs4792199 & 17 & 7992118 &  & rs3782908 & 12 & 48169526 & FLJ20489 & 5.74 & 0.19 & 0.02 & 0.04 &  \\
+FLJ20489 & ILMN\_1778144 & 12 & rs4984440 & 15 & 97033129 &  & rs3782908 & 12 & 48169526 & FLJ20489 & 6.49 & 0.31 & 0.47 & 0.36 &  \\
+FLJ20489 & ILMN\_1778144 & 12 & rs7204135 & 16 & 50626195 &  & rs3782908 & 12 & 48169526 & FLJ20489 & 6.90 & 0.38 & 0.17 & 0.21 &  \\
+FLJ20718 & ILMN\_1763663 & 16 & rs9325634 & 21 & 43818790 &  & rs2287197 & 16 & 50106594 & FLJ20718 & 6.04 & 0.14 & 0.95 & 0.53 &  \\
+FLJ43093 & ILMN\_2123450 & 6 & rs17112712 & 14 & 107276627 &  & rs6906101 & 6 & 36667610 & FLJ43093 & 5.48 & 0.39 & 0.06 & 0.13 &  \\
+FLJ43093 & ILMN\_2123450 & 6 & rs6906101 & 6 & 36667610 & FLJ43093 & rs13214069 & 6 & 32705248 &  & 5.44 & 0.00 & 0.64 & 0.18 & 3.962 \\
+FN3KRP & ILMN\_1652333 & 17 & rs898095 & 17 & 80890638 &  & rs9892064 & 17 & 80827903 &  & 16.16 & 28.24 & 29.39 & 59.95 & 0.063 \\
+FUCA1 & ILMN\_1752728 & 1 & rs4971478 & 2 & 1346063 &  & rs12744386 & 1 & 24168019 & FUCA1 & 6.41 & 0.01 & 0.30 & 0.06 &  \\
+FXYD5 & ILMN\_2309848 & 19 & rs1633921 & 19 & 35695200 &  & rs788178 & 13 & 98328559 &  & 3.70 & 0.09 & 0.41 & 0.17 &  \\
+FXYD5 & ILMN\_2309848 & 19 & rs17398183 & 20 & 55609148 &  & rs2285515 & 19 & 35660450 & FXYD5 & 6.58 & 0.03 & 0.48 & 0.15 &  \\
+FXYD5 & ILMN\_2309848 & 19 & rs2285515 & 19 & 35660450 & FXYD5 & rs11739594 & 5 & 141709563 &  & 5.70 & 0.07 & 0.17 & 0.05 &  \\
+FXYD5 & ILMN\_2309848 & 19 & rs2285515 & 19 & 35660450 & FXYD5 & rs13067700 & 3 & 95331048 &  & 6.00 & 0.09 & 0.51 & 0.22 &  \\
+FXYD5 & ILMN\_2309848 & 19 & rs2285515 & 19 & 35660450 & FXYD5 & rs17036504 & 2 & 47567329 &  & 6.10 & 0.28 &  &  &  \\
+G3BP2 & ILMN\_2381758 & 4 & rs10230232 & 7 & 29390239 &  & rs1553985 & 4 & 76554604 &  & 5.19 & 0.08 & 0.37 & 0.14 &  \\
+GAA & ILMN\_2410783 & 17 & rs11150847 & 17 & 78153130 &  & rs12602462 & 17 & 78146016 &  & 13.91 & 19.98 & 12.99 & 32.60 & 0.007 \\
+GAA & ILMN\_2410783 & 17 & rs8068856 & 17 & 78100731 & GAA & rs10902506 & 12 & 132678089 &  & 5.65 & 0.11 & 0.39 & 0.17 &  \\
+GAPT & ILMN\_1675191 & 5 & rs10070522 & 5 & 57786110 & GAPT & rs7605821 & 2 & 235695228 &  & 5.85 & 0.01 & 0.78 & 0.28 &  \\
+GAPT & ILMN\_1675191 & 5 & rs7082031 & 10 & 128038717 &  & rs10070522 & 5 & 57786110 & GAPT & 5.72 & 0.26 & 0.11 & 0.11 &  \\
+GATS & ILMN\_1699631 & 7 & rs1147447 & 14 & 66460742 &  & rs2950520 & 7 & 99827148 & GATS & 5.47 & 0.83 & 0.63 & 0.87 &  \\
+GATS & ILMN\_1699631 & 7 & rs2425256 & 20 & 35056572 &  & rs2950520 & 7 & 99827148 & GATS & 6.22 &  & 0.42 &  &  \\
+GDPD3 & ILMN\_1774901 & 16 & rs3809624 & 16 & 30102802 & GDPD3 & rs2197465 & 14 & 48572632 &  & 6.57 & 0.38 & 0.35 & 0.33 &  \\
+GDPD3 & ILMN\_1774901 & 16 & rs7204270 & 16 & 30156963 & GDPD3 & rs1015111 & 4 & 128972357 &  & 5.86 & 0.55 & 0.09 & 0.24 &  \\
+GNLY & ILMN\_1790692 & 2 & rs4145072 & 13 & 110899955 &  & rs7577293 & 2 & 85935282 & GNLY & 5.78 & 0.02 & 0.45 & 0.13 &  \\
+GPN3 & ILMN\_3239426 & 12 & rs7198646 & 16 & 26084476 &  & rs7960552 & 12 & 111164237 & GPN3 & 5.72 &  &  &  &  \\
+GPR162 & ILMN\_1730816 & 12 & rs1860563 & 16 & 6478898 &  & rs2707210 & 12 & 6902002 & GPR162 & 5.49 & 0.36 & 0.46 & 0.39 &  \\
+GPR162 & ILMN\_1730816 & 12 & rs2272500 & 12 & 79685913 &  & rs2707210 & 12 & 6902002 & GPR162 & 5.07 & 0.25 & 0.03 & 0.06 & 72.784 \\
+GPR162 & ILMN\_1730816 & 12 & rs2707210 & 12 & 6902002 & GPR162 & rs4740848 & 9 & 6554558 &  & 5.47 & 0.25 & 0.06 & 0.07 &  \\
+GPR162 & ILMN\_1730816 & 12 & rs2707210 & 12 & 6902002 & GPR162 & rs9827054 & 3 & 188880113 &  & 6.21 & 0.96 & 0.06 & 0.44 &  \\
+GPR177 & ILMN\_1660549 & 1 & rs11057383 & 12 & 124369421 &  & rs12065581 & 1 & 68732819 & GPR177 & 5.45 & 0.72 & 0.67 & 0.81 &  \\
+GPR177 & ILMN\_1660549 & 1 & rs12527241 & 6 & 120468039 &  & rs12065581 & 1 & 68732819 & GPR177 & 5.76 & 0.17 & 0.40 & 0.22 &  \\
+GPR177 & ILMN\_1660549 & 1 & rs12532999 & 7 & 127939793 &  & rs12065581 & 1 & 68732819 & GPR177 & 6.50 & 0.79 & 1.43 & 1.50 &  \\
+GPR177 & ILMN\_1660549 & 1 & rs725613 & 16 & 11169683 &  & rs12065581 & 1 & 68732819 & GPR177 & 5.43 & 0.31 & 0.11 & 0.13 &  \\
+GPR177 & ILMN\_1660549 & 1 & rs9575097 & 13 & 82986268 &  & rs12065581 & 1 & 68732819 & GPR177 & 6.04 & 0.95 & 0.21 & 0.60 &  \\
+GPR177 & ILMN\_2283325 & 1 & rs6566669 & 18 & 70506011 &  & rs12065581 & 1 & 68732819 & GPR177 & 5.86 & 0.24 & 0.34 & 0.23 &  \\
+GPR177 & ILMN\_2283325 & 1 & rs9290426 & 3 & 171399321 &  & rs12065581 & 1 & 68732819 & GPR177 & 6.50 & 0.01 & 0.24 & 0.04 &  \\
+GSDMB & ILMN\_2347193 & 17 & rs11557467 & 17 & 38028634 & GSDMB & rs4965745 & 15 & 101508261 &  & 5.88 & 0.68 & 0.20 & 0.41 &  \\
+GSTM1 & ILMN\_2391861 & 1 & rs12248673 & 10 & 53192833 &  & rs11101992 & 1 & 110266754 & GSTM1 & 6.11 & 0.27 & 0.19 & 0.16 &  \\
+GSTM1 & ILMN\_2391861 & 1 & rs1547574 & 13 & 85344527 &  & rs11101992 & 1 & 110266754 & GSTM1 & 5.91 & 0.27 & 1.14 & 0.79 &  \\
+GSTM2 & ILMN\_2201580 & 1 & rs6492807 & 13 & 96159560 &  & rs3754446 & 1 & 110253241 & GSTM1 & 6.77 &  &  &  &  \\
+H1F0 & ILMN\_1757467 & 22 & rs139898 & 22 & 38399979 &  & rs4853333 & 2 & 77919015 &  & 6.36 & 0.52 & 0.66 & 0.65 &  \\
+H1F0 & ILMN\_1757467 & 22 & rs139898 & 22 & 38399979 &  & rs6497007 & 15 & 85877017 &  & 6.52 & 0.27 & 0.31 & 0.23 &  \\
+H1F0 & ILMN\_1757467 & 22 & rs139898 & 22 & 38399979 &  & rs9983949 & 21 & 19532546 &  & 5.70 & 0.25 & 0.48 & 0.32 &  \\
+HBG1 & ILMN\_1796678 & 11 & rs11078523 & 17 & 4523167 &  & rs2855039 & 11 & 5271671 & HBG2 & 5.47 & 0.00 & 0.66 & 0.19 &  \\
+HBG1 & ILMN\_1796678 & 11 & rs12975066 & 19 & 35723501 &  & rs2855039 & 11 & 5271671 & HBG2 & 5.98 & 0.15 & 0.24 & 0.12 &  \\
+HBG1 & ILMN\_1796678 & 11 & rs2855039 & 11 & 5271671 & HBG2 & rs12042181 & 1 & 213088494 & LQK1 & 6.78 & 0.08 & 0.52 & 0.21 &  \\
+HBG1 & ILMN\_1796678 & 11 & rs2855039 & 11 & 5271671 & HBG2 & rs12503379 & 4 & 141533832 &  & 6.42 & 0.01 & 0.46 & 0.11 &  \\
+HBG2 & ILMN\_2084825 & 11 & rs11078523 & 17 & 4523167 &  & rs16912979 & 11 & 5309695 & HBG2 & 6.06 & 0.01 & 0.41 & 0.10 &  \\
+HBG2 & ILMN\_2084825 & 11 & rs12975066 & 19 & 35723501 &  & rs2855039 & 11 & 5271671 & HBG2 & 5.77 & 0.08 & 0.13 & 0.05 &  \\
+HBG2 & ILMN\_2084825 & 11 & rs2855039 & 11 & 5271671 & HBG2 & rs12042181 & 1 & 213088494 & LQK1 & 6.84 & 0.06 & 0.54 & 0.21 &  \\
+HBG2 & ILMN\_2084825 & 11 & rs2855039 & 11 & 5271671 & HBG2 & rs12503379 & 4 & 141533832 &  & 5.98 & 0.00 & 0.46 & 0.10 &  \\
+HDAC7 & ILMN\_3266186 & 12 & rs2109029 & 16 & 6036851 &  & rs4760636 & 12 & 48173352 & HDAC7 & 5.75 &  &  &  &  \\
+HEBP1 & ILMN\_1802557 & 12 & rs3782567 & 12 & 13145613 & HEBP1 & rs17686635 & 8 & 135220622 &  & 5.98 & 0.15 & 0.59 & 0.32 &  \\
+HEXDC & ILMN\_1741180 & 17 & rs1942719 & 18 & 71237270 &  & rs7213057 & 17 & 80378939 & HEXDC & 5.81 & 1.61 & 0.34 & 1.22 &  \\
+HLA-DRA & ILMN\_2157441 & 6 & rs4899635 & 14 & 77532672 &  & rs7192 & 6 & 32411646 & HLA-DRB6 & 5.94 & 0.90 & 0.16 & 0.52 &  \\
+HLA-F & ILMN\_1762861 & 6 & rs11660982 & 18 & 75467313 &  & rs2523404 & 6 & 29695713 & HLA-H & 5.69 & 1.00 & 0.47 & 0.86 &  \\
+HMBOX1 & ILMN\_1720059 & 8 & rs12435486 & 14 & 98670849 &  & rs7837237 & 8 & 28876221 & HMBOX1 & 6.54 & 0.92 & 1.11 & 1.34 &  \\
+HMBOX1 & ILMN\_1720059 & 8 & rs2837803 & 21 & 42112794 &  & rs4732890 & 8 & 28751381 & HMBOX1 & 6.62 & 0.05 & 1.01 & 0.46 &  \\
+HMBOX1 & ILMN\_1720059 & 8 & rs4765451 & 12 & 127237464 &  & rs8180944 & 8 & 28904086 & HMBOX1 & 5.80 & 0.39 & 3.13 & 2.52 &  \\
+HMBOX1 & ILMN\_1720059 & 8 & rs587639 & 8 & 132725731 &  & rs7837237 & 8 & 28876221 & HMBOX1 & 6.58 & 0.55 & 0.34 & 0.44 & 103.850 \\
+HMBOX1 & ILMN\_1720059 & 8 & rs8180944 & 8 & 28904086 & HMBOX1 & rs4553956 & 3 & 189533772 &  & 6.88 & 3.38 & 0.03 & 2.20 &  \\
+HMBOX1 & ILMN\_1720059 & 8 & rs8180944 & 8 & 28904086 & HMBOX1 & rs7810884 & 7 & 158276926 &  & 6.12 & 0.34 & 0.66 & 0.52 &  \\
+HMBOX1 & ILMN\_1720059 & 8 & rs9521666 & 13 & 110897444 &  & rs8180944 & 8 & 28904086 & HMBOX1 & 5.45 & 0.67 & 0.26 & 0.45 &  \\
+HNRPH1 & ILMN\_2101920 & 5 & rs6894268 & 5 & 179032488 &  & rs4700810 & 5 & 178991794 &  & 15.38 & 8.55 & 3.01 & 10.37 & 0.041 \\
+HSPC157 & ILMN\_3194087 & 1 & rs555812 & 16 & 88882257 &  & rs4654783 & 1 & 22439520 & HSPC157 & 5.51 &  &  &  &  \\
+HSPC157 & ILMN\_3194087 & 1 & rs6063164 & 20 & 46486900 &  & rs4654783 & 1 & 22439520 & HSPC157 & 6.51 &  &  &  &  \\
+HSPC157 & ILMN\_3194087 & 1 & rs662739 & 12 & 121229893 &  & rs4654783 & 1 & 22439520 & HSPC157 & 6.61 &  &  &  &  \\
+HSPC157 & ILMN\_3194087 & 1 & rs7088558 & 10 & 101884937 & CWF19L1 & rs4654783 & 1 & 22439520 & HSPC157 & 6.48 &  &  &  &  \\
+IL32 & ILMN\_1778010 & 16 & rs1554999 & 16 & 3115628 & IL32 & rs4759890 & 12 & 131757163 &  & 6.90 & 0.19 & 0.50 & 0.29 &  \\
+IL32 & ILMN\_2368530 & 16 & rs765044 & 19 & 2560423 &  & rs1554999 & 16 & 3115628 & IL32 & 5.53 & 0.69 & 0.23 & 0.44 &  \\
+INPP5E & ILMN\_1811301 & 9 & rs8044524 & 16 & 81603771 &  & rs1127152 & 9 & 139335599 & INPP5E & 5.58 & 1.46 & 0.84 & 1.55 &  \\
+JAZF1 & ILMN\_1682727 & 7 & rs757355 & 12 & 47970693 &  & rs849341 & 7 & 28288174 &  & 8.16 & 0.02 & 0.26 & 0.05 &  \\
+KCNJ15 & ILMN\_1675756 & 21 & rs2186344 & 21 & 39606769 & KCNJ15 & rs424299 & 11 & 5570771 &  & 5.64 & 0.65 & 0.13 & 0.33 &  \\
+KIR2DS5 & ILMN\_1691803 & 19 & rs649216 & 19 & 55324635 & KIR2DL1 & rs6419960 & 4 & 189055298 &  & 4.74 & 0.46 & 0.89 & 0.77 &  \\
+KTELC1 & ILMN\_1811104 & 3 & rs4349034 & 13 & 84597119 &  & rs727905 & 3 & 119119433 & KTELC1 & 5.53 & 0.08 & 0.80 & 0.37 &  \\
+KTELC1 & ILMN\_1811104 & 3 & rs6815953 & 4 & 183109012 &  & rs6414283 & 3 & 119195913 & KTELC1 & 5.45 & 0.64 & 0.08 & 0.28 &  \\
+L3MBTL2 & ILMN\_2336109 & 22 & rs4822006 & 22 & 41519362 & L3MBTL2 & rs1294338 & 1 & 233438952 &  & 5.88 & 0.33 & 0.04 & 0.09 &  \\
+LAP3 & ILMN\_1683792 & 4 & rs7042087 & 9 & 132602868 &  & rs7658240 & 4 & 17588950 & LAP3 & 5.72 & 0.24 & 0.47 & 0.31 &  \\
+LAX1 & ILMN\_1769782 & 1 & rs1891432 & 1 & 203877662 &  & rs10900520 & 1 & 203780591 &  & 19.16 & 18.60 & 11.22 & 29.24 & 0.097 \\
+LDLRAP1 & ILMN\_1809040 & 1 & rs1552032 & 15 & 59971635 &  & rs6687605 & 1 & 25889632 & LDLRAP1 & 6.00 &  &  &  &  \\
+LGALS9 & ILMN\_2412214 & 17 & rs12450521 & 17 & 26083392 &  & rs11749727 & 5 & 179608360 &  & 5.16 & 0.35 & 0.40 & 0.34 &  \\
+LILRA5 & ILMN\_2357419 & 19 & rs3859532 & 19 & 54827248 & LILRA5 & rs714789 & 18 & 71561497 &  & 6.13 & 0.23 & 0.03 & 0.05 &  \\
+LINS1 & ILMN\_2338197 & 15 & rs11247226 & 15 & 101120963 & LINS1 & rs1278387 & 10 & 127804531 &  & 5.89 &  & 0.13 &  &  \\
+LRRC25 & ILMN\_2150196 & 19 & rs6009951 & 22 & 51151350 &  & rs8101804 & 19 & 18496107 & LRRC25 & 5.68 & 0.11 & 0.35 & 0.15 &  \\
+LY86 & ILMN\_1807825 & 6 & rs977785 & 6 & 6588881 & LY86 & rs1543675 & 1 & 78946879 &  & 5.61 & 0.13 & 0.15 & 0.07 &  \\
+LYZ & ILMN\_1815205 & 12 & rs2168029 & 12 & 69734641 & LYZ & rs11981725 & 7 & 154137150 &  & 5.95 & 0.15 & 0.03 & 0.03 &  \\
+LYZ & ILMN\_2162972 & 12 & rs177820 & 18 & 77276964 &  & rs2168029 & 12 & 69734641 & LYZ & 5.71 & 0.49 & 0.03 & 0.16 &  \\
+LYZ & ILMN\_2162972 & 12 & rs2168029 & 12 & 69734641 & LYZ & rs2253135 & 9 & 130319560 &  & 6.31 & 0.61 & 0.36 & 0.49 &  \\
+MAD1L1 & ILMN\_2358069 & 7 & rs7783715 & 7 & 1923385 & MAD1L1 & rs6414306 & 3 & 127011798 &  & 5.62 & 0.25 & 0.88 & 0.59 &  \\
+MAD2L1BP & ILMN\_1694711 & 6 & rs7983718 & 13 & 103203146 &  & rs1096699 & 6 & 43528441 & MAD2L1BP & 5.93 & 0.63 & 1.11 & 1.09 &  \\
+MAP1LC3A & ILMN\_1776188 & 20 & rs974607 & 21 & 29435869 &  & rs6060034 & 20 & 33351864 & MAP1LC3A & 5.78 & 1.18 &  &  &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs10869600 & 9 & 78225815 &  & rs13069559 & 3 & 152187431 & MBNL1 & 7.96 & 0.79 & 0.27 & 0.54 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs11053043 & 12 & 9932070 &  & rs13069559 & 3 & 152187431 & MBNL1 & 6.70 & 0.08 & 2.21 & 1.37 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs1164596 & 13 & 97100681 &  & rs13069559 & 3 & 152187431 & MBNL1 & 7.38 & 1.43 & 0.63 & 1.34 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs11981513 & 7 & 94648239 &  & rs13069559 & 3 & 152187431 & MBNL1 & 7.71 & 0.43 & 5.36 & 4.58 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs16864367 & 3 & 152234166 &  & rs13079208 & 3 & 152116652 &  & 13.49 & 16.25 & 24.74 & 41.56 & 0.118 \\
+MBNL1 & ILMN\_2313158 & 3 & rs2030926 & 6 & 114067127 &  & rs13069559 & 3 & 152187431 & MBNL1 & 7.10 & 0.91 & 5.80 & 5.53 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs218671 & 17 & 6604708 &  & rs13069559 & 3 & 152187431 & MBNL1 & 7.63 & 0.62 & 5.82 & 5.23 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs2213360 & 22 & 34291750 &  & rs13069559 & 3 & 152187431 & MBNL1 & 6.05 & 0.52 & 0.72 & 0.70 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs2305802 & 19 & 16038535 &  & rs13069559 & 3 & 152187431 & MBNL1 & 6.94 & 1.67 &  &  &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs2614467 & 14 & 99770138 &  & rs13069559 & 3 & 152187431 & MBNL1 & 5.74 & 4.13 & 2.22 & 5.30 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs4392535 & 4 & 41513423 &  & rs13069559 & 3 & 152187431 & MBNL1 & 8.39 & 0.02 & 4.33 & 3.02 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs4735830 & 8 & 895841 &  & rs13069559 & 3 & 152187431 & MBNL1 & 6.74 & 0.32 & 4.21 & 3.38 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs4939558 & 18 & 46278591 &  & rs1522374 & 3 & 152235530 &  & 7.72 & 0.03 & 0.27 & 0.07 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs6128397 & 20 & 57253132 &  & rs16864367 & 3 & 152234166 &  & 7.22 & 1.34 & 1.15 & 1.73 &  \\
+MBNL1 & ILMN\_2313158 & 3 & rs7710738 & 5 & 22101322 &  & rs13069559 & 3 & 152187431 & MBNL1 & 7.92 & 2.55 & 7.89 & 9.28 &  \\
+MBP & ILMN\_2331544 & 18 & rs6079849 & 20 & 15462611 &  & rs2051344 & 18 & 74715653 & MBP & 6.26 & 0.10 & 0.03 & 0.02 &  \\
+MBP & ILMN\_2398939 & 18 & rs139568 & 22 & 42210985 &  & rs2051344 & 18 & 74715653 & MBP & 5.56 & 0.03 & 0.23 & 0.05 &  \\
+MBP & ILMN\_2398939 & 18 & rs2051344 & 18 & 74715653 & MBP & rs1125539 & 3 & 155204939 &  & 5.79 & 0.02 & 0.76 & 0.27 &  \\
+MBP & ILMN\_2398939 & 18 & rs2051344 & 18 & 74715653 & MBP & rs2619046 & 5 & 55097534 &  & 6.03 & 0.15 & 0.50 & 0.26 &  \\
+MBP & ILMN\_2398939 & 18 & rs4805021 & 19 & 33436367 &  & rs2051344 & 18 & 74715653 & MBP & 5.82 & 0.03 & 0.47 & 0.14 &  \\
+MBP & ILMN\_2398939 & 18 & rs8092433 & 18 & 74747424 &  & rs4890876 & 18 & 74732087 &  & 5.40 & 7.06 & 21.91 & 28.73 & 0.015 \\
+MEGF9 & ILMN\_2290118 & 9 & rs13039689 & 20 & 51922071 &  & rs966396 & 9 & 123453281 & MEGF9 & 4.63 & 1.13 & 1.33 & 1.71 &  \\
+MFN2 & ILMN\_1651385 & 1 & rs7989895 & 13 & 109401737 &  & rs4846085 & 1 & 12050634 & MFN2 & 5.76 & 0.61 & 0.25 & 0.41 &  \\
+MGC13057 & ILMN\_1787526 & 2 & rs12718598 & 7 & 50428445 & MGC13057 & rs11725347 & 4 & 171860973 &  & 5.81 & 0.13 & 0.30 & 0.14 &  \\
+MGC13057 & ILMN\_1787526 & 2 & rs674608 & 18 & 69070772 &  & rs12718598 & 7 & 50428445 & MGC13057 & 5.57 & 0.07 & 1.03 & 0.50 &  \\
+MGC13057 & ILMN\_1787526 & 2 & rs8058318 & 16 & 82628245 &  & rs12718598 & 7 & 50428445 & MGC13057 & 7.05 & 0.11 & 0.12 & 0.05 &  \\
+MGC72104 & ILMN\_1688318 & 20 & rs845787 & 20 & 26197931 & MGC72104 & rs2660665 & 8 & 137526799 &  & 4.17 & 0.05 & 0.08 & 0.02 &  \\
+MGST3 & ILMN\_1751956 & 1 & rs740441 & 17 & 55779644 &  & rs4147592 & 1 & 165600146 & MGST3 & 5.45 & 0.57 & 0.27 & 0.40 &  \\
+MPZL2 & ILMN\_1752932 & 11 & rs1805 & 11 & 118076069 & MPZL2 & rs11771552 & 7 & 154708716 &  & 5.90 & 0.01 & 0.23 & 0.04 &  \\
+MPZL2 & ILMN\_1752932 & 11 & rs7316716 & 12 & 19953193 &  & rs1805 & 11 & 118076069 & MPZL2 & 5.64 & 0.97 & 1.08 & 1.35 &  \\
+MRPL36 & ILMN\_1800197 & 5 & rs17469061 & 10 & 8436432 &  & rs750495 & 5 & 1782046 & MRPL36 & 6.89 & 0.34 & 0.18 & 0.19 &  \\
+MRPL43 & ILMN\_2258774 & 10 & rs6564769 & 16 & 80641040 &  & rs2863095 & 10 & 102746503 & MRPL43 & 5.71 & 0.26 &  &  &  \\
+MRPL52 & ILMN\_1713966 & 14 & rs1950857 & 14 & 26710271 &  & rs3811188 & 14 &  & MRPL52 & 6.56 & 0.14 & 0.44 & 0.22 &  \\
+MRPS10 & ILMN\_1663664 & 6 & rs10955512 & 8 & 110202230 &  & rs722269 & 6 & 42194916 & MRPS10 & 7.48 & 0.46 & 0.70 & 0.64 &  \\
+MRPS10 & ILMN\_1663664 & 6 & rs11698155 & 20 & 15063214 &  & rs2395803 & 6 & 42158596 & MRPS10 & 6.85 & 0.31 & 0.63 & 0.46 &  \\
+MRPS10 & ILMN\_1663664 & 6 & rs1420537 & 16 & 52453567 &  & rs13217993 & 6 & 42164401 & MRPS10 & 6.21 & 0.41 & 0.25 & 0.28 &  \\
+MTMR15 & ILMN\_2152178 & 15 & rs7178375 & 15 & 31215935 & MTMR10 & rs12431444 & 14 & 42068689 &  & 5.18 & 1.87 & 1.87 & 2.86 &  \\
+MX1 & ILMN\_1662358 & 21 & rs459498 & 21 & 42795027 &  & rs11160227 & 14 & 95514596 &  & 6.31 & 0.46 & 0.52 & 0.50 &  \\
+MX1 & ILMN\_1662358 & 21 & rs459498 & 21 & 42795027 &  & rs4973801 & 3 & 26706382 &  & 5.83 & 0.11 & 0.50 & 0.23 &  \\
+MX1 & ILMN\_1662358 & 21 & rs459498 & 21 & 42795027 &  & rs8130120 & 21 & 29363604 &  & 6.78 & 0.29 & 0.92 & 0.65 & 13.431 \\
+MYBPC3 & ILMN\_1781184 & 11 & rs10134030 & 14 & 61593110 &  & rs1317149 & 11 & 47486885 & MYBPC3 & 5.56 & 0.13 & 0.46 & 0.23 &  \\
+MYBPC3 & ILMN\_1781184 & 11 & rs7322768 & 13 & 109550561 &  & rs7124681 & 11 & 47529947 & MYBPC3 & 5.70 & 0.04 & 0.08 & 0.02 &  \\
+MYOM1 & ILMN\_1680344 & 18 & rs4798075 & 18 & 3247256 & MYOM1 & rs2737422 & 8 & 134485237 &  & 6.02 & 0.74 & 0.15 & 0.40 &  \\
+N4BP1 & ILMN\_2201966 & 16 & rs12444224 & 16 & 87580855 &  & rs11649236 & 16 & 48632478 & N4BP1 & 5.54 & 2.00 & 0.59 & 1.77 & 38.948 \\
+NAAA & ILMN\_1668605 & 4 & rs2707575 & 7 & 147638723 &  & rs6826085 & 4 & 76870229 & NAAA & 5.65 & 0.20 & 0.03 & 0.04 &  \\
+NAAA & ILMN\_2391512 & 4 & rs2071856 & 22 & 37770630 &  & rs6826085 & 4 & 76870229 & NAAA & 5.46 & 0.27 & 0.43 & 0.30 &  \\
+NAPRT1 & ILMN\_1710752 & 8 & rs2123758 & 8 & 144663661 & NAPRT1 & rs2786014 & 1 & 234897243 &  & 6.08 & 0.07 & 0.48 & 0.18 &  \\
+NAPRT1 & ILMN\_1710752 & 8 & rs2123758 & 8 & 144663661 & NAPRT1 & rs3889129 & 8 & 144613680 &  & 8.45 & 15.12 & 16.08 & 30.77 & 0.050 \\
+NAPRT1 & ILMN\_1710752 & 8 & rs2123758 & 8 & 144663661 & NAPRT1 & rs4862705 & 4 & 187445552 &  & 5.62 & 1.27 & 0.19 & 0.81 &  \\
+NAPRT1 & ILMN\_1710752 & 8 & rs2123758 & 8 & 144663661 & NAPRT1 & rs6455553 & 6 & 167811764 &  & 6.12 & 0.87 & 0.76 & 1.01 &  \\
+NAPRT1 & ILMN\_1710752 & 8 & rs2123758 & 8 & 144663661 & NAPRT1 & rs700276 & 7 & 146189057 &  & 6.86 & 1.10 & 2.58 & 2.77 &  \\
+NAPRT1 & ILMN\_1710752 & 8 & rs2123758 & 8 & 144663661 & NAPRT1 & rs7571561 & 2 & 213386267 &  & 6.03 & 0.13 & 0.47 & 0.23 &  \\
+NAPRT1 & ILMN\_1710752 & 8 & rs2208123 & 22 & 48214812 &  & rs2123758 & 8 & 144663661 & NAPRT1 & 6.60 & 0.29 & 0.88 & 0.63 &  \\
+NAPRT1 & ILMN\_1710752 & 8 & rs4743420 & 9 & 103488089 &  & rs2123758 & 8 & 144663661 & NAPRT1 & 5.50 & 0.12 & 0.17 & 0.08 &  \\
+NAPSA & ILMN\_1784040 & 19 & rs1405655 & 19 & 50882619 & NAPSB & rs930280 & 9 & 98391111 &  & 5.58 & 0.82 & 0.10 & 0.40 &  \\
+NAPSB & ILMN\_2109416 & 19 & rs1405655 & 19 & 50882619 & NAPSB & rs10882406 & 10 & 95976932 &  & 5.58 & 0.67 & 1.10 & 1.12 &  \\
+NAPSB & ILMN\_2109416 & 19 & rs1405655 & 19 & 50882619 & NAPSB & rs7577137 & 2 & 234721287 &  & 5.58 & 2.11 & 0.44 & 1.71 &  \\
+NCL & ILMN\_2121437 & 2 & rs7563453 & 2 & 232301670 &  & rs4973397 & 2 & 232291471 &  & 7.31 & 7.51 & 6.33 & 12.70 & 0.010 \\
+NDUFA12 & ILMN\_1737738 & 12 & rs2746971 & 22 & 37101890 &  & rs11107847 & 12 & 95386791 & NDUFA12 & 3.88 & 0.39 & 0.18 & 0.22 &  \\
+NMT2 & ILMN\_1656378 & 10 & rs10906857 & 10 & 15239498 & NMT2 & rs12490878 & 3 & 183114008 &  & 6.84 & 0.42 & 0.34 & 0.35 &  \\
+NOD2 & ILMN\_1762594 & 16 & rs2967636 & 19 & 7067773 &  & rs9302752 & 16 & 50719103 & NOD2 & 5.90 & 0.24 & 0.04 & 0.06 &  \\
+NRBF2 & ILMN\_3237385 & 10 & rs11063498 & 12 & 5209048 &  & rs7923609 & 10 & 65133822 & NRBF2 & 5.45 &  &  &  &  \\
+NRBF2 & ILMN\_3237385 & 10 & rs2375269 & 11 & 69876894 &  & rs7923609 & 10 & 65133822 & NRBF2 & 5.53 &  &  &  &  \\
+NRBF2 & ILMN\_3237385 & 10 & rs6025645 & 20 & 56157341 &  & rs7923609 & 10 & 65133822 & NRBF2 & 5.45 &  &  &  &  \\
+NRBF2 & ILMN\_3237385 & 10 & rs6517815 & 21 & 19819016 &  & rs7923609 & 10 & 65133822 & NRBF2 & 6.11 &  &  &  &  \\
+NRD1 & ILMN\_1800897 & 1 & rs4852124 & 2 & 240680022 &  & rs6588415 & 1 & 52334047 &  & 6.13 & 0.47 & 0.05 & 0.17 &  \\
+NUDT18 & ILMN\_1787885 & 8 & rs5017351 & 11 & 25453482 &  & rs1005901 & 8 & 21964378 & NUDT18 & 5.44 & 0.03 & 0.46 & 0.15 &  \\
+OAS1 & ILMN\_1658247 & 12 & rs11613438 & 12 & 113480510 &  & rs1047944 & 6 & 163997467 &  & 8.59 & 1.27 & 1.55 & 2.03 &  \\
+OAS1 & ILMN\_1658247 & 12 & rs13311 & 12 & 113448652 &  & rs2072133 & 12 & 113409260 &  & 4.13 & 4.12 & 0.81 & 3.86 & 0.039 \\
+OAS1 & ILMN\_1675640 & 12 & rs2892233 & 19 & 49160255 &  & rs3741981 & 12 &  & OAS1 & 4.38 & 0.87 & 0.46 & 0.76 &  \\
+OPTN & ILMN\_2381899 & 10 & rs7192613 & 16 & 74286646 &  & rs17512962 & 10 & 13169066 & OPTN & 5.64 & 0.42 & 0.06 & 0.14 &  \\
+OSBPL5 & ILMN\_2307032 & 11 & rs2829679 & 21 & 26662543 &  & rs998639 & 11 & 3149249 & OSBPL5 & 5.00 & 0.36 & 0.00 & 0.07 &  \\
+OSTF1 & ILMN\_1742456 & 9 & rs17780195 & 17 & 70624189 &  & rs2273770 & 9 & 77755469 & OSTF1 & 5.42 & 0.16 & 0.87 & 0.49 &  \\
+OSTF1 & ILMN\_1742456 & 9 & rs2273770 & 9 & 77755469 & OSTF1 & rs7718088 & 5 & 179590952 &  & 5.42 & 1.20 & 0.08 & 0.62 &  \\
+OVGP1 & ILMN\_1734542 & 1 & rs10802822 & 1 & 240132968 &  & rs1264898 & 1 & 111992823 & OVGP1 & 5.43 & 0.13 & 1.48 & 0.88 & 128.140 \\
+OVGP1 & ILMN\_1734542 & 1 & rs347331 & 3 & 140148107 &  & rs1264894 & 1 & 111969719 & OVGP1 & 6.04 & 0.25 & 1.21 & 0.82 &  \\
+PAM & ILMN\_2313901 & 5 & rs28092 & 5 & 102149795 & PAM & rs784600 & 1 & 40139553 & HPCAL4 & 5.59 & 0.66 & 0.44 & 0.59 &  \\
+PCYOX1L & ILMN\_1815951 & 5 & rs2438490 & 5 & 148726162 & PCYOX1L & rs2731939 & 3 & 21395989 &  & 6.20 & 0.19 & 0.26 & 0.16 &  \\
+PEX5 & ILMN\_1660232 & 12 & rs10444467 & 12 & 128052636 &  & rs4329748 & 12 & 7364442 & PEX5 & 5.85 & 0.09 & 0.71 & 0.32 & 120.688 \\
+PEX5 & ILMN\_1660232 & 12 & rs7495797 & 15 & 27246462 &  & rs4329748 & 12 & 7364442 & PEX5 & 5.74 & 0.34 & 0.09 & 0.13 &  \\
+PFAAP5 & ILMN\_1797893 & 13 & rs131969 & 22 & 49151303 &  & rs7328733 & 13 & 33126737 & PFAAP5 & 5.64 & 0.87 & 0.36 & 0.67 &  \\
+PGLYRP1 & ILMN\_1704870 & 19 & rs12982353 & 19 & 46529456 & PGLYRP1 & rs1263806 & 14 & 21982957 &  & 6.51 & 0.03 & 0.65 & 0.24 &  \\
+PHCA & ILMN\_1812552 & 11 & rs493642 & 11 & 123097386 &  & rs10736812 & 11 & 76708086 & PHCA & 5.51 & 0.36 & 0.90 & 0.70 & 46.389 \\
+PIK3IP1 & ILMN\_1719986 & 22 & rs4141404 & 22 & 31675185 & PIK3IP1 & rs2065841 & 1 & 61728597 &  & 5.60 & 0.20 & 0.01 & 0.03 &  \\
+PISD & ILMN\_1793934 & 22 & rs470072 & 22 & 32263131 & PISD & rs10498313 & 14 & 30398876 &  & 5.23 & 0.02 & 0.87 & 0.33 &  \\
+PISD & ILMN\_1793934 & 22 & rs6518752 & 22 & 31999127 & PISD & rs954627 & 1 & 18236681 &  & 7.11 & 0.00 & 1.19 & 0.48 &  \\
+PISD & ILMN\_1793934 & 22 & rs715572 & 22 & 33234931 &  & rs6518754 & 22 & 32097775 & PISD & 4.12 & 0.05 & 0.42 & 0.15 & 1.137 \\
+PNKD & ILMN\_1774604 & 2 & rs6869411 & 5 & 158781604 &  & rs4672884 & 2 & 219182481 & PNKD & 6.35 & 0.16 & 0.04 & 0.04 &  \\
+PNPLA7 & ILMN\_1662587 & 9 & rs11639998 & 16 & 4527109 &  & rs928046 & 9 & 140487108 & PNPLA7 & 5.15 & 0.31 & 0.78 & 0.56 &  \\
+PPFIBP2 & ILMN\_1675656 & 11 & rs911019 & 20 & 49668255 &  & rs4758001 & 11 & 7559930 & PPFIBP2 & 4.44 & 0.29 & 0.33 & 0.26 &  \\
+PPP2R3C & ILMN\_1662617 & 14 & rs12914603 & 15 & 58350896 &  & rs11156875 & 14 & 35619816 & PPP2R3C & 5.81 & 0.12 & 0.42 & 0.19 &  \\
+PPP2R5A & ILMN\_1738784 & 1 & rs10930170 & 2 & 166399467 &  & rs12120009 & 1 & 212447167 & PPP2R5A & 5.63 & 0.72 & 0.48 & 0.66 &  \\
+PPP2R5A & ILMN\_1738784 & 1 & rs12423255 & 12 & 123595064 &  & rs12120009 & 1 & 212447167 & PPP2R5A & 5.72 & 0.08 & 0.95 & 0.46 &  \\
+PPP2R5A & ILMN\_1738784 & 1 & rs1889083 & 13 & 66222691 &  & rs12120009 & 1 & 212447167 & PPP2R5A & 5.61 & 0.36 & 0.13 & 0.17 &  \\
+PPP2R5A & ILMN\_1738784 & 1 & rs682334 & 11 & 107417238 &  & rs12120009 & 1 & 212447167 & PPP2R5A & 5.65 & 1.69 & 0.28 & 1.21 &  \\
+PPP2R5A & ILMN\_1738784 & 1 & rs7757871 & 6 & 135030045 &  & rs12120009 & 1 & 212447167 & PPP2R5A & 5.95 & 0.37 & 0.06 & 0.12 &  \\
+PPP2R5A & ILMN\_1738784 & 1 & rs7871178 & 9 & 27148475 &  & rs12120009 & 1 & 212447167 & PPP2R5A & 5.72 & 0.16 & 0.30 & 0.16 &  \\
+PRDX5 & ILMN\_1711606 & 11 & rs8019823 & 14 & 95040482 &  & rs11600990 & 11 & 64082807 & PRDX5 & 6.43 & 0.81 & 0.14 & 0.44 &  \\
+PRKCB1 & ILMN\_1713603 & 16 & rs2188355 & 16 & 23867776 &  & rs10492793 & 16 & 12639800 &  & 7.34 & 0.53 & 0.11 & 0.25 & 11.228 \\
+PRMT2 & ILMN\_1675038 & 21 & rs1029231 & 21 & 47931653 & C21ORF57 & rs958127 & 18 & 31497346 &  & 5.60 & 0.19 & 0.03 & 0.04 &  \\
+PRMT2 & ILMN\_1675038 & 21 & rs2839372 & 21 & 48063862 &  & rs11701058 & 21 & 47776382 & C21ORF57 & 4.81 & 0.69 & 4.47 & 4.06 & 0.287 \\
+PSMB1 & ILMN\_1789176 & 6 & rs3862607 & 11 & 121774705 &  & rs13207114 & 6 & 170877444 & PSMB1 & 5.79 &  & 0.44 &  &  \\
+PSMB1 & ILMN\_1789176 & 6 & rs4890648 & 18 & 43983954 &  & rs6928843 & 6 & 170890384 & PSMB1 & 5.14 & 0.00 & 0.26 & 0.04 &  \\
+PSMB1 & ILMN\_1789176 & 6 & rs6060930 & 20 & 30347832 &  & rs9295415 & 6 & 170823379 & PSMB1 & 5.44 & 0.44 & 0.21 & 0.27 &  \\
+PSMB1 & ILMN\_1789176 & 6 & rs6928843 & 6 & 170890384 & PSMB1 & rs2769689 & 1 & 225797957 &  & 4.58 & 1.95 & 0.64 & 1.78 &  \\
+PSMB1 & ILMN\_1789176 & 6 & rs7299749 & 12 & 131727816 &  & rs13207114 & 6 & 170877444 & PSMB1 & 5.42 & 1.18 & 0.32 & 0.86 &  \\
+PWP1 & ILMN\_1743049 & 12 & rs2353567 & 14 & 95478823 &  & rs11036212 & 11 & 5221825 & PTDSS1 & 5.00 & 0.03 & 0.48 & 0.15 &  \\
+PWP1 & ILMN\_1743049 & 12 & rs4969205 & 17 & 76598123 &  & rs11036212 & 11 & 5221825 & PTDSS1 & 5.90 & 0.80 & 0.08 & 0.38 &  \\
+PWP1 & ILMN\_1743049 & 12 & rs631562 & 11 & 126852438 &  & rs11036212 & 11 & 5221825 & PTDSS1 & 5.70 & 0.02 & 0.40 & 0.11 &  \\
+QDPR & ILMN\_1672443 & 4 & rs4946705 & 6 & 106348246 &  & rs10020773 & 4 & 17526682 & QDPR & 5.75 & 1.03 & 1.25 & 1.55 &  \\
+RAB3IP & ILMN\_1803197 & 12 & rs241730 & 22 & 33375704 &  & rs7305307 & 12 & 70235726 &  & 6.55 & 0.25 & 0.08 & 0.09 &  \\
+RABAC1 & ILMN\_2207363 & 19 & rs1075728 & 19 & 42462788 & RABAC1 & rs7951628 & 11 & 120161117 &  & 6.42 & 0.28 & 0.84 & 0.59 &  \\
+RBL2 & ILMN\_1756999 & 16 & rs9931702 & 16 & 53526551 & AKTIP & rs1863464 & 15 & 26938488 &  & 6.38 & 0.03 & 0.31 & 0.08 &  \\
+RCN1 & ILMN\_1800276 & 11 & rs10879131 & 12 & 41147155 &  & rs4922579 & 11 & 32136436 & RCN1 & 5.23 & 0.58 & 0.37 & 0.47 &  \\
+RCN1 & ILMN\_1800276 & 11 & rs4922579 & 11 & 32136436 & RCN1 & rs11166957 & 8 & 141177468 &  & 4.32 & 0.41 & 0.09 & 0.17 &  \\
+RCN1 & ILMN\_1800276 & 11 & rs4922579 & 11 & 32136436 & RCN1 & rs1341899 & 1 & 102740645 &  & 5.40 & 0.04 & 0.26 & 0.07 &  \\
+RERE & ILMN\_1802380 & 1 & rs4982958 & 14 & 24987865 &  & rs301819 & 1 & 8501786 & RERE & 5.66 & 0.61 & 1.23 & 1.17 &  \\
+RERE & ILMN\_1802380 & 1 & rs7697290 & 4 & 135248366 &  & rs301819 & 1 & 8501786 & RERE & 5.74 & 0.14 & 0.10 & 0.06 &  \\
+RERE & ILMN\_2327795 & 1 & rs11085829 & 19 & 13174312 &  & rs301819 & 1 & 8501786 & RERE & 5.12 & 0.21 & 0.33 & 0.21 &  \\
+RERE & ILMN\_2327795 & 1 & rs3852011 & 3 & 112844086 &  & rs301819 & 1 & 8501786 & RERE & 5.71 & 0.08 & 0.60 & 0.26 &  \\
+RNASE6 & ILMN\_1780533 & 14 & rs11628398 & 14 & 21182800 & RNASE6 & rs7324365 & 13 & 100601327 &  & 5.48 & 0.42 & 0.21 & 0.26 &  \\
+RNASE6 & ILMN\_1780533 & 14 & rs6603134 & 19 & 8106521 &  & rs11628398 & 14 & 21182800 & RNASE6 & 5.11 & 0.09 & 0.22 & 0.08 &  \\
+RNF167 & ILMN\_1794726 & 17 & rs238230 & 17 & 4875566 &  & rs4884857 & 13 & 54668512 &  & 4.37 &  &  &  &  \\
+RNF167 & ILMN\_1794726 & 17 & rs400688 & 17 & 4839930 & RNF167 & rs11706900 & 3 & 36348968 &  & 5.59 & 0.71 & 0.46 & 0.64 &  \\
+RNPEP & ILMN\_1738347 & 1 & rs1107121 & 21 & 46127549 &  & rs2819365 & 1 & 201983242 &  & 6.27 & 0.11 & 0.30 & 0.13 &  \\
+RNPEP & ILMN\_1738347 & 1 & rs8071611 & 17 & 67153386 &  & rs2819365 & 1 & 201983242 &  & 4.32 & 1.48 & 0.52 & 1.28 &  \\
+RPL13 & ILMN\_2413278 & 16 & rs352935 & 16 & 89648580 &  & rs2965817 & 16 & 89513234 &  & 4.98 & 3.79 & 14.41 & 17.24 & 0.135 \\
+RPL23AP7 & ILMN\_2222750 & 2 & rs1401202 & 16 & 80320056 &  & rs4849261 & 2 & 114450028 & RPL23AP7 & 5.55 & 0.13 & 0.73 & 0.38 &  \\
+RPL36AL & ILMN\_2189933 & 14 & rs3007033 & 14 & 50103816 & RPL36AL & rs17495030 & 9 & 138038093 &  & 5.46 & 0.09 & 0.06 & 0.02 &  \\
+RPL36AL & ILMN\_2189936 & 14 & rs4900928 & 14 & 50020817 & RPL36AL & rs1502991 & 6 & 66137260 &  & 5.86 & 0.32 & 0.20 & 0.19 &  \\
+RPL8 & ILMN\_1764721 & 8 & rs2958482 & 8 & 145984615 & RPL8 & rs1619856 & 1 & 234585790 &  & 4.59 & 0.10 & 0.37 & 0.15 &  \\
+RPL8 & ILMN\_1764721 & 8 & rs4143674 & 20 & 4741304 &  & rs2958482 & 8 & 145984615 & RPL8 & 4.33 & 0.13 & 0.45 & 0.22 &  \\
+SEC13 & ILMN\_3297880 & 3 & rs4889214 & 16 & 80913946 &  & rs696221 & 3 & 10342876 & SEC13 & 6.48 &  &  &  &  \\
+SEMA4A & ILMN\_1702787 & 1 & rs17085428 & 5 & 95388015 &  & rs7695 & 1 & 156147326 & SEMA4A & 5.70 & 0.22 & 1.73 & 1.17 &  \\
+SESN3 & ILMN\_1694027 & 11 & rs12147460 & 14 & 104412137 &  & rs684856 & 11 & 94906111 & SESN3 & 5.50 & 0.02 & 0.51 & 0.15 &  \\
+SESN3 & ILMN\_1694027 & 11 & rs355391 & 15 & 46591793 &  & rs684856 & 11 & 94906111 & SESN3 & 5.67 & 0.31 & 0.06 & 0.10 &  \\
+SESN3 & ILMN\_1694027 & 11 & rs684856 & 11 & 94906111 & SESN3 & rs7004947 & 8 & 134606425 &  & 5.60 & 0.21 & 0.51 & 0.31 &  \\
+SH3BGRL2 & ILMN\_1762764 & 6 & rs10838191 & 11 & 43893658 &  & rs1354034 & 3 & 56849749 & PPBP & 5.52 & 0.70 & 0.12 & 0.35 &  \\
+SH3BGRL2 & ILMN\_1762764 & 6 & rs2545385 & 5 & 66383979 &  & rs1354034 & 3 & 56849749 & PPBP & 5.97 & 0.20 & 0.51 & 0.30 &  \\
+SH3BGRL2 & ILMN\_1762764 & 6 & rs6845304 & 4 & 88280502 &  & rs1354034 & 3 & 56849749 & PPBP & 5.23 & 0.32 & 0.71 & 0.53 &  \\
+SH3GLB2 & ILMN\_2158336 & 9 & rs1034120 & 21 & 18196922 &  & rs17455517 & 9 & 131785369 & SH3GLB2 & 7.40 & 0.22 & 0.18 & 0.13 &  \\
+SIRPG & ILMN\_1771801 & 20 & rs1535883 & 20 & 1612819 & SIRPG & rs6842739 & 4 & 60489510 &  & 5.74 & 0.29 & 0.18 & 0.17 &  \\
+SLC22A18 & ILMN\_2382505 & 11 & rs11673260 & 19 & 52181798 &  & rs367035 & 11 & 2923826 & SLC22A18 & 5.47 & 0.09 & 0.24 & 0.09 &  \\
+SLC22A18 & ILMN\_2382505 & 11 & rs367035 & 11 & 2923826 & SLC22A18 & rs3110874 & 7 & 153224179 &  & 5.70 & 0.15 & 0.10 & 0.06 &  \\
+SLC22A18 & ILMN\_2382505 & 11 & rs367035 & 11 & 2923826 & SLC22A18 & rs3772054 & 2 & 241678528 &  & 6.15 & 0.39 & 0.13 & 0.19 &  \\
+SLC41A3 & ILMN\_2356111 & 3 & rs1912136 & 11 & 24616743 &  & rs6771703 & 3 & 125801067 & SLC41A3 & 5.88 & 1.10 & 0.82 & 1.24 &  \\
+SLC45A4 & ILMN\_1745778 & 8 & rs6985508 & 8 & 142337734 & SLC45A4 & rs7701916 & 5 & 174598073 &  & 5.95 & 0.86 & 0.07 & 0.40 &  \\
+SLC46A3 & ILMN\_1658639 & 13 & rs949805 & 17 & 55602091 &  & rs7981190 & 13 & 29259349 & SLC46A3 & 5.52 & 0.09 & 0.58 & 0.26 &  \\
+SMG7 & ILMN\_1706553 & 1 & rs8035259 & 15 & 97403923 &  & rs10911353 & 1 & 183489203 & SMG7 & 6.52 & 0.17 & 0.09 & 0.06 &  \\
+SMOX & ILMN\_1775380 & 20 & rs8118315 & 20 & 4161500 & SMOX & rs11677815 & 2 & 65800982 &  & 5.68 & 0.39 & 0.62 & 0.52 &  \\
+SNHG8 & ILMN\_3309349 & 4 & rs1105621 & 9 & 133050233 &  & rs705837 & 4 & 119225940 & SNHG8 & 6.11 &  &  &  &  \\
+SNORD14A & ILMN\_1799381 & 11 & rs1520429 & 15 & 46259108 &  & rs214097 & 11 & 17291499 & SNORD14A & 6.60 & 0.29 & 1.03 & 0.72 &  \\
+SNORD14A & ILMN\_1799381 & 11 & rs2634462 & 11 & 17339127 &  & rs6486334 & 11 & 17015557 &  & 7.31 & 13.11 & 10.96 & 23.22 & 0.324 \\
+SNORD89 & ILMN\_3238662 & 2 & rs10445863 & 2 & 115929241 &  & rs750783 & 2 & 101889306 & SNORD89 & 6.08 &  &  &  & 14.040 \\
+SNORD89 & ILMN\_3238662 & 2 & rs11605822 & 11 & 122986326 &  & rs750783 & 2 & 101889306 & SNORD89 & 5.96 &  &  &  &  \\
+SNORD89 & ILMN\_3238662 & 2 & rs2135064 & 5 & 26778066 &  & rs750783 & 2 & 101889306 & SNORD89 & 6.33 &  &  &  &  \\
+SNUPN & ILMN\_1733932 & 15 & rs8134646 & 21 & 46376528 & SNUPN & rs7185362 & 16 & 81888905 &  & 6.45 & 0.13 & 1.41 & 0.83 &  \\
+SNUPN & ILMN\_2364535 & 15 & rs8134646 & 21 & 46376528 & SNUPN & rs1472075 & 3 & 193706323 &  & 5.59 & 0.34 & 0.00 & 0.06 &  \\
+SPATA5L1 & ILMN\_1729179 & 15 & rs1131620 & 19 & 41117869 &  & rs4774580 & 15 & 45652086 & SPATA5L1 & 5.44 &  &  &  &  \\
+STARD10 & ILMN\_1717052 & 11 & rs2221406 & 13 & 90174526 &  & rs1000620 & 11 & 72509713 &  & 5.65 & 0.67 & 0.12 & 0.33 &  \\
+STYXL1 & ILMN\_2210729 & 7 & rs4073164 & 14 & 104947517 &  & rs17685 & 7 & 75616105 & STYXL1 & 5.88 & 0.57 & 0.17 & 0.31 &  \\
+SULF2 & ILMN\_2345142 & 20 & rs11700063 & 20 & 46153148 & SULF2 & rs939294 & 4 & 180439236 &  & 5.51 & 0.46 & 0.24 & 0.30 &  \\
+SULT1A4 & ILMN\_2336133 & 16 & rs1463965 & 18 & 74332954 &  & rs3785354 & 16 & 28550667 & TUFM & 7.05 & 0.01 & 0.05 & 0.00 &  \\
+SULT1A4 & ILMN\_2336133 & 16 & rs2836657 & 21 & 40119768 &  & rs3785354 & 16 & 28550667 & TUFM & 5.83 &  &  &  &  \\
+SURF6 & ILMN\_1778032 & 9 & rs6099626 & 20 & 56013994 &  & rs3118663 & 9 & 136281753 & SURF6 & 6.14 & 0.26 & 0.16 & 0.14 &  \\
+SYTL2 & ILMN\_2336609 & 11 & rs1375719 & 13 & 103410782 &  & rs485485 & 11 & 85495269 & SYTL2 & 5.47 & 0.28 & 0.31 & 0.24 &  \\
+THBS3 & ILMN\_1804663 & 1 & rs1939875 & 11 & 95422867 &  & rs4072037 & 1 & 155162067 & THBS3 & 5.55 & 0.03 & 0.15 & 0.03 &  \\
+THBS3 & ILMN\_1804663 & 1 & rs8014956 & 14 & 20687978 &  & rs2049805 & 1 & 155194980 & THBS3 & 5.65 & 0.31 & 0.76 & 0.55 &  \\
+TIPRL & ILMN\_1781457 & 1 & rs2823245 & 21 & 16745523 &  & rs1320993 & 1 & 168154599 & TIPRL & 5.22 & 0.07 & 0.40 & 0.15 &  \\
+TMED4 & ILMN\_1804148 & 7 & rs1940400 & 11 & 132389627 &  & rs17725246 & 7 & 44581986 & TMED4 & 5.70 & 0.06 & 1.34 & 0.70 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs2839013 & 21 & 47248981 &  & rs8106959 & 19 & 36219525 & TMEM149 & 8.11 & 0.16 & 0.48 & 0.26 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs5762235 & 22 & 27925288 &  & rs8106959 & 19 & 36219525 & TMEM149 & 6.79 &  &  &  &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs6090518 & 20 & 45207005 &  & rs8106959 & 19 & 36219525 & TMEM149 & 11.09 & 0.76 &  &  &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs807491 & 19 & 36268923 & SNX26 & rs7254601 & 19 & 36147315 & TMEM149 & 12.16 & 81.55 & 45.78 & 145.78 & 0.122 \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs10508289 & 10 & 4799159 &  & 8.12 & 1.55 & 3.09 & 3.67 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs10819626 & 9 & 133025756 &  & 8.02 & 0.40 & 0.99 & 0.80 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs10937361 & 3 & 188359436 &  & 8.39 & 3.61 & 1.18 & 3.78 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs1401098 & 12 & 128884559 &  & 7.37 & 2.41 & 1.00 & 2.52 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs1557335 & 18 & 64268976 &  & 6.95 & 0.08 & 0.07 & 0.03 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs17719594 & 14 & 90932598 &  & 6.93 & 3.06 & 0.77 & 2.87 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs1843357 & 8 & 13822381 &  & 6.21 & 3.72 & 3.33 & 6.00 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs2351458 & 4 & 113317583 &  & 7.30 & 0.04 & 9.61 & 8.00 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs2539000 & 7 & 147619772 &  & 6.70 & 1.57 & 1.52 & 2.27 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs2731711 & 5 & 171792273 &  & 5.92 & 0.19 & 0.33 & 0.19 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs471728 & 11 & 129595460 &  & 8.89 & 0.90 & 3.62 & 3.51 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs6718480 & 2 & 233879066 &  & 8.55 & 3.31 & 5.15 & 7.36 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs6926382 & 6 & 161683974 &  & 5.80 & 3.06 & 8.80 & 10.72 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs7213338 & 17 & 80357420 &  & 5.49 & 0.07 & 3.14 & 2.10 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs914940 & 1 & 242889492 &  & 6.22 & 3.36 & 6.96 & 9.20 &  \\
+TMEM149 & ILMN\_1786426 & 19 & rs8106959 & 19 & 36219525 & TMEM149 & rs9509428 & 13 & 21473952 &  & 9.44 & 0.10 & 5.75 & 4.47 &  \\
+TMEM63A & ILMN\_1719649 & 1 & rs1254086 & 13 & 72890603 &  & rs4149226 & 1 & 226027323 & TMEM63A & 5.60 &  &  &  &  \\
+TMEM80 & ILMN\_1708482 & 11 & rs1548475 & 19 & 58058246 &  & rs4963126 & 11 & 656845 & TMEM80 & 5.79 & 0.64 & 0.12 & 0.32 &  \\
+TNPO3 & ILMN\_1683811 & 7 & rs1537146 & 9 & 4859303 &  & rs10488630 & 7 & 128593948 & IRF5 & 5.61 & 0.11 & 0.15 & 0.07 &  \\
+TNPO3 & ILMN\_1683811 & 7 & rs199793 & 20 & 22287303 &  & rs10488630 & 7 & 128593948 & IRF5 & 5.52 & 1.03 & 0.17 & 0.62 &  \\
+TRA2A & ILMN\_1731043 & 7 & rs7776572 & 7 & 23528927 &  & rs11770192 & 7 & 23498358 &  & 8.23 & 3.19 & 1.89 & 4.09 & 0.031 \\
+TRAPPC4 & ILMN\_1814650 & 11 & rs1278760 & 13 & 113531675 &  & rs3916581 & 11 & 118887887 & TRAPPC4 & 5.61 & 0.28 & 0.40 & 0.29 &  \\
+TRAPPC4 & ILMN\_1814650 & 11 & rs1793823 & 11 & 131018917 &  & rs3916581 & 11 & 118887887 & TRAPPC4 & 5.52 & 0.93 & 0.01 & 0.36 & 12.131 \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs10059004 & 5 & 166970604 &  & 5.97 & 0.21 & 1.60 & 1.07 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs1023095 & 8 & 132022957 &  & 6.92 & 0.37 & 0.87 & 0.68 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs1375714 & 6 & 156404902 &  & 7.79 & 0.12 & 0.18 & 0.08 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs1393299 & 1 & 242329791 &  & 6.43 & 0.63 & 0.47 & 0.59 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs17763599 & 19 & 2369415 &  & 6.38 & 0.21 & 0.24 & 0.16 & 5.389 \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs4968328 & 17 & 57495457 &  & 6.51 & 0.50 & 0.38 & 0.44 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs7313362 & 12 & 129644342 &  & 7.08 & 0.04 & 0.65 & 0.25 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs7694997 & 4 & 9947811 &  & 5.86 & 0.20 & 0.36 & 0.22 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs7800935 & 7 & 146690926 &  & 6.27 & 0.15 & 0.33 & 0.16 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs17159840 & 19 & 7758194 & TRAPPC5 & rs856638 & 14 & 85439550 &  & 6.73 & 0.24 & 0.07 & 0.08 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs380708 & 22 & 22740855 &  & rs17159840 & 19 & 7758194 & TRAPPC5 & 7.58 &  &  &  &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs3916995 & 21 & 45128454 &  & rs17159840 & 19 & 7758194 & TRAPPC5 & 7.73 & 0.85 & 0.78 & 1.01 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs6040514 & 20 & 11272861 &  & rs17159840 & 19 & 7758194 & TRAPPC5 & 8.10 & 0.51 & 0.55 & 0.56 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs7246264 & 19 & 7762978 &  & rs10179572 & 2 & 228504503 &  & 6.71 & 0.14 & 0.02 & 0.02 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs7246264 & 19 & 7762978 &  & rs12921440 & 16 & 30408765 &  & 7.34 & 0.14 & 0.26 & 0.13 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs7246264 & 19 & 7762978 &  & rs1887778 & 9 & 134635088 & RAPGEF1 & 7.05 & 0.08 & 0.86 & 0.40 &  \\
+TRAPPC5 & ILMN\_2372639 & 19 & rs7246264 & 19 & 7762978 &  & rs963354 & 3 & 157393770 &  & 7.41 & 0.36 & 0.90 & 0.69 &  \\
+TREM1 & ILMN\_1688231 & 6 & rs10862975 & 12 & 85749398 &  & rs2395771 & 6 & 41264577 & TREM1 & 5.42 & 0.11 & 0.25 & 0.11 &  \\
+TREM1 & ILMN\_1688231 & 6 & rs12412964 & 10 & 108256422 &  & rs2395771 & 6 & 41264577 & TREM1 & 5.92 & 1.20 & 1.23 & 1.69 &  \\
+TRIM38 & ILMN\_1697971 & 6 & rs2527180 & 7 & 158808416 &  & rs2032447 & 6 & 26044369 & TRIM38 & 6.46 & 0.04 & 0.91 & 0.39 &  \\
+TSPAN14 & ILMN\_1785060 & 10 & rs968726 & 17 & 27194634 &  & rs10748526 & 10 & 82273079 & TSPAN14 & 6.00 & 0.07 & 0.18 & 0.06 &  \\
+TSPAN32 & ILMN\_1718621 & 11 & rs10838738 & 11 & 47663049 & MYBPC3 & rs12800998 & 11 & 2317951 & TSPAN32 & 5.01 &  &  &  & 45.345 \\
+TSPAN32 & ILMN\_2389970 & 11 & rs12800998 & 11 & 2317951 & TSPAN32 & rs620607 & 6 & 137947208 &  & 5.51 &  &  &  &  \\
+TYMP & ILMN\_3223126 & 22 & rs140522 & 22 & 50971266 & ECGF1 & rs1198819 & 2 & 238746880 &  & 6.34 &  &  &  &  \\
+TYMP & ILMN\_3223126 & 22 & rs470119 & 22 & 50966914 & ECGF1 & rs4783126 & 16 & 85147633 &  & 6.13 &  &  &  &  \\
+UBASH3A & ILMN\_2338348 & 21 & rs1893592 & 21 & 43855067 & UBASH3A & rs7201194 & 16 & 83600397 &  & 5.91 & 0.59 & 0.42 & 0.52 &  \\
+UBASH3A & ILMN\_2338348 & 21 & rs1893592 & 21 & 43855067 & UBASH3A & rs7512594 & 1 & 214514361 &  & 6.01 & 0.48 & 1.29 & 1.10 &  \\
+USP36 & ILMN\_1697227 & 17 & rs2279308 & 17 & 76794981 & USP36 & rs7225546 & 17 & 75151717 &  & 5.71 & 0.03 & 0.14 & 0.03 & 1.643 \\
+VASP & ILMN\_1743646 & 19 & rs1264226 & 19 & 46063167 &  & rs2276470 & 19 & 45974668 &  & 5.09 & 0.94 & 5.14 & 4.95 & 0.088 \\
+VNN2 & ILMN\_1678939 & 6 & rs10435352 & 7 & 105252718 &  & rs1883613 & 6 & 133077063 & VNN2 & 5.64 & 0.84 & 0.15 & 0.46 &  \\
+VNN2 & ILMN\_1678939 & 6 & rs13044386 & 20 & 9116155 &  & rs1883617 & 6 & 133072650 & VNN2 & 5.44 & 0.39 & 0.69 & 0.57 &  \\
+VNN2 & ILMN\_1678939 & 6 & rs134447 & 22 & 49927332 &  & rs1883617 & 6 & 133072650 & VNN2 & 5.72 &  &  &  &  \\
+VNN2 & ILMN\_1678939 & 6 & rs216495 & 11 & 16834510 &  & rs1883617 & 6 & 133072650 & VNN2 & 5.77 & 0.33 & 0.19 & 0.19 &  \\
+VNN3 & ILMN\_1804935 & 6 & rs10278073 & 7 & 151662184 &  & rs2267952 & 6 & 133067782 & VNN3 & 6.44 & 0.16 & 0.74 & 0.41 &  \\
+VNN3 & ILMN\_1804935 & 6 & rs1443946 & 8 & 73006453 &  & rs2267952 & 6 & 133067782 & VNN3 & 5.74 & 0.23 & 0.48 & 0.31 &  \\
+VNN3 & ILMN\_1804935 & 6 & rs348462 & 9 & 75547169 &  & rs2267952 & 6 & 133067782 & VNN3 & 6.44 & 0.31 & 0.17 & 0.17 &  \\
+VNN3 & ILMN\_1804935 & 6 & rs7157055 & 14 & 83262064 &  & rs2267952 & 6 & 133067782 & VNN3 & 5.82 & 0.03 & 0.19 & 0.04 &  \\
+VNN3 & ILMN\_2387680 & 6 & rs2823165 & 21 & 16594253 &  & rs2267952 & 6 & 133067782 & VNN3 & 6.12 & 0.73 & 1.15 & 1.21 &  \\
+VNN3 & ILMN\_2387680 & 6 & rs9596457 & 13 & 51692548 &  & rs2267952 & 6 & 133067782 & VNN3 & 4.83 & 0.46 & 0.05 & 0.16 &  \\
+VSTM1 & ILMN\_1763455 & 19 & rs10500316 & 19 & 54553697 & VSTM1 & rs4552100 & 18 & 71024750 &  & 5.60 & 0.53 & 0.54 & 0.57 &  \\
+VSTM1 & ILMN\_1763455 & 19 & rs10500316 & 19 & 54553697 & VSTM1 & rs7895870 & 10 & 123098249 &  & 5.71 & 0.48 & 0.17 & 0.26 &  \\
+VSTM1 & ILMN\_1763455 & 19 & rs9625870 & 22 & 30261219 &  & rs10500316 & 19 & 54553697 & VSTM1 & 5.88 & 0.81 & 1.38 & 1.47 &  \\
+WDR48 & ILMN\_1762103 & 3 & rs1388935 & 4 & 188927822 &  & rs6778963 & 3 & 39091812 & WDR48 & 5.88 & 0.19 & 0.13 & 0.09 &  \\
+WDR48 & ILMN\_1762103 & 3 & rs1887778 & 9 & 134635088 & RAPGEF1 & rs883349 & 3 & 39067925 & WDR48 & 6.34 & 0.57 & 1.35 & 1.22 &  \\
+WDR48 & ILMN\_1762103 & 3 & rs9554833 & 13 & 102624790 &  & rs7619193 & 3 & 39044116 & WDR48 & 5.85 & 0.18 & 0.61 & 0.35 &  \\
+WDR6 & ILMN\_1669484 & 3 & rs12362253 & 11 & 123371708 &  & rs11715581 & 3 & 49194331 & WDR6 & 4.86 & 1.64 & 1.43 & 2.25 &  \\
+XAF1 & ILMN\_2370573 & 17 & rs1533031 & 17 & 6673170 & XAF1 & rs12591171 & 15 & 93119799 &  & 5.48 & 2.38 & 0.17 & 1.63 &  \\
+ZFP90 & ILMN\_1684628 & 16 & rs909446 & 21 & 37040648 &  & rs1182968 & 16 & 68573945 & ZFP90 & 5.79 & 0.09 & 0.36 & 0.15 &  \\
+ZNF500 & ILMN\_1700238 & 16 & rs4823723 & 22 & 48283177 &  & rs2290560 & 16 & 4799041 & ZNF500 & 5.29 & 0.67 & 0.27 & 0.46 &  \\
+ZYX & ILMN\_1701875 & 7 & rs6056281 & 20 & 8935312 &  & rs2242601 & 7 & 143093824 & ZYX & 6.04 & 0.26 & 0.01 & 0.05 &  \\
+\hline
+\end{longtable}
+
+\begin{tablenotes}
+\item[a] Phenotypes are expression levels of RefSeq Genes
+\item[b] Illumina probe ID used to measure gene expression
+\item[c] Physical SNP position in base pairs (HG19)
+\item[d] RefSeq Gene ID of gene expression level that is influenced by the SNP (BSGS discovery dataset, significance threshold $= 1.29 \times 10^{-11}$)
+\item[e] Interaction $-\log_{10} p$-value from discovery dataset
+\item[f] Interaction $-\log_{10} p$-value from replication dataset
+\item[g] Interaction $-\log_{10} p$-value from meta analysis of replication datasets only
+\item[h] Distance in Mb between interacting SNPs for \emph{cis}-\emph{cis} acting SNP pairs
+\item[i] $p$-values are absent if the interaction did not pass the QC filtering in the replication dataset
+\item[j] Meta analysis $p$-values are absent if the interaction did not pass the QC filtering in either replication dataset
+
+\end{tablenotes}
+
+\end{ThreePartTable}
+}
+\end{landscape}
+
+
+
+\begin{table}[ht]
+\begin{threeparttable}
+\caption{\textbf{Estimation of additive and non-additive variance components from pedigree information} Taken from previous analysis in Powell et al 2013 \cite{Powell2013}}
+\label{tab:vc}
+\begin{tabular}{llrrrr}
+
+\hline
+& & \multicolumn{2}{c}{Additive} & \multicolumn{2}{c}{Non-additive} \\
+Gene & Probe & Variance & s.e. & Variance & s.e. \\
+\hline
+NAPRT1 & ILMN\_1710752 & 0.37 & 0.03 & 0.14 & 0.05 \\
+TMEM149 & ILMN\_1786426 & 0.41 & 0.04 & 0.09 & 0.04 \\
+MBNL1 & ILMN\_2313158 & 0.18 & 0.03 & 0.11 & 0.04 \\
+TRAPPC5 & ILMN\_2372639 & 0.32 & 0.04 & 0.13 & 0.05 \\
+CAST & ILMN\_1717234 & 0.31 & 0.03 & 0.10 & 0.04 \\
+\hline
+
+\end{tabular}
+\end{threeparttable}
+\end{table}
+
+
+\begin{table}[ht]
+\begin{threeparttable}
+\caption{\textbf{Concordance of sign of epistatic variance components between discovery and replication datasets}}
+\label{tab:sign}
+\begin{tabular}{lllrrrr}
+
+  \hline
+Test & Interactions\tnote{a} & Dataset & $n$\tnote{b} & Expected\tnote{c} & Observed\tnote{d} & $p$-value \\
+  \hline
+1\tnote{e} & All & EGCUT & 434 & 217.00 & 306 & $6.69 \times 10^{-18}$ \\
+&  & Fehrmann & 434 & 217.00 & 278 & $5.04 \times 10^{-9}$ \\
+&  & Both & 434 & 108.50 & 221 & $5.56 \times 10^{-31}$ \\
+& Significant & EGCUT & 30 & 15.00 & 25 & $3.25 \times 10^{-4}$ \\
+&  & Fehrmann & 30 & 15.00 & 24 & $1.43 \times 10^{-3}$ \\
+&  & Both & 30 & 7.50 & 22 & $3.76 \times 10^{-8}$ \\
+  \hline
+2\tnote{f} & All & EGCUT & 434 & 54.25 & 92 & $4.22 \times 10^{-7}$ \\
+&  & Fehrmann & 434 & 54.25 & 79 & $6.18 \times 10^{-4}$ \\
+&  & Both & 434 & 6.78 & 30 & $2.55 \times 10^{-11}$ \\
+& Significant & EGCUT & 30 & 3.75 & 19 & $9.46 \times 10^{-11}$ \\
+&  & Fehrmann & 30 & 3.75 & 19 & $9.46 \times 10^{-11}$ \\
+&  & Both & 30 & 0.47 & 18 & $2.23 \times 10^{-25}$ \\
+  \hline
+3\tnote{g} & All & EGCUT & 1133 & 566.50 & 775 & $7.10 \times 10^{-36}$ \\
+&  & Fehrmann & 1133 & 566.50 & 726 & $1.90 \times 10^{-21}$ \\
+&  & Both & 1133 & 283.25 & 562 & $1.39 \times 10^{-70}$ \\
+& Significant & EGCUT & 73 & 36.50 & 55 & $1.69 \times 10^{-5}$ \\
+&  & Fehrmann & 73 & 36.50 & 55 & $1.69 \times 10^{-5}$ \\
+&  & Both & 73 & 18.25 & 46 & $7.86 \times 10^{-12}$ \\
+   \hline
+\end{tabular}
+
+\begin{tablenotes}
+\item[a] ``All'' denotes 434 discovery interactions and ``Significant'' denotes 30 interactions with significant replication $p$-values
+\item[b] Number of tests for concordance
+\item[c] Expected number of concordant cases under the null hypothesis of no interactions
+\item[d] Observed number of concordant cases
+\item[e] The sign of the most significant epistatic variance component in discovery is the same as the corresponding variance component in the replication data.
+\item[f] The largest epistatic variance component in the discovery is the same as in the replication with the same sign in both.
+\item[g] The sign of all epistatic variance components in the discovery with $p < 0.05$ are the same as the corresponding variance components in the replication data.
+\end{tablenotes}
+
+\end{threeparttable}
+\end{table}
+
+
+
+\begin{table}[ht]
+\begin{threeparttable}
+\caption{\textbf{Concordance of sign of epistatic variance components between discovery and replication datasets using test 4}}
+\label{tab:sign2}
+\begin{tabular}{llrrrrrrr}
+\hline
+Interactions\tnote{a} & Dataset & $n$\tnote{b} & 0\tnote{c} & 1\tnote{c} & 2\tnote{c} & 3\tnote{c} & 4\tnote{c} & $p$ \\
+\hline
+Expected\tnote{d} & - & - & 0.06 & 0.25 & 0.38 & 0.25 & 0.06 & - \\
+All & EGCUT & 434 & 0.06 & 0.22 & 0.41 & 0.23 & 0.08 & $0.194$ \\
+All & Fehrmann & 434 & 0.07 & 0.22 & 0.39 & 0.24 & 0.08 & $0.385$ \\
+All & Combined & 868 & 0.07 & 0.22 & 0.40 & 0.23 & 0.08 & $0.0448$ \\
+Significant & EGCUT & 30 & 0.07 & 0.03 & 0.30 & 0.33 & 0.27 & $4.72 \times 10^{-4}$ \\
+Significant & Fehrmann & 30 & 0.03 & 0.07 & 0.33 & 0.27 & 0.30 & $6.69 \times 10^{-4}$ \\
+Significant & Combined & 60 & 0.05 & 0.05 & 0.32 & 0.30 & 0.28 & $5.49 \times 10^{-8}$ \\
+\hline\end{tabular}
+
+\begin{tablenotes}
+\item[a] ``All'' denotes 434 discovery interactions and ``Significant'' denotes 30 interactions with significant replication $p$-values.
+\item[b] Number of tests for concordance.
+\item[c] Proportion of tests that have 0, 1, 2, 3 or 4 concordant signs between discovery and replication.
+\item[d] Expected proportion of concordant signs under the null hypothesis of no epistasis.
+\end{tablenotes}
+
+\end{threeparttable}
+\end{table}
+
+
+
+\begin{table}[ht]
+{\footnotesize
+\begin{threeparttable}
+\caption{\textbf{Details on linkage disequilibrium and relative positions of all discovery \emph{cis-cis} interactions}}
+\label{tab:ld}
+\begin{tabular}{llllrrrrr}
+\hline
+Chr & Gene & SNP 1 & SNP 2 & Position 1 & Position 2 & Distance / Mb & $R^2$ & $D'$ \\
+\hline
+19 & TMEM149 & rs807491 & rs7254601 & 36268923 & 36147315 & 0.122 & 0.000 & 0.001 \\
+17 & FN3KRP & rs898095 & rs9892064 & 80890638 & 80827903 & 0.063 & 0.063 & 0.088 \\
+21 & CSTB & rs9979356 & rs3761385 & 45230974 & 45198355 & 0.033 & 0.041 & 0.066 \\
+3 & MBNL1 & rs16864367 & rs13079208 & 152234166 & 152116652 & 0.118 & 0.041 & 0.117 \\
+10 & ADK & rs2395095 & rs10824092 & 76446305 & 75929517 & 0.517 & 0.013 & 0.020 \\
+11 & CTSC & rs7930237 & rs556895 & 88117962 & 88077479 & 0.040 & 0.012 & 0.045 \\
+17 & GAA & rs11150847 & rs12602462 & 78153130 & 78146016 & 0.007 & 0.000 & 0.001 \\
+8 & NAPRT1 & rs2123758 & rs3889129 & 144663661 & 144613680 & 0.050 & 0.053 & 0.060 \\
+1 & LAX1 & rs1891432 & rs10900520 & 203877662 & 203780591 & 0.097 & 0.065 & 0.106 \\
+18 & MBP & rs8092433 & rs4890876 & 74747424 & 74732087 & 0.015 & 0.035 & 0.053 \\
+11 & SNORD14A & rs2634462 & rs6486334 & 17339127 & 17015557 & 0.324 & 0.008 & 0.012 \\
+21 & C21ORF57 & rs9978658 & rs11701361 & 48027084 & 47764477 & 0.263 & 0.032 & 0.065 \\
+16 & RPL13 & rs352935 & rs2965817 & 89648580 & 89513234 & 0.135 & 0.054 & 0.060 \\
+19 & ATP13A1 & rs4284750 & rs873870 & 19810050 & 19738554 & 0.071 & 0.008 & 0.015 \\
+2 & NCL & rs7563453 & rs4973397 & 232301670 & 232291471 & 0.010 & 0.027 & 0.029 \\
+5 & HNRPH1 & rs6894268 & rs4700810 & 179032488 & 178991794 & 0.041 & 0.000 & 0.001 \\
+19 & VASP & rs1264226 & rs2276470 & 46063167 & 45974668 & 0.088 & 0.018 & 0.022 \\
+7 & TRA2A & rs7776572 & rs11770192 & 23528927 & 23498358 & 0.031 & 0.064 & 0.064 \\
+21 & PRMT2 & rs2839372 & rs11701058 & 48063862 & 47776382 & 0.287 & 0.100 & 0.122 \\
+12 & OAS1 & rs13311 & rs2072133 & 113448652 & 113409260 & 0.039 & 0.002 & 0.016 \\
+16 & N4BP1 & rs12444224 & rs11649236 & 87580855 & 48632478 & 38.948 & 0.007 & 0.021 \\
+5 & CAST & rs12719343 & rs7733671 & 125369113 & 96000269 & 29.369 & 0.001 & 0.001 \\
+7 & DNAJB6 & rs2286842 & rs3779589 & 157216093 & 157163614 & 0.052 & 0.005 & 0.006 \\
+1 & OVGP1 & rs10802822 & rs1264898 & 240132968 & 111992823 & 128.140 & 0.008 & 0.030 \\
+20 & CD93 & rs2868504 & rs1884655 & 37771578 & 23074375 & 14.697 & 0.000 & 0.002 \\
+11 & PHCA & rs493642 & rs10736812 & 123097386 & 76708086 & 46.389 & 0.002 & 0.008 \\
+21 & MX1 & rs459498 & rs8130120 & 42795027 & 29363604 & 13.431 & 0.000 & 0.000 \\
+16 & AKTIP & rs2896940 & rs13332406 & 57721127 & 53489705 & 4.231 & 0.000 & 0.001 \\
+17 & CDK5R1 & rs9905940 & rs11655031 & 46614102 & 30833162 & 15.781 & 0.000 & 0.000 \\
+2 & CYBRD1 & rs888427 & rs7591849 & 172368120 & 160112881 & 12.255 & 0.000 & 0.000 \\
+8 & HMBOX1 & rs587639 & rs7837237 & 132725731 & 28876221 & 103.850 & 0.001 & 0.001 \\
+11 & TRAPPC4 & rs1793823 & rs3916581 & 131018917 & 118887887 & 12.131 & 0.001 & 0.002 \\
+12 & PEX5 & rs10444467 & rs4329748 & 128052636 & 7364442 & 120.688 & 0.000 & 0.000 \\
+12 & FLJ20489 & rs17615703 & rs3782908 & 117036766 & 48169526 & 68.867 & 0.001 & 0.002 \\
+16 & PRKCB1 & rs2188355 & rs10492793 & 23867776 & 12639800 & 11.228 & 0.000 & 0.000 \\
+14 & MRPL52 & rs1950857 & rs3811188 & 26710271 & 23299135 & 3.411 & 0.002 & 0.004 \\
+17 & C17ORF60 & rs9907897 & rs7405659 & 63502633 & 59874129 & 3.629 & 0.004 & 0.011 \\
+6 & FLJ43093 & rs6906101 & rs13214069 & 36667610 & 32705248 & 3.962 & 0.000 & 0.000 \\
+19 & TRAPPC5 & rs17159840 & rs17763599 & 7758194 & 2369415 & 5.389 & 0.000 & 0.000 \\
+22 & PISD & rs715572 & rs6518754 & 33234931 & 32097775 & 1.137 & 0.001 & 0.003 \\
+12 & DIP2B & rs871257 & rs12427378 & 117994348 & 51074199 & 66.920 & 0.001 & 0.001 \\
+12 & GPR162 & rs2272500 & rs2707210 & 79685913 & 6902002 & 72.784 & 0.003 & 0.005 \\
+17 & USP36 & rs2279308 & rs7225546 & 76794981 & 75151717 & 1.643 & 0.000 & 0.000 \\
+\hline
+\end{tabular}
+\end{threeparttable}
+}
+\end{table}
+
+
+\end{document}

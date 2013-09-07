@@ -1,20 +1,9 @@
-#-------------------------------------------------------------------------------
-# Trynka et al analysis
-# blame k.shakhbazov@uq.edu.au
-#-------------------------------------------------------------------------------
-# email from Gib:
-# eQTL-2D/analysis/interaction_list_replication_summary.RData
-# Then this has 4 objects.
-# sig_all = all SNPs including control SNPs that should be ignored (filter == 3)
-# sig = SNPs that were significant in our dataset
-# sig_rep1 = SNPs that are replicated at least once in an independent dataset
-# sig_rep2 = SNPs that are replicated in both independent datasets
-# So ignore sig_all
+# Produce files for Trynka analysis
 #-------------------------------------------------------------------------------
 library(biomaRt)
 #-------------------------------------------------------------------------------
 snpmart <- useMart("snp", dataset = "hsapiens_snp")
-load("../analysis/interaction_list_replication_summary.RData")
+load("../analysis/data_lists.RData")
 #-------------------------------------------------------------------------------
 annotateMy <- function(snp_df) {
     snp_df$pair1 <- ifelse(snp_df$chr1 != snp_df$probechr, "trans", "cis")
@@ -44,7 +33,7 @@ get_snp_pos <- function(rs_ids) {
 }
 
 save_mappings <- function(snp_pos, myname) {
-    write.table(snp_pos, str_c("DATA/", myname, ".snpmappings.txt"), 
+    write.table(snp_pos, str_c("DATA/final_h3k4me3_lists/", myname, ".snpmappings.txt"), 
                          col.names = FALSE, 
                          row.names = FALSE, 
                              quote = FALSE, 
@@ -65,8 +54,9 @@ per_df <- function(set_name) {
     save_mappings(trans_mappings, str_c(set_name, "_trans"))
 }
 #-------------------------------------------------------------------------------
-all_together = list(original = sig, once = sig_rep1, twice = sig_rep2)
-# remove the snp that not in the 1KG (see below)
+all_together <- list(levis = sig, bonf = subset(meta, pnest_meta > -log10(0.05/434)),
+ chr_int = chr_interaction_list)
+# remove the snp that are not in the 1KG (see below)
 all_together <- lapply(all_together, function(x) {
     x <- subset(x, snp1 != "rs7405659" & snp2 != "rs7405659")
 })
@@ -75,45 +65,5 @@ all_together <- lapply(all_together, function(x) {
     x <- subset(x, chr1 <= 22 & chr2 <= 22)
 })
 
-
 lapply(names(all_together), per_df)
 #-------------------------------------------------------------------------------
-# in the DATA folder 
-grep NA *.snpmappings.txt
-
-# once_all.snpmappings.txt:rs7405659  chrNA   NA
-# once_cis.snpmappings.txt:rs7405659  chrNA   NA
-# original_all.snpmappings.txt:rs7405659  chr NA
-# original_cis.snpmappings.txt:rs7405659  chr NA
-
-# rs7405659 is not in the 1KG
-#-------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

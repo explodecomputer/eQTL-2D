@@ -26,17 +26,19 @@ chooseRandomSnpPair <- function(sigm)
 	flag <- 1
 	while(flag == 1)
 	{
-		a <- sample(1:nrow(sig), 2, replace=FALSE)
+		a <- sample(1:nrow(sig), 3, replace=FALSE)
 		ran1 <- a[1]
 		ran2 <- a[2]
+		ran3 <- a[3]
 		probename <- sig$probename[ran1]
-		snp1 <- sig$snp1[ran1]
-		snp2 <- sig$snp2[ran2]
+		snp1 <- sig$snp1[ran2]
+		snp2 <- sig$snp2[ran3]
 		t1 <- paste(probename, snp1)
 		t2 <- paste(probename, snp2)
 		t3 <- paste(snp1, snp2)
 		t4 <- paste(snp2, snp1)
 		if(
+			t1 %in% sig$comb1 |
 			t2 %in% sig$comb2 |
 			t3 %in% sig$comb3 |
 			t4 %in% sig$comb4 |
