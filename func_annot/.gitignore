@@ -1,1 +1,5 @@
 .DS_Store
+DATA/*.sqlite
+DATA/*.bb
+DATA/*.bed
+DATA/gencode.v16.annotation.gtf.gz
