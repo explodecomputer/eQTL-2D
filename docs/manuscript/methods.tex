@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{url}
 \usepackage[superscript,biblabel]{cite}
+\usepackage{amsmath}
 \bibliographystyle{naturemag}
 
 \title{Online methods}
@@ -125,6 +126,35 @@ We used four methods to calculate the concordance of the direction of effects be
 
 
 The probability of observing the number of concordant signs in tests 1-3 is calculated using a binomial test. All variance decompositions were calculated using the NOIA method \cite{Alvarez-Castro2008}.
+
+
+\section{Effects of LD on detection and replication}
+
+The power to detect genetic effects, when the observed markers are in LD with the causal variants, is proportional to $r^x$. For additive effects $x = 2$, but for non-additive effects $x$ is larger, \emph{i.e.} $x = 4$ for dominance or $A \times A$, $x = 6$ for $A \times D$ or $D \times A$, and $x = 8$ for $D \times D$. Many biologically realistic GP maps may be comprised of all 8 variance components \cite{Hemani2013}. 
+
+This is important for both detection and for replication of epistasis. For detection, if the epistatic effect includes the $D \times D$ term then if the two causal variants are tagged by observed markers that are each in LD $r = 0.9$, then if the true variance is $V_{t}$ then the observed variance $V_{o}$ at the markers will be $0.9^{8}V_{t} = 0.43V_{t}$. Therefore, it is important to consider the sampling variation of $\hat{r}^x$ in a sample given some true population value of $r$. 
+
+\subsection{Simulations}
+
+For some values of fixed population parameters, $p_{1}$ (minor allele frequency at observed marker), $q_{1}$ (minor allele frequency at causal variant), and $r$ (LD between marker and causal variant), the expected haplotype frequencies are
+
+\begin{align}
+h_{11} &= r \sqrt{p_{1}q_{1}p_{2}q_{2}} + p_{1}q_{1} \\
+h_{12} &= p_{1}q_{2} - r \sqrt{p_{1}q_{1}p_{2}q_{2}} \\
+h_{21} &= p_{2}q_{1} - r \sqrt{p_{1}q_{1}p_{2}q_{2}} \\
+h_{22} &= r \sqrt{p_{1}q_{1}p_{2}q_{2}} + p_{2}q_{2}
+\end{align}
+where $p_{2} = 1 - p_{1}$ and $q_{2} = 1 - q_{1}$. For a range of population parameters we randomly sampled $2n$ haplotypes where the expected haplotype frequencies were $h_{11}, h_{12}, h_{21}, h_{22}$. From the sample haplotype frequencies we then calculated sample estimates of $\hat{r}$ where 
+
+\begin{equation}
+\hat{r} = \frac{\hat{h}_{11} - \hat{p}_{1}\hat{q}_{1}}{\sqrt{\hat{p}_{1}\hat{q}_{1}\hat{p}_{2}\hat{q}_{2}}}
+\end{equation}
+
+For each value of combination of the parameters $p_{1}, q_{1}, r, n$ 1000 simulations were performed and the sampling mean and sampling standard deviation of $\hat{r}, \hat{r}^2, \hat{r}^4, \hat{r}^6, \hat{r}^8$ were recorded.
+
+\subsection{Interpretation}
+
+These simulations show that sampling variance of $r^x$ increases as $x$ increases. Detection of epistatis is highly dependent upon high $r^2$. Amongst the discovery SNPs there will be a mixture of interactions where observed SNPs are either in true high LD with causal variants, or will have highly inflated sample $\hat{r}^{x}$ compared to the population $r^x$. Supposing that SNPs 
 
 
 \section{Additive and non-additive variance estimation}
