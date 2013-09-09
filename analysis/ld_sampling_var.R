@@ -58,6 +58,18 @@ doSim <- function(param)
 }
 
 
+doSimTwo <- function(param)
+{
+	for(i in 1:nrow(param))
+	{
+		param$r_obs1[i] <- with(param, sampleSnp(r1[i], n[i], p1[i], q1[i]))
+		param$r_obs2[i] <- with(param, sampleSnp(r2[i], n[i], y1[i], z1[i]))
+	}
+	return(param)
+}
+
+
+
 #=================================================================#
 
 # Create parameters
@@ -66,7 +78,8 @@ param <- expand.grid(
 	n = c(50, 900, 1200, 20000), 
 	p1 = c(0.1, 0.2, 0.3, 0.4, 0.5), 
 	q1 = c(0.1, 0.2, 0.3, 0.4, 0.5), 
-	sim = 1:50, r_obs = NA
+	sim = 1:20, 
+	r_obs = NA
 )
 param <- subset(param, p1 >= q1)
 
@@ -128,3 +141,90 @@ facet_grid( . ~ r)
 ggplot(subset(ps, r != 0 & n > 100), aes(y = r_obs, x = factor(pow))) +
 geom_point(aes(colour = factor(n)), position="dodge") +
 facet_grid( . ~ r)
+
+
+
+#=================================================================#
+#=================================================================#
+
+
+
+# Two loci
+paramtwo <- expand.grid(
+	r1 = c(0.75, 0.8, 0.85, 0.9, 0.95), 
+	r2 = c(0.75, 0.8, 0.85, 0.9, 0.95), 
+	n = c(891, 1240), 
+	p1 = c(0.1, 0.3, 0.5), 
+	q1 = c(0.1, 0.3, 0.5), 
+	y1 = c(0.1, 0.3, 0.5), 
+	z1 = c(0.1, 0.3, 0.5), 
+	sim = 1:20, 
+	r_obs1 = NA,
+	r_obs2 = NA
+)
+paramtwo <- subset(paramtwo, p1 >= q1 & y1 >= z1 & r1 >= r2)
+
+paramtwo <- doSimTwo(paramtwo)
+
+
+paramtwo$r1_1 <- paramtwo$r_obs1
+paramtwo$r1_2 <- paramtwo$r_obs2
+
+paramtwo$r2_1 <- paramtwo$r_obs1^2
+paramtwo$r2_2 <- paramtwo$r_obs2^2
+
+p_r <- paramtwo
+p_r$rx <- paramtwo$r1_2
+p_r$type <- "Marginal"
+p_r$x <- 1
+
+p_a <- paramtwo
+p_a$rx <- paramtwo$r2_2
+p_a$type <- "Marginal"
+p_a$x <- 2
+
+p_d <- paramtwo
+p_d$rx <- paramtwo$r2_2^2
+p_d$type <- "Marginal"
+p_d$x <- 4
+
+p_aa <- paramtwo
+p_aa$rx <- paramtwo$r2_1 * paramtwo$r2_2
+p_aa$type <- "Epistatic"
+p_aa$x <- 4
+
+p_ad <- paramtwo
+p_ad$rx <- paramtwo$r2_1^2 * paramtwo$r2_2
+p_ad$type <- "Epistatic"
+p_ad$x <- 6
+
+p_dd <- paramtwo
+p_dd$rx <- paramtwo$r2_1^2 * paramtwo$r2_2^2
+p_dd$type <- "Epistatic"
+p_dd$x <- 8
+
+
+p <- rbind(p_r, p_a, p_d, p_aa, p_ad, p_dd)
+p <- subset(p, !is.na(rx))
+with(p, table(r1, r2, n, type, x))
+
+
+p_summary <- ddply(p, .(x, r1, r2, n, type), summarise,
+	nsim = length(rx),
+	mean = mean(rx),
+	sd   = sd(rx)
+)
+
+p_summary
+
+ggplot(subset(p_summary, n > 100), aes(x = x, y = sd)) +
+	geom_point() +
+	geom_line(aes(colour = factor(n), linetype = factor(type))) +
+	facet_grid(r1 ~ r2)
+
+ggplot(p_summary, aes(x = x, y = mean)) +
+	geom_point() +
+	geom_line(aes(colour = factor(n), linetype = factor(type))) +
+	facet_grid(r1 ~ r2)
+
+
