@@ -1,30 +1,33 @@
-# R --no-save --args /clusterdata/uqgheman/ibimp/arichu/data/target/chr\*/ARICHU\*
+# R --no-save --args bsgs_target_snps.txt arichu_common_snps.txt.gz 100000
+
 
 ar <- commandArgs(T)
 
 chipsnpsfile <- ar[1]
-idlistfile <- ar[2]
-plinkrt <- ar[3]
-nqtl <- as.numeric(ar[4])
+snpfile <- ar[2]
+nqtl <- as.numeric(ar[3])
 
-keepids <- scan(idlistfile, what="character")
 chipsnps <- scan(chipsnpsfile, what="character")
+allsnps <- scan(snpfile, what="character")
 
-getAllSnps <- function(plinkrt)
+chooseSnps <- function(allsnps, chipsnps, nqtl)
 {
-	require(plyr)
-	bim <- list()
-	for(i in 1:22)
-	{
-		cat(i, "\n")
-		filename <- paste(gsub("\\*", i, plinkrt), ".bim", sep="")
-		bim[[i]] <- data.frame(chr = i, rsid = read.table(filename, colClasses="character")$V2)
-	}
-	bim <- rbind.fill(bim)
-	return(bim)
+	chip <- chipsnps[chipsnps %in% allsnps]
+	left <- allsnps[! allsnps %in% chipsnps]
+	qtls <- left[sample(1:length(left), nqtl, replace=FALSE)]
+	l <- list()
+	l$chip <- chip
+	l$qtls <- qtls
+	return(l)
 }
 
+snps <- chooseSnps(allsnps, chipsnps, nqtl)
+lapply(snps, length)
 
-allsnps <- getAllSnps(plinkrt)
+gz1 <- gzfile("allsnps.txt.gz", "w")
+write.table(c(snps$chip, snps$qtls), gz1, row=F, col=F, qu=F)
+close(gz1)
 
-
+gz2 <- gzfile("qtls.txt.gz", "w")
+write.table(snps$qtls, gz2, row=F, col=F, qu=F)
+close(gz2)

@@ -8,7 +8,7 @@
 
 
 library(snpStats)
-
+library(plyr)
 
 findChromosomes <- function(snp, plinkrt)
 {
@@ -36,13 +36,35 @@ findChromosomesAll <- function(snplist, plinkrt)
 }
 
 
+findSnps <- function(snplist, bimfile)
+{
+	bim <- scan(bimfile, what="character")
+	snps <- bim[seq(2, length(bim), 6)]
+	keepsnps <- snps[snps %in% snplist]
+	return(keepsnps)
+}
+
+findSnpsAll <- function(snplist, plinkrt)
+{
+	require(plyr)
+	l <- list()
+	for(i in 1:22)
+	{
+		cat(i, ": ")
+		bimfile <- paste(gsub("\\*", i, plinkrt), ".bim", sep="")
+		l[[i]] <- data.frame(snp = findSnps(snplist, bimfile), chr = i)
+		cat(nrow(l[[i]]), "\n")
+	}
+	l <- rbind.fill(l)
+	return(l)
+}
+
 extractSnps <- function(snpnames, plinkrt)
 {
 	require(snpStats)
 	rawdata <- read.plink(bed=plinkrt, select.snps=snpnames)
 	return(rawdata)
 }
-
 
 extractSnpsAll <- function(snpdat, plinkrt)
 {
@@ -94,12 +116,14 @@ output <- ar[3]
 
 
 snplist <- scan(snplistfile, what="character")
-snpdat <- findChromosomesAll(snplist, plinkrt)
-info <- extractInfoAll(snpdat, plinkrt)
+# snpdat <- findChromosomesAll(snplist, plinkrt)
+# info <- extractInfoAll(snpdat, plinkrt)
+snpdat <- findSnpsAll(snplist, plinkrt)
+save(snpdat, file="temp.RData")
 dat <- extractSnpsAll(snpdat, plinkrt)
 
 
-write.table(info, file=paste(output, "_info.txt", sep=""), row=F, col=F, qu=F)
+# write.table(info, file=paste(output, "_info.txt", sep=""), row=F, col=F, qu=F)
 write.plink(file.base = output, 
 	snps = dat$genotypes, 
 	pedigree = dat$fam$pedigree,
