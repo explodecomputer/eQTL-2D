@@ -12,78 +12,78 @@ library(snpStats)
 
 findChromosomes <- function(snp, plinkrt)
 {
-        cmd <- paste("grep -P -m 1 '", snp, "\t' ", plinkrt, ".bim | head -n 1 | cut -d \":\" -f 2 | cut -f 1", sep="")
-    cat(snp)
-    chr <- system(cmd, intern=TRUE)
-    cat(" ", chr, "\n")
-    return(chr)
+	cmd <- paste("grep -P -m 1 '", snp, "\t' ", plinkrt, ".bim | head -n 1 | cut -d \":\" -f 2 | cut -f 1", sep="")
+	cat(snp)
+	chr <- system(cmd, intern=TRUE)
+	cat(" ", chr, "\n")
+	return(chr)
 }
 
 
 findChromosomesAll <- function(snplist, plinkrt)
 {
-    chr <- snplist
-    for(i in 1:length(snplist))
-    {
-	a <- findChromosomes(snplist[i], plinkrt)
-	chr[i] <- ifelse(is.null(a), NA, a)
-    }
-    dat <- data.frame(snp = snplist, chr = as.numeric(chr))
-    dat <- subset(dat, !is.na(chr))
-    dat$snp <- as.character(dat$snp)
-    dat <- dat[order(dat$chr), ]
-    return(dat)
+	chr <- snplist
+	for(i in 1:length(snplist))
+	{
+		a <- findChromosomes(snplist[i], plinkrt)
+		chr[i] <- ifelse(is.null(a), NA, a)
+	}
+	dat <- data.frame(snp = snplist, chr = as.numeric(chr))
+	dat <- subset(dat, !is.na(chr))
+	dat$snp <- as.character(dat$snp)
+	dat <- dat[order(dat$chr), ]
+	return(dat)
 }
 
 
 extractSnps <- function(snpnames, plinkrt)
 {
-    require(snpStats)
-    rawdata <- read.plink(bed=plinkrt, select.snps=snpnames)
-    return(rawdata)
+	require(snpStats)
+	rawdata <- read.plink(bed=plinkrt, select.snps=snpnames)
+	return(rawdata)
 }
 
 
 extractSnpsAll <- function(snpdat, plinkrt)
 {
-    chr <- unique(snpdat$chr)
-    l <- length(chr)
+	chr <- unique(snpdat$chr)
+	l <- length(chr)
 
-    cat(chr[1], ":", snpdat$snp[snpdat$chr == chr[1]], "\n")
-    dat <- extractSnps(snpdat$snp[snpdat$chr == chr[1]], gsub("\\*", chr[1], plinkrt))
-    if(l == 1) return(dat)
-    for(i in 2:l)
-    {
-	cat(chr[i], ":", snpdat$snp[snpdat$chr == chr[i]], "\n")
-	dat1 <- extractSnps(snpdat$snp[snpdat$chr == chr[i]], gsub("\\*", chr[i], plinkrt))
-	dat$map <- rbind(dat$map, dat1$map)
-	dat$genotypes <- cbind(dat$genotypes, dat1$genotypes)
-    }
-    return(dat)
+	cat(chr[1], ":", snpdat$snp[snpdat$chr == chr[1]], "\n")
+	dat <- extractSnps(snpdat$snp[snpdat$chr == chr[1]], gsub("\\*", chr[1], plinkrt))
+	if(l == 1) return(dat)
+	for(i in 2:l)
+	{
+		cat(chr[i], ":", snpdat$snp[snpdat$chr == chr[i]], "\n")
+		dat1 <- extractSnps(snpdat$snp[snpdat$chr == chr[i]], gsub("\\*", chr[i], plinkrt))
+		dat$map <- rbind(dat$map, dat1$map)
+		dat$genotypes <- cbind(dat$genotypes, dat1$genotypes)
+	}
+	return(dat)
 }
 
 extractInfo <- function(snp, plinkrt)
 {
-    cmd <- paste("zgrep -P '", snp, " ' ", plinkrt, " | head -n 1 | cut -d \":\" -f 2", sep="")
-    info <- system(cmd, intern=TRUE)
-    print(info)
-    return(info)
+	cmd <- paste("zgrep -P '", snp, " ' ", plinkrt, " | head -n 1 | cut -d \":\" -f 2", sep="")
+	info <- system(cmd, intern=TRUE)
+	print(info)
+	return(info)
 }
 
 extractInfoAll <- function(snpdat, plinkrt)
 {
-    l <- nrow(snpdat)
-    cmd <- paste("zcat ", gsub("\\*", "1", plinkrt), "_info.txt.gz | head -n 1", sep="")
-    print(cmd)
-    dat <- system(cmd, intern=TRUE)
-    for(i in 1:l)
-    {
-	nom <- paste(gsub("\\*", snpdat$chr[i], plinkrt), "_info.txt.gz", sep="")
-	snp <- snpdat$snp[i]
-	cat(i, ":", snp, "\n")
-	dat <- c(dat, extractInfo(snp, nom))
-    }
-    return(dat)	
+	l <- nrow(snpdat)
+	cmd <- paste("zcat ", gsub("\\*", "1", plinkrt), "_info.txt.gz | head -n 1", sep="")
+	print(cmd)
+	dat <- system(cmd, intern=TRUE)
+	for(i in 1:l)
+	{
+		nom <- paste(gsub("\\*", snpdat$chr[i], plinkrt), "_info.txt.gz", sep="")
+		snp <- snpdat$snp[i]
+		cat(i, ":", snp, "\n")
+		dat <- c(dat, extractInfo(snp, nom))
+	}
+	return(dat)	
 }
 
 
@@ -101,17 +101,17 @@ dat <- extractSnpsAll(snpdat, plinkrt)
 
 write.table(info, file=paste(output, "_info.txt", sep=""), row=F, col=F, qu=F)
 write.plink(file.base = output, 
-    snps = dat$genotypes, 
-    pedigree = dat$fam$pedigree,
-    id = dat$fam$member,
-    father = dat$fam$father,
-    mother = dat$fam$mother,
-    sex = dat$fam$sex,
-    phenotype = dat$fam$affected,
-    chromosome = dat$map$chromosome, 
-    genetic.distance = dat$map$cM, 
-    position = dat$map$position, 
-    allele.1 = dat$map$allele.1, 
-    allele.2 = dat$map$allele.2
+	snps = dat$genotypes, 
+	pedigree = dat$fam$pedigree,
+	id = dat$fam$member,
+	father = dat$fam$father,
+	mother = dat$fam$mother,
+	sex = dat$fam$sex,
+	phenotype = dat$fam$affected,
+	chromosome = dat$map$chromosome, 
+	genetic.distance = dat$map$cM, 
+	position = dat$map$position, 
+	allele.1 = dat$map$allele.1, 
+	allele.2 = dat$map$allele.2
 )
 
