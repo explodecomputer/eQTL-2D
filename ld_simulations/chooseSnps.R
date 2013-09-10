@@ -17,7 +17,7 @@ getAllSnps <- function(plinkrt)
 	for(i in 1:22)
 	{
 		cat(i, "\n")
-		filename <- gsub("\\*", i, plinkrt)
+		filename <- paste(gsub("\\*", i, plinkrt), ".bim", sep="")
 		bim[[i]] <- data.frame(chr = i, rsid = read.table(filename, colClasses="character")$V2)
 	}
 	bim <- rbind.fill(bim)
@@ -25,5 +25,6 @@ getAllSnps <- function(plinkrt)
 }
 
 
+allsnps <- getAllSnps(plinkrt)
 
 
