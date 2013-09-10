@@ -120,28 +120,6 @@ for(i in seq(50, 150, 5)) {
 	ty2[i] <- tmp$type2
 }
 
-
-plot(ty2,ty1,xlab="power (1st stage)", ylab="type 1 error rate 2ns stage")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+pdf(file = "~/repo/eQTL-2D/analysis/images/type1.pdf")
+plot(ty2,ty1,xlab="Power (1st stage)", ylab="Type 1 error rate (2nd stage)")
+dev.off()

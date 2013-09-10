@@ -192,7 +192,6 @@ doTheFlipping <- function(genolist, phenlist, bsig)
 	return(genolist)
 }
 
-
 compareTestsEpi <- function(genolist, phenlist, bsig, row, thresh)
 {
 	l <- list()
@@ -233,8 +232,6 @@ compareTestsEpi4 <- function(genolist, phenlist, bsig, row, thresh)
 	return(b)
 }
 
-
-
 compareTestsEpiLargest <- function(genolist, phenlist, bsig, row, thresh)
 {
 	l <- list()
@@ -254,8 +251,6 @@ compareTestsEpiLargest <- function(genolist, phenlist, bsig, row, thresh)
 	}
 	return(a)
 }
-
-
 
 doAllTests <- function(genolist, phenlist, bsig, thresh)
 {
@@ -270,7 +265,21 @@ doAllTests <- function(genolist, phenlist, bsig, thresh)
 	return(l)
 }
 
-
+makeNoiaD <- function(noia)
+{
+	noiad <- list()
+	k <- 1
+	for(i in 1:length(noia))
+	{
+		for(j in 1:3)
+		{
+			noiad[[k]] <- data.frame(noia[[i]][[j]], interaction = i, dataset = j)
+			k <- k + 1
+		}
+	}
+	noiad <- rbind.fill(noiad)
+	return(noiad)
+}
 
 compareTestsEpiLargest <- function(genolist, phenlist, bsig, row, thresh)
 {
@@ -291,7 +300,6 @@ compareTestsEpiLargest <- function(genolist, phenlist, bsig, row, thresh)
 	}
 	return(a)
 }
-
 
 compareTestsEpiLargestAll <- function(genolist, phenlist, bsig, thresh)
 {
@@ -312,7 +320,6 @@ compareTestsEpi4All <- function(genolist, phenlist, bsig, thresh)
 	}
 	return(a)
 }
-
 
 compareTestsEpiLargest2 <- function(genolist, phenlist, bsig, row, thresh)
 {
@@ -346,9 +353,6 @@ compareTestsEpiLargest2All <- function(genolist, phenlist, bsig, thresh)
 	}
 	return(a)
 }
-
-
-
 
 compareTestsEpiLargest1 <- function(genolist, phenlist, bsig, row, thresh)
 {
@@ -410,7 +414,6 @@ rm(mod, gcm, gcs, newsig)
 
 
 ##
-
 
 ## get phenotypes (standardised)
 ## get genotypes (SNP names, correct allele frequency)
@@ -485,147 +488,12 @@ pairs(f3[,2:4])
 
 ##
 
+genolist <- gl3
+save(genolist, phenlist, file="~/repo/eQTL-2D/data/bsgs_egcut_fehr_data.RData")
 
-a <- compareTestsEpiLargestAll(gl3, phenlist, bsig, 0.9)
-b <- compareTestsEpiLargestAll(gl3, phenlist, sig, 0.9)
-
-
-sum(apply(a[,1:2], 1, function(x){
-	x[x == 0] <- NA
-	length(unique(na.omit(x))) == 1
-})) / nrow(a)
-
-sum(apply(a[,c(1,3)], 1, function(x){
-	x[x == 0] <- NA
-	length(unique(na.omit(x))) == 1
-})) / nrow(a)
-
-sum(apply(a[,c(2,3)], 1, function(x){
-	x[x == 0] <- NA
-	length(unique(na.omit(x))) == 1
-})) / nrow(a)
-
-sum(apply(b[,1:2], 1, function(x){
-	x[x == 0] <- NA
-	length(unique(na.omit(x))) == 1
-})) / nrow(b)
-
-sum(apply(b[,c(1,3)], 1, function(x){
-	x[x == 0] <- NA
-	length(unique(na.omit(x))) == 1
-})) / nrow(b)
-
-sum(apply(b[,c(2,3)], 1, function(x){
-	x[x == 0] <- NA
-	length(unique(na.omit(x))) == 1
-})) / nrow(b)
-
-
-
-
-b4 <- compareTestsEpi4All(gl3, phenlist, sig, 1)
-b4sum <- apply(b4, 2, table)
-
-dim(sig)
-expected <- nrow(sig) * c(1, 4, 6, 4, 1)/16
-expected
-chisq.test(rbind(expected, b4sum[,2]))
-b4sum
-expected
-
-
-el2 <- compareTestsEpiLargest2All(gl3, phenlist, sig, 1)
-el2sum <- apply(el2, 2, sum) / nrow(el1)
-el2sum
-
-el1 <- compareTestsEpiLargest1All(gl3, phenlist, sig, 1)
-el1sum <- apply(el1, 2, sum) / nrow(el1)
-el1sum
-
-
-noia <- doAllTests(gl3, phenlist, sig, 1)
-
-noiad <- list()
-k <- 1
-for(i in 1:length(noia))
-{
-	for(j in 1:3)
-	{
-		noiad[[k]] <- data.frame(noia[[i]][[j]], interaction = i, dataset = j)
-		k <- k + 1
-	}
-}
-noiad <- rbind.fill(noiad)
-dim(noiad)
-head(noiad, 20)
-
-save(noiad, file = "~/repo/eQTL-2D/analysis/noiad.RData")
-
-
-
-els <- ddply(noiad, .(interaction), function(x){
-
-	x <- mutate(x)
-	a <- subset(x, dataset == 1)
-	m <- which.min(a$p[5:8])
-	s <- sign(x$E[m])
-
-	r <- list()
-	for(i in 2:3)
-	{
-		y <- subset(x, dataset == i)
-		r[[i-1]] <- s == sign(y$E[m])
-	}
-
-	out <- data.frame(r)
-	names(out) <- c("r1", "r2")
-	return(out)
-})
-
-
-apply(els[,2:3], 2, sum) / nrow(els)
-
-
-
-
-els2 <- ddply(noiad, .(interaction), function(x){
-
-	x <- mutate(x)
-	a <- subset(x, dataset == 1)
-	m <- which.min(a$p[5:8])
-	s <- sign(x$E[m])
-
-	r <- list()
-	for(i in 2:3)
-	{
-		y <- subset(x, dataset == i)
-		m1 <- which.min(y$p[5:8])
-		r[[i-1]] <- s == sign(y$E[m]) & m == m1
-	}
-
-	out <- data.frame(r)
-	names(out) <- c("r1", "r2")
-	return(out)
-})
-
-apply(els2[,2:3], 2, sum)
-
-
-nrow(els) / 8
-
-chisq.test(c(54, 92))
-chisq.test(c(54, 79))
-
-binom.test(n=434, x=92, p=1/8)
-binom.test(n=434, x=79, p=1/8)
-
-
-binom.test(n=434, x=434*0.65, p=0.5)
-binom.test(n=434, x=round(434*0.7), p=0.5)
-
-
-
-
-
-
+noia <- doAllTests(genolist, phenlist, sig, 1)
+bnoia <- doAllTests(genolist, phenlist, bsig, 1)
+noiad <- makeNoiaD(noia)
+bnoiad <- makeNoiaD(bnoia)
+save(noiad, bnoiad, file = "~/repo/eQTL-2D/analysis/noiad.RData")
 

@@ -1,3 +1,64 @@
+library(plyr)
+
+
+load("~/repo/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
+sig <- subset(meta, filter != 3)
+sig$code <- with(sig, paste(snp1, snp2, probegene))
+
+# Calculate epistatic variance
+v <- ddply(sig, .(code), function(x)
+{
+	x <- mutate(x)
+	return(sum(x$vc[[1]][c(4,5,7,8)]))
+})
+hist(v$V1)
+min(v$V1)
+
+# Read in additive effects list
+b <- read.table("filtering/marginal_lists/FDR_0_05_genotyped_eQTL.txt", head=T)
+
+# Read in probenames used in analysis
+probenames <- scan("data/probenames_used_in_analysis.txt", what="character")
+
+# Calculate additive variance for each additive effect
+b$va <- with(b, 2 * FREQ1 * (1-FREQ1) * EFFECT^2)
+
+# Get all additive effects for 7339 probes that are larger than the minimum epistatic variance
+b1 <- subset(b, TRAIT %in% probenames & va >= min(v$V1))
+
+# Choose the highest additive for each chr x trait combination
+b1$code <- with(b1, paste(CHR, TRAIT))
+b1 <- b1[order(b1$va, decreasing=T), ]
+b1 <- b1[!duplicated(b1$code), ]
+dim(b1)
+
+# Some additive variances are greater than 1...
+b1$va[b1$va > 1] <- 1
+
+# Calculate proportion of phenotypic variance explained by all effects
+sum(b1$va) / 7339  # Additive
+sum(v$V1) / 7339   # Epistatic
+
+# Count how many probes have an effect
+length(unique(b1$TRAIT))
+length(unique(sig$probegene))
+
+# variance threshold
+min(v$V1)
+min(b1$va)
+
+# Histograms
+hist(b1$va, breaks=100)
+hist(v$V1, breaks=100)
+
+
+
+
+
+#================================================================================#
+#================================================================================#
+
+
 library(reshape2)
 library(ggplot2)
 
@@ -228,5 +289,8 @@ bsgs$varG <- with(bsgs, sum(varA, varD, varI))
 
 s <- apply(subset(bsgs, select=c(varA, varD, varI)), 2, sum)
 s / sum(s)
+
+
+
 
 
