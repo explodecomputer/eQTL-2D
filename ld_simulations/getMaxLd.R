@@ -131,6 +131,8 @@ summary(lm(res ~ b$max_rsq))
 
 b$replication_rsq <- res
 
+save(b, file="ld_simulations.RData")
+
 mean(subset(b, max_rsq > 0.9)$max_rsq)
 mean(subset(b, max_rsq > 0.9)$replication_rsq, na.rm=T)
 
