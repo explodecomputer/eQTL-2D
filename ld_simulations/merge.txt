@@ -1,0 +1,22 @@
+data/arichu_2.bed data/arichu_2.bim data/arichu_2.fam
+data/arichu_3.bed data/arichu_3.bim data/arichu_3.fam
+data/arichu_4.bed data/arichu_4.bim data/arichu_4.fam
+data/arichu_5.bed data/arichu_5.bim data/arichu_5.fam
+data/arichu_6.bed data/arichu_6.bim data/arichu_6.fam
+data/arichu_7.bed data/arichu_7.bim data/arichu_7.fam
+data/arichu_8.bed data/arichu_8.bim data/arichu_8.fam
+data/arichu_9.bed data/arichu_9.bim data/arichu_9.fam
+data/arichu_10.bed data/arichu_10.bim data/arichu_10.fam
+data/arichu_11.bed data/arichu_11.bim data/arichu_11.fam
+data/arichu_12.bed data/arichu_12.bim data/arichu_12.fam
+data/arichu_13.bed data/arichu_13.bim data/arichu_13.fam
+data/arichu_14.bed data/arichu_14.bim data/arichu_14.fam
+data/arichu_15.bed data/arichu_15.bim data/arichu_15.fam
+data/arichu_16.bed data/arichu_16.bim data/arichu_16.fam
+data/arichu_17.bed data/arichu_17.bim data/arichu_17.fam
+data/arichu_18.bed data/arichu_18.bim data/arichu_18.fam
+data/arichu_19.bed data/arichu_19.bim data/arichu_19.fam
+data/arichu_20.bed data/arichu_20.bim data/arichu_20.fam
+data/arichu_21.bed data/arichu_21.bim data/arichu_21.fam
+data/arichu_22.bed data/arichu_22.bim data/arichu_22.fam
+

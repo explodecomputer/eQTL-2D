@@ -56,6 +56,7 @@ findSnpsAll <- function(snplist, plinkrt)
 		cat(nrow(l[[i]]), "\n")
 	}
 	l <- rbind.fill(l)
+	l$snp <- as.character(l$snp)
 	return(l)
 }
 
@@ -71,12 +72,12 @@ extractSnpsAll <- function(snpdat, plinkrt)
 	chr <- unique(snpdat$chr)
 	l <- length(chr)
 
-	cat(chr[1], ":", snpdat$snp[snpdat$chr == chr[1]], "\n")
+	cat(chr[1], "\n")
 	dat <- extractSnps(snpdat$snp[snpdat$chr == chr[1]], gsub("\\*", chr[1], plinkrt))
 	if(l == 1) return(dat)
 	for(i in 2:l)
 	{
-		cat(chr[i], ":", snpdat$snp[snpdat$chr == chr[i]], "\n")
+		cat(chr[i], "\n")
 		dat1 <- extractSnps(snpdat$snp[snpdat$chr == chr[i]], gsub("\\*", chr[i], plinkrt))
 		dat$map <- rbind(dat$map, dat1$map)
 		dat$genotypes <- cbind(dat$genotypes, dat1$genotypes)
@@ -115,11 +116,13 @@ plinkrt <- ar[2]
 output <- ar[3]
 
 
-snplist <- scan(snplistfile, what="character")
+# snplist <- scan(snplistfile, what="character")
 # snpdat <- findChromosomesAll(snplist, plinkrt)
 # info <- extractInfoAll(snpdat, plinkrt)
-snpdat <- findSnpsAll(snplist, plinkrt)
-save(snpdat, file="temp.RData")
+# snpdat <- findSnpsAll(snplist, plinkrt)
+# save(snpdat, file="temp.RData")
+load("temp.RData")
+snpdat$snp <- as.character(snpdat$snp)
 dat <- extractSnpsAll(snpdat, plinkrt)
 
 

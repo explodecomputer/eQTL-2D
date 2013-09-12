@@ -1,4 +1,4 @@
-# R --no-save --args bsgs_target_snps.txt arichu_common_snps.txt.gz 100000
+# R --no-save --args bsgs_target_snps.txt arichu_common_snps.txt.gz 100000 output
 
 
 ar <- commandArgs(T)
@@ -6,6 +6,7 @@ ar <- commandArgs(T)
 chipsnpsfile <- ar[1]
 snpfile <- ar[2]
 nqtl <- as.numeric(ar[3])
+output <- ar[4]
 
 chipsnps <- scan(chipsnpsfile, what="character")
 allsnps <- scan(snpfile, what="character")
@@ -24,10 +25,5 @@ chooseSnps <- function(allsnps, chipsnps, nqtl)
 snps <- chooseSnps(allsnps, chipsnps, nqtl)
 lapply(snps, length)
 
-gz1 <- gzfile("allsnps.txt.gz", "w")
-write.table(c(snps$chip, snps$qtls), gz1, row=F, col=F, qu=F)
-close(gz1)
-
-gz2 <- gzfile("qtls.txt.gz", "w")
-write.table(snps$qtls, gz2, row=F, col=F, qu=F)
-close(gz2)
+write.table(c(snps$chip, snps$qtls), paste(output, "_allsnps.txt", sep=""), row=F, col=F, qu=F)
+write.table(snps$qtls, paste(output, "_qtls.txt", sep=""), row=F, col=F, qu=F)
