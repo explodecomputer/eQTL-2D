@@ -171,6 +171,7 @@ b_all <- rbind(b2, b4, b6, b8)
 
 library(ggplot2)
 
+
 ggplot(b_all, aes(x=max_rsq, y=replication_rsq)) +
 geom_point() +
 geom_abline(intercept=0, slope=1, colour="blue") +
@@ -180,15 +181,31 @@ labs(y = "Replication", x = "Discovery")
 ggsave("~/repo/eQTL-2D/analysis/images/ld_ascertained.png")
 
 
-di <- sort(b$max_rsq)
-re <- sort(b$replication_rsq)
-di <- sort(di[sample(1:length(di), length(re), replace=FALSE)])
-plot(di, re)
-plot(di^8, re^8)
+library(plyr)
 
-length(di)
-length(re)
+a <- ddply(b_all, .(pow), function(x)
+{
+	x <- mutate(x)
+	m <- mean(x$max_rsq - x$replication_rsq, na.rm=T)
+	return(m)
+})
 
-quantile(b$max_rsq)^8
-quantile(b$replication_rsq, na.rm=T)^8
+
+a <- ddply(b_all, .(pow), function(x)
+{
+	x <- mutate(x)
+	m <- mean((x$replication_rsq - x$max_rsq) / x$max_rsq, na.rm=T)
+
+	return(m)
+})
+a
+
+b_all$rdiff <- b_all$replication_rsq - b_all$max_rsq
+b_all$prdiff <- (b_all$replication_rsq - b_all$max_rsq) / b_all$max_rsq
+ggplot(b_all, aes(x=factor(pow), y=prdiff)) + 
+geom_boxplot() +
+labs(y = expression( (r[R]^x - r[D]^x)/r[D]^x) , x = "Power term")
+ggsave("~/repo/eQTL-2D/analysis/images/ld_reduction.pdf")
+
+
 

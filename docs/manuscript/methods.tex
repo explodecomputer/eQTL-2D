@@ -134,7 +134,7 @@ The power to detect genetic effects, when the observed markers are in LD with th
 
 This is important for both detection and for replication of epistasis. For detection, if the epistatic effect includes the $D \times D$ term then if the two causal variants are tagged by observed markers that are each in LD $r = 0.9$, then if the true variance is $V_{t}$ then the observed variance $V_{o}$ at the markers will be $0.9^{8}V_{t} = 0.43V_{t}$. Therefore, it is important to consider the sampling variation of $\hat{r}^x$ in a sample given some true population value of $r$. 
 
-\subsection{Simulations}
+\subsection{Simulation 1}
 
 For some values of fixed population parameters, $p_{1}$ (minor allele frequency at observed marker), $q_{1}$ (minor allele frequency at causal variant), and $r$ (LD between marker and causal variant), the expected haplotype frequencies are
 
@@ -150,11 +150,26 @@ where $p_{2} = 1 - p_{1}$ and $q_{2} = 1 - q_{1}$. For a range of population par
 \hat{r} = \frac{\hat{h}_{11} - \hat{p}_{1}\hat{q}_{1}}{\sqrt{\hat{p}_{1}\hat{q}_{1}\hat{p}_{2}\hat{q}_{2}}}
 \end{equation}
 
-For each value of combination of the parameters $p_{1}, q_{1}, r, n$ 1000 simulations were performed and the sampling mean and sampling standard deviation of $\hat{r}, \hat{r}^2, \hat{r}^4, \hat{r}^6, \hat{r}^8$ were recorded.
+For each value of combination of the parameters $p_{1}, q_{1}, r, n$ 1000 simulations were performed and the sampling mean and sampling standard deviation of $\hat{r}, \hat{r}^2, \hat{r}^4, \hat{r}^6, \hat{r}^8$ were recorded. It was observed that sampling variance increases for increasing $x$ in $\hat{r}^x$.
+
+
+\subsection{Simulation 2}
+
+We assume that the discovery SNP pairs are ascertained (from a very large number of tests) have high $\hat{r}$ between observed SNPs and causal variants because otherwise power of detection would be low. We can hypothesis that the distribution of $\hat{r}$ in this ascertained sample will be a mixture of $r$ that is high and $r$ that is lower but with ascertained higher values from sampling. Therefore, we would expect those with truly high $r$ to have a higher replication rate in independent datasets, and those with ascertained high $\hat{r}$ to have lower replication because resampling is unlikely to result in the same extreme ascertainment. To obtain empirical estimates of $\hat{r}$ in discovery and replication datasets we conducted the following simulation.
+
+\begin{enumerate}
+\item Using 1000 genomes data (phase 1, version 3, 379 European samples) we selected the 528,509 ``markers'' used in the original discovery analysis, plus 100,000 randomly chosen ``causal variants'' (CVs) with minor allele frequence $> 0.05$.
+\item The 379 individuals were split into discovery (190) and replication (189) sets.
+\item For each CV the marker with the maximum $\hat{r}^2_{D}$ from the marker panel was recorded in the discovery set. This marker was known as the ``discovery marker'' (DM).
+\item The $\hat{r}^2_{R}$ for each CV/DM pair was then calculated in the replication set where the discovery LD was ascertained to be high, such that $\hat{r}^2_{D} > 0.9$.
+\end{enumerate}
+
+We observed that there was an average decrease in $\hat{r}^x_{R}$ relative to $\hat{r}^x_{D}$, and that this decrease was larger with increasing $x$. We observed that $(\hat{r}^2_{R} - \hat{r}^2_{D}) / \hat{r}^2_{D} = 0.029$ whereas $(\hat{r}^8_{R} - \hat{r}^8_{D}) / \hat{r}^8_{D} = 0.092$. The average drop in in replication $\hat{r}^8$ was 3 times higher than the drop in $\hat{r}^2$.
+
 
 \subsection{Interpretation}
 
-These simulations show that sampling variance of $r^x$ increases as $x$ increases. Detection of epistatis is highly dependent upon high $r^2$. Amongst the discovery SNPs there will be a mixture of interactions where observed SNPs are either in true high LD with causal variants, or will have highly inflated sample $\hat{r}^{x}$ compared to the population $r^x$. Supposing that SNPs 
+Simulation 1 shows that sampling variance of $r^x$ increases as $x$ increases. Detection of epistatis is highly dependent upon high $\hat{r}$. Amongst the discovery SNPs there will be a mixture of interactions where observed SNPs are either in true high LD with causal variants, or will have highly inflated sample $\hat{r}^{x}$ compared to the population $r^x$. Simulation 2 shows that as $x$ gets larger, the average decrease in $\hat{r}^x$ between discovery and replication becomes larger, likely to be a result of ascertained high $\hat{r}$ in the discovery and increased sampling variance with increasing $x$ in the replication. These results demonstrate that assuming all else is equal, sampling variance of $r$ alone will reduce the replication rate of epistatic effects compared to additive effects.
 
 
 \section{Additive and non-additive variance estimation}
