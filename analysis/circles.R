@@ -103,8 +103,8 @@ plotCircos <- function(gr, links, dot)
 		layout_circle(gr, geom = "ideo", radius = 7, trackWidth = 2, colour="white", fill="white") +
 		layout_circle(gr, geom = "ideo", radius = 6, trackWidth = 1) +
 		layout_circle(links, geom = "link", linked.to = "links2", radius = 3.5, trackwidth = 1, aes(colour=col)) +
-		layout_circle(dot, geom = "point", radius = 4, trackwidth = 0, colour="red", size=2, aes(y = score)) +
-		layout_circle(dot, geom = "text", radius = 7.2, trackWidth = 1, colour = "black", size=3, aes(label = gene)) +
+		#layout_circle(dot, geom = "point", radius = 4, trackwidth = 0, colour="red", size=2, aes(y = score)) +
+		#layout_circle(dot, geom = "text", radius = 7.2, trackWidth = 1, colour = "black", size=3, aes(label = gene)) +
 		scale_colour_manual(values=c("light grey", "blue", "red"), drop = FALSE) +
 		theme(legend.position="false")
 
@@ -163,5 +163,6 @@ a <- dlply(subset(sig_mult), .(probename), .progress="text", function(x)
 
 pdf(file="~/repo/eQTL-2D/analysis/images/circles_replication2.pdf", width=10, height=8)
 multiplot(plotlist=a, cols=5)
+plot(plotlist=a, cols=5)
 dev.off()
 
