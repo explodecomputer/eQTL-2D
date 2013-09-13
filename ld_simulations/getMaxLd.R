@@ -204,7 +204,7 @@ b_all$rdiff <- b_all$replication_rsq - b_all$max_rsq
 b_all$prdiff <- (b_all$replication_rsq - b_all$max_rsq) / b_all$max_rsq
 ggplot(b_all, aes(x=factor(pow), y=prdiff)) + 
 geom_boxplot() +
-labs(y = expression( (r[R]^x - r[D]^x)/r[D]^x) , x = "Power term")
+labs(y = expression( (hat(r)[R]^x - hat(r)[D]^x)/hat(r)[D]^x) , x = "Power term")
 ggsave("~/repo/eQTL-2D/analysis/images/ld_reduction.pdf")
 
 

@@ -15,10 +15,10 @@ hist(v$V1)
 min(v$V1)
 
 # Read in additive effects list
-b <- read.table("filtering/marginal_lists/FDR_0_05_genotyped_eQTL.txt", head=T)
+b <- read.table("~/repo/eQTL-2D/filtering/marginal_lists/FDR_0_05_genotyped_eQTL.txt", head=T)
 
 # Read in probenames used in analysis
-probenames <- scan("data/probenames_used_in_analysis.txt", what="character")
+probenames <- scan("~/repo/eQTL-2D/data/probenames_used_in_analysis.txt", what="character")
 
 # Calculate additive variance for each additive effect
 b$va <- with(b, 2 * FREQ1 * (1-FREQ1) * EFFECT^2)
@@ -26,8 +26,13 @@ b$va <- with(b, 2 * FREQ1 * (1-FREQ1) * EFFECT^2)
 # Get all additive effects for 7339 probes that are larger than the minimum epistatic variance
 b1 <- subset(b, TRAIT %in% probenames & va >= min(v$V1))
 
+# Remove duplicated genes
+load("~/repo/eQTL-2D/data/residuals_all.RData")
+genes <- subset(probeinfo, select=c(PROBE_ID, ILMN_GENE))
+b1 <- merge(b1, genes, by.x="TRAIT", by.y="PROBE_ID", all.x=TRUE)
+
 # Choose the highest additive for each chr x trait combination
-b1$code <- with(b1, paste(CHR, TRAIT))
+b1$code <- with(b1, paste(CHR, ILMN_GENE))
 b1 <- b1[order(b1$va, decreasing=T), ]
 b1 <- b1[!duplicated(b1$code), ]
 dim(b1)
