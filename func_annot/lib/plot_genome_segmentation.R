@@ -1,14 +1,11 @@
-dt <- read.csv("propCombinedK562.csv")
-
+# dt <- read.csv("propCombinedK562.csv")
+dt <- read.csv("DATA/propCombinedK562_one_mb_window.csv")
 segmenet_order <- c("E", "CTCF", "WE", "PF", "TSS", "T", "R")
 
 m_fin2 <- melt(dt)
 m_fin2 <- within(m_fin2, loc <- factor(loc, levels = segmenet_order))
 
-qplot(x = loc, y = value, fill = variable, data = m_fin2, geom = "bar", position = "dodge", stat = "identity") + theme_bw()
-+ ylab("Proportion of index SNPs\n overlaping with a chromatin segment") + xlab("Chromatin states")
-+ scale_fill_brewer(palette = "Dark2", labels = c(all = "Null distribution", cis = "Cis SNPs", trans = "Trans SNPs")) +
- theme(
+qplot(x = loc, y = value, fill = variable, data = m_fin2, geom = "bar", position = "dodge", stat = "identity") + theme_bw() + ylab("Proportion of index SNPs\n overlaping with a chromatin segment") + xlab("Chromatin states") + scale_fill_brewer(palette = "Dark2", labels = c(all = "Null distribution", cis = "Cis SNPs", trans = "Trans SNPs")) +  theme(
       # Legend
       legend.position="right",
       legend.title=element_blank(),
@@ -25,4 +22,5 @@ qplot(x = loc, y = value, fill = variable, data = m_fin2, geom = "bar", position
       # Give me back my x axis
       axis.line.x=element_line(colour="black", size=2)) 
 
-ggsave("~/Desktop/ChromatinStatesOverlapFixedOrder.pdf")
+# ggsave("~/Desktop/ChromatinStatesOverlapFixedOrder.pdf")
+ggsave("DATA/ChromatinStatesOverlapFixedOrder_one_mb_window.pdf")
