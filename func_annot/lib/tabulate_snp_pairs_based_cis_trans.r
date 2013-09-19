@@ -31,7 +31,7 @@ sig$pair2 <- repids_rel_all[match(sig$snp2, repids_rel_all$rs_id), "relation2pro
 # was manually queried at Biomart see below
 sig[sig$snp1 == "rs10120023", ]$pair1 <- "trans"
 sig[sig$snp2 == "rs10120023", ]$pair2 <- c("cis", "trans")
-
+save(sig, file = "DATA/sig_with_one_mb_window_annotation.RData")
 # R>table(sig[ ,c("pair1", "pair2")])
 #        pair2
 # pair1   cis trans
