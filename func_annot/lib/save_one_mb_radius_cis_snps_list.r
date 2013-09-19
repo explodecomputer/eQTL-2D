@@ -109,7 +109,7 @@ exp_probe_ann <- rbind(exp_probe_ann, ann_via_gene_symbol)
 
 a_naive <- merge(a_cis, unique(exp_probe_ann[ ,1:4]), by.x = "probegene", by.y = "hgnc_symbol", all.x = TRUE)
 
-a_naive$distance <- abs(a_naive$start_position_expr_expr - a_naive$chrom_start_snp_snp)
+a_naive$distance <- abs(a_naive$start_position_expr - a_naive$chrom_start_snp)
 
 a_naive$relation_new <- ifelse(a_naive$distance > one_mb, "trans", "cis")
 
