@@ -149,6 +149,25 @@ qqPlot2 <- function(dat, thresh)
 	return(p)
 }
 
+qqPlot3 <- function(dat, thresh)
+{
+	dat <- subset(dat, filter != 3)
+	dat1 <- subset(dat, pnest_meta < thresh)
+	dat$code <- "All"
+	dat1$code <- "Below Bonferroni threshold"
+	dat <- rbind(dat, dat1)
+	p <- qqplot2 <- ggplot(dat) +
+		geom_ribbon(aes(x=expect, ymin=lower, ymax=upper), colour="white", alpha=0.5) +
+		geom_abline(intercept=0, slope=1) +
+		geom_point(aes(x=expect, y=observed, colour=ex), size=1.5) +
+		facet_grid(code ~ ., scales = "free_y") +
+		geom_hline(yintercept=thresh, linetype="dotted") +
+		labs(colour="Above FDR 5% CI?", y="Observed", x="Expected") +
+		scale_colour_manual(values=c("#556270", "#556270")) +
+		theme(legend.position="none")
+	return(p)
+}
+
 
 alleleFreq <- function(x)
 {
@@ -254,6 +273,11 @@ ggsave(file="~/repo/eQTL-2D/analysis/images/qqMeta.pdf", width=5, height=10)
 with(meta, table(filter == 3, pnest_meta > upper))
 with(meta, table(filter == 3, pnest_fehr > upper_fehr))
 with(meta, table(filter == 3, pnest_egcut > upper_egcut))
+
+# Make Q-Q plot for poster (Yellow)
+qqPlot3(meta, thresh)
+ggsave(file="~/repo/eQTL-2D/analysis/images/qqMeta_yellow.pdf", width=5, height=10)
+
 
 
 
