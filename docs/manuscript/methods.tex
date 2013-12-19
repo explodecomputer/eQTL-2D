@@ -3,7 +3,7 @@
 \usepackage[superscript,biblabel]{cite}
 \usepackage{amsmath}
 \usepackage{lineno}
-\linenumbers
+% \linenumbers
 
 \bibliographystyle{naturemag}
 
@@ -17,16 +17,13 @@
 
 \tableofcontents
 
-\section{Methods Summary}
-We searched for pairwise epistasis exhaustively in the BSGS discovery dataset \cite{Powell2012}, which comprises 846 individuals who are genotyped at 528,509 autosomal SNPs. Each individual had gene expression levels measured in peripheral blood at 47,323 probes. Only the probes that passed quality control and had significant expression in $\geq 90\%$ of individuals were used in the analysis (7,339 probes representing 6,158 RefSeq genes). Recent hardware and software \cite{Hemani2011} advances that use graphics processing units (GPUs) made it possible to perform the $1.03 \times 10^{15}$ statistical tests to complete this analysis. We used permutation analysis \cite{Churchill1994a} to calculate an experiment-wide significance threshold of $T_{e} = 2.91 \times 10^{-16}$ at the 5\% family-wise error rate (FWER). SNP pairs were modelled for full genetic effects, including marginal additive and dominance at both SNPs plus four interaction terms. Though we could have used a less complex model to improve statistical efficiency, we deemed it important to be agnostic about the type of epistasis that might exist, and therefore chose not to over-parameterise the test \cite{Marchini2005, Hemani2013}. Because there are many large marginal effects present in these data it was necessary to perform several filtering steps to exclude SNP pairs that were significant due to marginal effects alone. All SNP pairs with LD $r^2 > 0.1$ and $D'^{2} > 0.1$ were removed to minimise the possibility of haplotype effects. All SNP pairs were required to have at least five data points in all nine genotype classes. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinel SNP pair was retained. Finally, a nested test contrasting the full genetic model against the marginal additive and dominance model was performed for each remaining SNP pair (Methods), resulting in 501 significant interactions after Bonferroni correction for multiple testing of the filtered SNPs. The 501 significant SNP pairs were carried forward for replication in two independent datasets that used the same expression assays for analysing transcription in peripheral blood, the Fehrmann dataset \cite{Fehrmann2011} ($n=1240$) and the Estonian Genome Centre University of the University of Tartu (EGCUT) dataset \cite{Metspalu2004} ($n=891$). Of these, 434 passed filtering in both replication datasets. A meta analysis on the interaction $p$-values from each replication dataset was performed to provide an overall replication statistic for each putative interaction.
-
 \section{Discovery data}
 
 \subsection{Data description}
 
 The Brisbane Systems Genetics Study (BSGS) comprises 846 individuals of European descent from 274 independent families \cite{Powell2012}. DNA samples from each individual were genotyped on the Illumina 610-Quad Beadchip by the Scientific Services Division at deCODE Genetics Iceland. Full details of genotyping procedures are given in Medland et al. \cite{Medland2009} Standard quality control (QC) filters were applied and the remaining 528,509 autosomal SNPs were carried forward for further analysis. 
 
-Gene expression profiles were generated from peripheral blood collected with PAXgene TM tubes (QIAGEN, Valencia, CA) using Illumina HT12-v4.0 bead arrays. The Illumina HT-12 v4.0 chip contains 47,323 probes, although some probes are not assigned to RefSeq genes. We removed any probes that did not match the following criteria: contained a SNP within the probe sequence with MAF $ > 0.05$ within 1000 genomes data; did not map to a listed RefSeq gene; were not significantly expressed (based on a detection $p$-value $< 0.05$) in at least 90\% of samples. After this stringent QC 7339 probes remained for 2D-eQTL mapping.
+Gene expression profiles were generated from peripheral blood collected with PAXgene TM tubes (QIAGEN, Valencia, CA) using Illumina HT12-v4.0 bead arrays. The Illumina HT-12 v4.0 chip contains 47,323 probes, although some probes are not assigned to RefSeq genes. We removed any probes that did not match the following criteria: contained a SNP within the probe sequence with MAF $ > 0.05$ within 1000 genomes data; did not map to a listed RefSeq gene; were not significantly expressed (based on a detection $p$-value $< 0.05$) in at least 90\% of samples. After this stringent QC 7339 probes remained for 2D-eQTL mapping. These data are accessible through GEO Series accession number GSE53195.
 
 
 \subsection{Normalisation}
@@ -104,10 +101,10 @@ To avoid possibility that epistatic signals might arise due to expression probes
 We attempted replication of the 501 significant interactions from the discovery set using three independent cohorts; Fehrmann, EGCUT, and CHDWB. It was required that LD $r^2 < 0.1$ and $D'^{2} < 0.1$ between interacting SNPs (as measured in the replication sample directly), and all nine genotype classes had at least 5 individuals present in order to proceed with statistical testing for replication in both datasets. We also excluded any putative SNPs that had discordant allele frequencies in any of the datasets. Details of the cohorts are as follows.
 
 \paragraph{Fehrmann: $n=1240$}
-The Fehrmann dataset \cite{Fehrmann2011} consists of peripheral blood samples of 1240 unrelated individuals from the United Kingdom and the Netherlands. Some of these individuals are patients, while others are healthy controls. Individuals were genotyped using the Illumina HumanHap300, Illumina HumanHap370CNV, and Illumina 610 Quad platforms. RNA levels were quantified using the Illumina HT-12 V3.0 platform.
+The Fehrmann dataset \cite{Fehrmann2011} consists of peripheral blood samples of 1240 unrelated individuals from the United Kingdom and the Netherlands. Some of these individuals are patients, while others are healthy controls. Individuals were genotyped using the Illumina HumanHap300, Illumina HumanHap370CNV, and Illumina 610 Quad platforms. RNA levels were quantified using the Illumina HT-12 V3.0 platform. These data are accessible through GEO Series accession numbers GSE20332 and GSE20142.
 
 \paragraph{EGCUT: $n=891$}
-The Estonian Genome Center of the University of Tartu (EGCUT) study \cite{Metspalu2004} consists of peripheral blood samples of 891 unrelated individuals from Estonia. They were genotyped using the Illumina HumanHap370CNV platform. RNA levels were quantified using the Illumina HT-12 V3.0 platform.
+The Estonian Genome Center of the University of Tartu (EGCUT) study \cite{Metspalu2004} consists of peripheral blood samples of 891 unrelated individuals from Estonia. They were genotyped using the Illumina HumanHap370CNV platform. RNA levels were quantified using the Illumina HT-12 V3.0 platform. These data are accessible through GEO Series accession number GSE48348.
 
 \paragraph{CDHWB: $n=139$}
 The Center for Health Discovery and Well Being (CDHWB) Study \cite{Preininger2013} is a population based cohort consisting of 139 individuals of European descent collected in Atlanta USA. Gene expression profiles were generated with Illumina HT-12 V3.0 arrays from peripheral blood collected from Tempus tubes that preserve RNA. Whole genome genotypes were measured using Illumina OmniQuad arrays. Due to the small sample size, most SNP pairs did not pass filtering in this dataset (20 SNP pairs remained) and so we have excluded it from the rest of the analysis.
