@@ -1,5 +1,6 @@
 \documentclass{article}
-\usepackage[superscript,biblabel]{cite}
+\usepackage{amsmath}
+% \usepackage[superscript,biblabel]{cite}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{threeparttable}
@@ -9,15 +10,65 @@
 \usepackage{longtable}
 \usepackage{lscape}
 % \usepackage{lineno}
+\usepackage{verbatim}
 \usepackage{hyperref}
 % \linenumbers
+% \usepackage{bibunits}
+% \usepackage{splitbib}
+\usepackage[style=nature, sorting=none]{biblatex}
+\addbibresource{refs.bib}
+
+\DeclareBibliographyCategory{Category1}
+\addtocategory{Category1}{Hill2008a}
+\addtocategory{Category1}{Costanzo2010}
+\addtocategory{Category1}{Carlborg2006}
+\addtocategory{Category1}{Strange2010}
+\addtocategory{Category1}{Cordell2009}
+\addtocategory{Category1}{Hemani2011}
+\addtocategory{Category1}{Lieberman-Aiden2009}
+\addtocategory{Category1}{Visscher2012}
+\addtocategory{Category1}{Carlborg2004}
+\addtocategory{Category1}{Weinreich2006}
+\addtocategory{Category1}{Breen2012}
+\addtocategory{Category1}{Weir2008}
+\addtocategory{Category1}{Marchini2005}
+\addtocategory{Category1}{LangoAllen2010}
+\addtocategory{Category1}{Schadt2003}
+\addtocategory{Category1}{Powell2013}
+\addtocategory{Category1}{Powell2012}
+\addtocategory{Category1}{Fehrmann2011}
+\addtocategory{Category1}{Metspalu2004}
+\addtocategory{Category1}{Preininger2013}
+\addtocategory{Category1}{Cockerham1954}
+\addtocategory{Category1}{Ho2004}
+\addtocategory{Category1}{Trynka2013}
+\addtocategory{Category1}{Hoffman2012}
+\addtocategory{Category1}{Lan2012}
+\addtocategory{Category1}{Rieder2012}
+\addtocategory{Category1}{Crow2010}
+\addtocategory{Category1}{Hemani2013}
+\addtocategory{Category1}{Evans2011}
+\addtocategory{Category1}{Bloom2013}
+
+\DeclareBibliographyCategory{Category2}
+\addtocategory{Category2}{Medland2009}
+\addtocategory{Category2}{Aulchenko2007}
+\addtocategory{Category2}{Yang2011}
+\addtocategory{Category2}{Westra2011}
+\addtocategory{Category2}{Williams1976}
+\addtocategory{Category2}{Alvarez-Castro2008}
+\addtocategory{Category2}{Koch2007}
+\addtocategory{Category2}{Rietveld2013}
+\addtocategory{Category2}{Stormo2000}
+\addtocategory{Category2}{HoSui2005}
+
 
 \makeatletter
 \renewcommand\AB@affilsepx{. \protect\Affilfont}
 \makeatother
 
 \graphicspath{{../../analysis/images/}}
-\bibliographystyle{naturemag}
+% \bibliographystyle{naturemag}
 
 \title{Detection and replication of epistasis influencing transcription in humans}
 \date{}
@@ -50,14 +101,13 @@
 
 \begin{document}
 
-
 \maketitle
 
 \clearpage
 
 \begin{abstract}
 
-Epistasis is the phenomenon whereby one polymorphism's effect on a trait depends on other polymorphisms present in the genome. The extent to which epistasis influences complex traits \cite{Carlborg2004} and contributes to their variation \cite{Hill2008a, Crow2010} is a fundamental question in evolution and human genetics. Though often demonstrated in artificial gene manipulation studies in model organisms \cite{Costanzo2010, Bloom2013}, and some examples have been reported in other species \cite{Carlborg2006}, few examples exist for epistasis amongst natural polymorphisms in human traits \cite{Strange2010, Evans2011}. Its absence from empirical findings may simply be due to low incidence in the genetic control of complex traits \cite{Hill2008a, Crow2010}, but an alternative view is that it has previously been too technically challenging to detect due to statistical and computational issues \cite{Cordell2009}. Here we show that, using advanced computation \cite{Hemani2011} and a gene expression study design, many instances of epistasis are found between common single nucleotide polymorphisms (SNPs). In a cohort of 846 individuals with 7339 gene expression levels measured in peripheral blood, we found 501 significant pairwise interactions between common SNPs influencing the expression of 238 genes ($p < 2.91 \times 10^{-16}$). Replication of these interactions in two independent data sets \cite{Metspalu2004, Fehrmann2011} showed both concordance of direction of epistatic effects ($p = 5.56 \times 10^{-31}$) and enrichment of interaction $p$-values, with 30 being significant at a conservative threshold of $p < 0.05 / 501$. Forty-four of the genetic interactions are located within 2Mb of regions of known physical chromosome interactions \cite{Lieberman-Aiden2009} ($p = 1.8 \times 10^{-10}$). Epistatic networks of three SNPs or more influence the expression levels of 129 genes, whereby one \emph{cis}-acting SNP is modulated by several \emph{trans}-acting SNPs. For example MBNL1 is influenced by an additive effect at rs13069559 which itself is masked by \emph{trans}-SNPs on 14 different chromosomes, with nearly identical genotype-phenotype (GP) maps for each \emph{cis}-\emph{trans} interaction. This study presents the first evidence for multiple instances of segregating common polymorphisms interacting to influence human traits.
+Epistasis is the phenomenon whereby one polymorphism's effect on a trait depends on other polymorphisms present in the genome. The extent to which epistasis influences complex traits \supercite{Carlborg2004} and contributes to their variation \supercite{Hill2008a,Crow2010} is a fundamental question in evolution and human genetics. Though often demonstrated in artificial gene manipulation studies in model organisms \supercite{Costanzo2010,Bloom2013}, and some examples have been reported in other species \supercite{Carlborg2006}, few examples exist for epistasis amongst natural polymorphisms in human traits \supercite{Strange2010,Evans2011}. Its absence from empirical findings may simply be due to low incidence in the genetic control of complex traits \supercite{Hill2008a,Crow2010}, but an alternative view is that it has previously been too technically challenging to detect due to statistical and computational issues \supercite{Cordell2009}. Here we show that, using advanced computation \supercite{Hemani2011} and a gene expression study design, many instances of epistasis are found between common single nucleotide polymorphisms (SNPs). In a cohort of 846 individuals with 7339 gene expression levels measured in peripheral blood, we found 501 significant pairwise interactions between common SNPs influencing the expression of 238 genes ($p < 2.91 \times 10^{-16}$). Replication of these interactions in two independent data sets \supercite{Metspalu2004,Fehrmann2011} showed both concordance of direction of epistatic effects ($p = 5.56 \times 10^{-31}$) and enrichment of interaction $p$-values, with 30 being significant at a conservative threshold of $p < 0.05 / 501$. Forty-four of the genetic interactions are located within 2Mb of regions of known physical chromosome interactions \supercite{Lieberman-Aiden2009} ($p = 1.8 \times 10^{-10}$). Epistatic networks of three SNPs or more influence the expression levels of 129 genes, whereby one \emph{cis}-acting SNP is modulated by several \emph{trans}-acting SNPs. For example MBNL1 is influenced by an additive effect at rs13069559 which itself is masked by \emph{trans}-SNPs on 14 different chromosomes, with nearly identical genotype-phenotype (GP) maps for each \emph{cis}-\emph{trans} interaction. This study presents the first evidence for multiple instances of segregating common polymorphisms interacting to influence human traits.
 
 \end{abstract}
 
@@ -65,40 +115,40 @@ Epistasis is the phenomenon whereby one polymorphism's effect on a trait depends
 \section*{Main text}
 
 % \subsection{Introduction}
-In the genetic analysis of complex traits it is usual for SNP effects to be estimated using an additive model where they are assumed to contribute independently and cumulatively to the mean of a trait. This framework has been successful in identifying thousands of associations \cite{Visscher2012}. But to date, though its contribution to phenotypic variance is frequently the subject of debate \cite{Carlborg2004, Hill2008a, Crow2010}, there is little empirical exploration of the role that epistasis plays in the architecture of complex traits in humans \cite{Strange2010, Evans2011}. Beyond the prism of human association studies there is evidence for epistasis, not only at the molecular scale from artificially induced mutations \cite{Costanzo2010} but also at the evolutionary scale in fitness adaptation \cite{Weinreich2006} and speciation \cite{Breen2012}.
+In the genetic analysis of complex traits it is usual for SNP effects to be estimated using an additive model where they are assumed to contribute independently and cumulatively to the mean of a trait. This framework has been successful in identifying thousands of associations \supercite{Visscher2012}. But to date, though its contribution to phenotypic variance is frequently the subject of debate \supercite{Carlborg2004,Hill2008a,Crow2010}, there is little empirical exploration of the role that epistasis plays in the architecture of complex traits in humans \supercite{Strange2010, Evans2011}. Beyond the prism of human association studies there is evidence for epistasis, not only at the molecular scale from artificially induced mutations \supercite{Costanzo2010} but also at the evolutionary scale in fitness adaptation \supercite{Weinreich2006} and speciation \supercite{Breen2012}.
 
-Methods are now available to overcome the computational problems involved in searching for epistasis, but its detection still remains problematic due to reduced statistical power. For example, increased dependence on linkage disequilibrium (LD) between causal SNPs and observed SNPs \cite{Weir2008, Hemani2013}, increased model complexity in fitting interaction terms \cite{Marchini2005}, and more extreme significance thresholds to account for increased multiple testing \cite{Cordell2009} all make it more difficult to detect epistasis in comparison to additive effects. Thus, with small genetic effect sizes, as is expected in most complex traits of interest \cite{Visscher2012}, the power to detect epistasis diminishes rapidly. There are two simple ways to overcome this problem. One is by using extremely large sample sizes \cite{LangoAllen2010}; another is by analysing traits that are likely to have large effect sizes among common variants. Because our focus was to ascertain the extent to which instances of epistasis arises from natural genetic variation we designed a study around the latter approach and searched for epistatic genetic effects that influence gene expression levels. Transcription levels can be measured for thousands of genes and like most complex diseases, these expression traits are typically heritable \cite{Schadt2003}. But unlike complex diseases, genetic associations with gene expression commonly have very large effect sizes that explain large proportions of the genetic variance\cite{Powell2013}, making them good candidates to search for epistasis, should it exist.
+Methods are now available to overcome the computational problems involved in searching for epistasis, but its detection still remains problematic due to reduced statistical power. For example, increased dependence on linkage disequilibrium (LD) between causal SNPs and observed SNPs \supercite{Weir2008, Hemani2013}, increased model complexity in fitting interaction terms \supercite{Marchini2005}, and more extreme significance thresholds to account for increased multiple testing \supercite{Cordell2009} all make it more difficult to detect epistasis in comparison to additive effects. Thus, with small genetic effect sizes, as is expected in most complex traits of interest \supercite{Visscher2012}, the power to detect epistasis diminishes rapidly. There are two simple ways to overcome this problem. One is by using extremely large sample sizes \supercite{LangoAllen2010}; another is by analysing traits that are likely to have large effect sizes among common variants. Because our focus was to ascertain the extent to which instances of epistasis arises from natural genetic variation we designed a study around the latter approach and searched for epistatic genetic effects that influence gene expression levels. Transcription levels can be measured for thousands of genes and like most complex diseases, these expression traits are typically heritable \supercite{Schadt2003}. But unlike complex diseases, genetic associations with gene expression commonly have very large effect sizes that explain large proportions of the genetic variance\supercite{Powell2013}, making them good candidates to search for epistasis, should it exist.
 
 
 % \subsection{Initial search in discovery set and replication}
-In our discovery dataset (Brisbane Systems Genetics Study, BSGS \cite{Powell2012}) of 846 individuals genotyped at 528,509 SNPs, we used a two stage approach to identify genetic interactions. First, we exhaustively test every pair of SNPs for pairwise effects against each of 7339 expression traits in peripheral blood ($1.03 \times 10^{15}$ statistical tests, family-wise error rate of 5\% corresponding to a significance threshold of $ p < 2.91 \times 10^{-16}$, Methods). Second, we filtered the SNP pairs from stage 1 on LD and genotype class counts, and tested the remaining pairwise effects for significant interaction terms and used a Bonferroni correction for multiple testing (estimated type 1 error rate $0.05 \leq \alpha \leq 0.14$, Methods, Supplementary Figure \ref{fig:type1}). Using this design we identified 501 putative genetic interactions influencing the expression levels of 238 genes (Supplementary Table \ref{tab:results}). We used strict quality control measures to avoid statistical associations being driven by technical artifacts (Methods). However it remains possible that unexplained technical artifacts may have led to the significant discovery interactions. Of the 501 discovery interactions, 434 had available data and passed filtering (Methods) in two independent replication datasets, Fehrmann \cite{Fehrmann2011} and the Estonian Genomics Centre University of Tartu (EGCUT) \cite{Metspalu2004}, in which we saw convincing evidence for replication. We used the summary statistics from the replication datasets to perform a meta analysis to obtain an independent $p$-value for the putative interactions, and 30 were significant after applying a Bonferroni correction for multiple testing (5\% significance threshold $p < 0.05/501$, Table \ref{tab:bonferroni}). To quantify the similarity of GP maps between the independent datasets (Figure \ref{fig:gpmaps}) we decomposed the genetic effects of each of the SNP pairs into orthogonal additive, dominance and epistatic effects ($A1$, $A2$, $D1$, $D2$, $A1 \times A2$, $A1 \times D2$, $D1 \times A2$, $D1 \times D2$) and tested for concordance of the sign of the most signicant effect (Supplementary Table \ref{tab:sign}, Methods). Sign concordance between the discovery and both replication datasets was observed in 22 out of the 30 significantly replicated interactions (expected value $= 7.5$ under the null hypothesis of no interactions, $p = 3.76 \times 10^{-8}$). 
+In our discovery dataset (Brisbane Systems Genetics Study, BSGS \supercite{Powell2012}) of 846 individuals genotyped at 528,509 SNPs, we used a two stage approach to identify genetic interactions. First, we exhaustively test every pair of SNPs for pairwise effects against each of 7339 expression traits in peripheral blood ($1.03 \times 10^{15}$ statistical tests, family-wise error rate of 5\% corresponding to a significance threshold of $ p < 2.91 \times 10^{-16}$, Methods). Second, we filtered the SNP pairs from stage 1 on LD and genotype class counts, and tested the remaining pairwise effects for significant interaction terms and used a Bonferroni correction for multiple testing (estimated type 1 error rate $0.05 \leq \alpha \leq 0.14$, Methods, Supplementary Figure \ref{fig:type1}). Using this design we identified 501 putative genetic interactions influencing the expression levels of 238 genes (Supplementary Table \ref{tab:results}). We used strict quality control measures to avoid statistical associations being driven by technical artifacts (Methods). However it remains possible that unexplained technical artifacts may have led to the significant discovery interactions. Of the 501 discovery interactions, 434 had available data and passed filtering (Methods) in two independent replication datasets, Fehrmann \supercite{Fehrmann2011} and the Estonian Genomics Centre University of Tartu (EGCUT) \supercite{Metspalu2004}, in which we saw convincing evidence for replication. We used the summary statistics from the replication datasets to perform a meta analysis to obtain an independent $p$-value for the putative interactions, and 30 were significant after applying a Bonferroni correction for multiple testing (5\% significance threshold $p < 0.05/501$, Table \ref{tab:bonferroni}). To quantify the similarity of GP maps between the independent datasets (Figure \ref{fig:gpmaps}) we decomposed the genetic effects of each of the SNP pairs into orthogonal additive, dominance and epistatic effects ($A1$, $A2$, $D1$, $D2$, $A1 \times A2$, $A1 \times D2$, $D1 \times A2$, $D1 \times D2$) and tested for concordance of the sign of the most signicant effect (Supplementary Table \ref{tab:sign}, Methods). Sign concordance between the discovery and both replication datasets was observed in 22 out of the 30 significantly replicated interactions (expected value $= 7.5$ under the null hypothesis of no interactions, $p = 3.76 \times 10^{-8}$). 
 
-In addition, using the meta analysis from the replication samples only, we observed that 316 of the remaining 404 discovery SNP pairs had replication interaction $p$-values more extreme than the 2.5\% confidence interval of the quantile-quantile plot against the null hypothesis of no interactions where $p$-values are assumed to be uniformly distributed ($p << 1.0 \times 10^{-16}$, Figure \ref{fig:qqMeta} and Supplementary Figure \ref{fig:qqMetaNonsig}). Concordance of the direction of the effect of the largest variance component was also highly significant ($p = 5.71 \times 10^{-31}$, Supplementary Table \ref{tab:sign}). The congruence of the epistatic networks in discovery and replication datasets is shown in Figure \ref{fig:fireworks}, demonstrating that these complex genetic patterns are common even across independent datasets. A further replication was attempted using the Centre for Health Discovery and Wellbeing (CHDWB) dataset \cite{Preininger2013}, but only 20 of the SNP pairs passed filtering because the sample size was small ($n=139$), and likely due to insufficient power we found no evidence for replication (Supplementary Figure \ref{fig:qqgg}). It should be noted that although it is a necessary step to establish the veracity of the interactions from the discovery set, replication of epistatic effects in independent samples is difficult in practice due to LD (Methods).
+In addition, using the meta analysis from the replication samples only, we observed that 316 of the remaining 404 discovery SNP pairs had replication interaction $p$-values more extreme than the 2.5\% confidence interval of the quantile-quantile plot against the null hypothesis of no interactions where $p$-values are assumed to be uniformly distributed ($p << 1.0 \times 10^{-16}$, Figure \ref{fig:qqMeta} and Supplementary Figure \ref{fig:qqMetaNonsig}). Concordance of the direction of the effect of the largest variance component was also highly significant ($p = 5.71 \times 10^{-31}$, Supplementary Table \ref{tab:sign}). The congruence of the epistatic networks in discovery and replication datasets is shown in Figure \ref{fig:fireworks}, demonstrating that these complex genetic patterns are common even across independent datasets. A further replication was attempted using the Centre for Health Discovery and Wellbeing (CHDWB) dataset \supercite{Preininger2013}, but only 20 of the SNP pairs passed filtering because the sample size was small ($n=139$), and likely due to insufficient power we found no evidence for replication (Supplementary Figure \ref{fig:qqgg}). It should be noted that although it is a necessary step to establish the veracity of the interactions from the discovery set, replication of epistatic effects in independent samples is difficult in practice due to LD (Methods).
 
 
 % \subsection{Patterns of epistasis}
-Though seldom the focus of association studies, SNPs with known main effects are often tested for $A \times A$ genetic interactions \cite{Cordell2009}, but our analysis suggests this is unlikely to be the best strategy for its detection. The majority of our discovery interactions comprised of one SNP that was significantly associated with the gene expression level in the discovery dataset, and one SNP that had no previous association \cite{Powell2013} (439 out of 501, Methods). Only nine interactions were between SNPs that both had known main effects while 64 were between SNPs that had no known main effects. Additionally, we observed that the largest epistatic variance component for the 501 interactions was equally divided amongst $A \times A$, $A \times D$, $D \times A$ and $D \times D$ at the discovery stage ($p = 0.22$ for departure from expectation). This is not surprising because these patterns of epistasis used for statistical decomposition are simply convenient orthogonal parameterisations of a two locus model, and are not intended to model biological function \cite{Cockerham1954}.
+Though seldom the focus of association studies, SNPs with known main effects are often tested for $A \times A$ genetic interactions \supercite{Cordell2009}, but our analysis suggests this is unlikely to be the best strategy for its detection. The majority of our discovery interactions comprised of one SNP that was significantly associated with the gene expression level in the discovery dataset, and one SNP that had no previous association \supercite{Powell2013} (439 out of 501, Methods). Only nine interactions were between SNPs that both had known main effects while 64 were between SNPs that had no known main effects. Additionally, we observed that the largest epistatic variance component for the 501 interactions was equally divided amongst $A \times A$, $A \times D$, $D \times A$ and $D \times D$ at the discovery stage ($p = 0.22$ for departure from expectation). This is not surprising because these patterns of epistasis used for statistical decomposition are simply convenient orthogonal parameterisations of a two locus model, and are not intended to model biological function \supercite{Cockerham1954}.
 
-Of the discovery interactions, 26 were \emph{cis}-\emph{cis} acting (within 1Mb of the transcription start site, mean distance between SNPs was 0.53Mb), 462 were \emph{cis}-\emph{trans}-acting, and 13 were \emph{trans}-\emph{trans}-acting. We observed a wide range of significant GP maps (Figure \ref{fig:gpmaps}) but the most common pattern of epistasis that we detected involved a \emph{trans}-SNP masking the effect of an additive \emph{cis}-SNP. For example, MBNL1 (involved in RNA modification and regulation of splicing \cite{Ho2004}) has a \emph{cis} effect at rs13069559 which in turn is controlled by 13 \emph{trans}-SNPs and one \emph{cis}-SNP that each exhibit a masking pattern, such that when the \emph{trans}-SNP is homozygous for the masking allele the decreasing allele of the \emph{cis}-SNP no longer has an effect (Supplementary Figure \ref{fig:MBNL1_3D}). Each of these interactions has evidence for replication in at least one dataset and six are significantly replicated at the Bonferroni level (Supplementary Figure \ref{fig:circleplots}). We see similar epistatic networks involving multiple (eight or more) \emph{trans}-acting SNPs for other gene expresson levels too, for example TMEM149 (Supplementary Figure \ref{fig:TMEM149_3D}), NAPRT1 (Supplementary Figure \ref{fig:NAPRT1_3D}), TRAPPC5 (Supplementary Figure \ref{fig:TRAPPC5_3D}), and CAST (Supplementary Figure \ref{fig:CAST_3D}). We observed that from pedigree analysis these five gene expression phenotypes had non-additive variance component estimates within the 95th percentile of the 17,994 gene expression phenotypes that were analysed previously \cite{Powell2013} (Supplementary Table \ref{tab:vc}, Methods).
+Of the discovery interactions, 26 were \emph{cis}-\emph{cis} acting (within 1Mb of the transcription start site, mean distance between SNPs was 0.53Mb), 462 were \emph{cis}-\emph{trans}-acting, and 13 were \emph{trans}-\emph{trans}-acting. We observed a wide range of significant GP maps (Figure \ref{fig:gpmaps}) but the most common pattern of epistasis that we detected involved a \emph{trans}-SNP masking the effect of an additive \emph{cis}-SNP. For example, MBNL1 (involved in RNA modification and regulation of splicing \supercite{Ho2004}) has a \emph{cis} effect at rs13069559 which in turn is controlled by 13 \emph{trans}-SNPs and one \emph{cis}-SNP that each exhibit a masking pattern, such that when the \emph{trans}-SNP is homozygous for the masking allele the decreasing allele of the \emph{cis}-SNP no longer has an effect (Supplementary Figure \ref{fig:MBNL1_3D}). Each of these interactions has evidence for replication in at least one dataset and six are significantly replicated at the Bonferroni level (Supplementary Figure \ref{fig:circleplots}). We see similar epistatic networks involving multiple (eight or more) \emph{trans}-acting SNPs for other gene expresson levels too, for example TMEM149 (Supplementary Figure \ref{fig:TMEM149_3D}), NAPRT1 (Supplementary Figure \ref{fig:NAPRT1_3D}), TRAPPC5 (Supplementary Figure \ref{fig:TRAPPC5_3D}), and CAST (Supplementary Figure \ref{fig:CAST_3D}). We observed that from pedigree analysis these five gene expression phenotypes had non-additive variance component estimates within the 95th percentile of the 17,994 gene expression phenotypes that were analysed previously \supercite{Powell2013} (Supplementary Table \ref{tab:vc}, Methods).
 
 
 % \subsection{Functional annotation}
-In total the 501 interactions comprised 781 unique SNPs, which we analysed for functional enrichment (Methods). We tested the SNPs for cell-type specific overlap with transcriptionally active chromatin regions, tagged by histone-3-lysine-4,tri-methylation (H3K4me3) chromatin marks, in 34 cell types \cite{Trynka2013} (Supplementary Figure \ref{fig:h3k4me3}). There was significant enrichment for \emph{cis}-acting SNPs in haematopoietic cell types only ($p < 1 \times 10^{-4}$ for the three tissues with the strongest enrichment after adjusting for multiple testing). However \emph{trans}-acting SNPs did not show any tissue specific enrichment ($p > 0.1$ for all tissues). This difference between \emph{cis} and \emph{trans} SNPs suggests different roles in epistatic interactions where tissue specificity is provided by the \emph{cis} SNPs. There is also enrichment for \emph{cis}-SNPs to be localised in regions with regulatory genomic features as measured by chromatin states \cite{Hoffman2012} (Supplementary Figure \ref{fig:snplocations}).
+In total the 501 interactions comprised 781 unique SNPs, which we analysed for functional enrichment (Methods). We tested the SNPs for cell-type specific overlap with transcriptionally active chromatin regions, tagged by histone-3-lysine-4,tri-methylation (H3K4me3) chromatin marks, in 34 cell types \supercite{Trynka2013} (Supplementary Figure \ref{fig:h3k4me3}). There was significant enrichment for \emph{cis}-acting SNPs in haematopoietic cell types only ($p < 1 \times 10^{-4}$ for the three tissues with the strongest enrichment after adjusting for multiple testing). However \emph{trans}-acting SNPs did not show any tissue specific enrichment ($p > 0.1$ for all tissues). This difference between \emph{cis} and \emph{trans} SNPs suggests different roles in epistatic interactions where tissue specificity is provided by the \emph{cis} SNPs. There is also enrichment for \emph{cis}-SNPs to be localised in regions with regulatory genomic features as measured by chromatin states \supercite{Hoffman2012} (Supplementary Figure \ref{fig:snplocations}).
 
-We also demonstrate physical organisation of interacting loci within the cell, suggesting a mechanism by which biological function can lead to epistatic genetic variance. It has been shown that different chromosomal regions spatially colocalise in the cell through chromatin interactions \cite{Lieberman-Aiden2009}. We cross-referenced our epistatic SNPs with a map of chromosome interacting regions ($n = 96,139$) in K562 blood cell lines \cite{Lan2012} (Methods) and found that 44 epistatic interactions mapped to within 5Mb ($p < 1.8 \times 10^{-10}$), (Supplementary Figure \ref{fig:chromosomeinteractions}). Interaction of distant loci may occur through physical proximity in transcriptional factories that organise across different chromosome regions and can regulate transcription of related genes \cite{Rieder2012}.
+We also demonstrate physical organisation of interacting loci within the cell, suggesting a mechanism by which biological function can lead to epistatic genetic variance. It has been shown that different chromosomal regions spatially colocalise in the cell through chromatin interactions \supercite{Lieberman-Aiden2009}. We cross-referenced our epistatic SNPs with a map of chromosome interacting regions ($n = 96,139$) in K562 blood cell lines \supercite{Lan2012} (Methods) and found that 44 epistatic interactions mapped to within 5Mb ($p < 1.8 \times 10^{-10}$), (Supplementary Figure \ref{fig:chromosomeinteractions}). Interaction of distant loci may occur through physical proximity in transcriptional factories that organise across different chromosome regions and can regulate transcription of related genes \supercite{Rieder2012}.
 
 
 % \subsection{Contribution of epistatic variance}
-Quantifying the importance of epistasis in complex traits in humans remains an open question. Here we are able to identify 238 gene expression traits with at least one significant interaction given our experiment-wide threshold, where the minimum estimated variance explained by the epistatic effects of any interaction was $2.1\%$ of phenotypic variance. Taking results from our previously published eQTL \cite{Powell2012} we calculated that 1848 of the 7339 gene expression levels analysed were influenced by additive effects where the estimated additive variance of a locus was $2.1\%$ or greater. Thus, we can infer that the number of instances of large additive effects is significantly greater than the number of instances of large epistatic effects.
+Quantifying the importance of epistasis in complex traits in humans remains an open question. Here we are able to identify 238 gene expression traits with at least one significant interaction given our experiment-wide threshold, where the minimum estimated variance explained by the epistatic effects of any interaction was $2.1\%$ of phenotypic variance. Taking results from our previously published eQTL \supercite{Powell2012} we calculated that 1848 of the 7339 gene expression levels analysed were influenced by additive effects where the estimated additive variance of a locus was $2.1\%$ or greater. Thus, we can infer that the number of instances of large additive effects is significantly greater than the number of instances of large epistatic effects.
 
-In terms of their contribution to complex traits a more important metric might be the proportion of the variance that the epistatic loci explain \cite{Hill2008a}. Taking all additive effects detected in Powell \emph{et al} (2012) that have additive variance explaining $2.1\%$ or greater of phenotypic variance, we calculated that the proportion of total phenotypic variance of all 7339 gene expression levels explained by additive effects alone was $2.16\%$. By contrast, the estimated epistatic variance from the interacting SNPs detected in this study on average explain a total of $0.22\%$ of phenotypic variance, approximately ten times lower than the estimated additive variance. There are several caveats to this comparison which we discuss in the Methods.
+In terms of their contribution to complex traits a more important metric might be the proportion of the variance that the epistatic loci explain \supercite{Hill2008a}. Taking all additive effects detected in Powell \emph{et al} (2012) that have additive variance explaining $2.1\%$ or greater of phenotypic variance, we calculated that the proportion of total phenotypic variance of all 7339 gene expression levels explained by additive effects alone was $2.16\%$. By contrast, the estimated epistatic variance from the interacting SNPs detected in this study on average explain a total of $0.22\%$ of phenotypic variance, approximately ten times lower than the estimated additive variance. There are several caveats to this comparison which we discuss in the Methods.
 
 
 % \subsection{Discussion}
 Overall, we have demonstrated that it is possible to identify and replicate epistasis in complex traits amongst common human variants, despite the relative contribution of pairwise epistasis to phenotypic variation being small. The bioinformatic analysis of the significant epistatic loci suggests that there are a large number of possible mechanisms that can lead to non-additive genetic variation. Further research into such epistatic effects may provide a useful framework for understanding molecular mechanisms and complex trait variation in greater detail. With computational techniques and data now widely available the search for epistasis in larger datasets for traits of broader interest is warranted.
 
 \section*{Methods Summary}
-We searched for pairwise epistasis exhaustively in the BSGS discovery dataset \cite{Powell2012}, which comprises 846 individuals who are genotyped at 528,509 autosomal SNPs. Each individual had gene expression levels measured in peripheral blood at 7,339 probes representing 6,158 RefSeq genes (significant expression in $\geq 90\%$ of individuals). SNP pairs were modelled for full genetic effects, including marginal additive and dominance at both SNPs plus four interaction terms. We used permutation analysis to calculate an experiment-wide significance threshold of $T_{e} = 2.91 \times 10^{-16}$ at the 5\% family-wise error rate (FWER). All SNP pairs with LD $r^2 > 0.1$ and $D'^{2} > 0.1$ were removed to minimise the possibility of haplotype effects. All SNP pairs were required to have at least five data points in all nine genotype classes. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinel SNP pair was retained. Finally, a nested test contrasting the full genetic model against the marginal additive and dominance model was performed for each remaining SNP pair. The 501 significant SNP pairs were carried forward for replication in two independent datasets that used the same expression assays for analysing transcription in peripheral blood Fehrmann \cite{Fehrmann2011}, $n=1240$; EGCUT \cite{Metspalu2004}, ($n=891$). A meta analysis on the interaction $p$-values from each replication dataset was performed to provide an overall replication statistic for each putative interaction.
+We searched for pairwise epistasis exhaustively in the BSGS discovery dataset \supercite{Powell2012}, which comprises 846 individuals who are genotyped at 528,509 autosomal SNPs. Each individual had gene expression levels measured in peripheral blood at 7,339 probes representing 6,158 RefSeq genes (significant expression in $\geq 90\%$ of individuals). SNP pairs were modelled for full genetic effects, including marginal additive and dominance at both SNPs plus four interaction terms. We used permutation analysis to calculate an experiment-wide significance threshold of $T_{e} = 2.91 \times 10^{-16}$ at the 5\% family-wise error rate (FWER). All SNP pairs with LD $r^2 > 0.1$ and $D'^{2} > 0.1$ were removed to minimise the possibility of haplotype effects. All SNP pairs were required to have at least five data points in all nine genotype classes. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinel SNP pair was retained. Finally, a nested test contrasting the full genetic model against the marginal additive and dominance model was performed for each remaining SNP pair. The 501 significant SNP pairs were carried forward for replication in two independent datasets that used the same expression assays for analysing transcription in peripheral blood Fehrmann \supercite{Fehrmann2011}, $n=1240$; EGCUT \supercite{Metspalu2004}, ($n=891$). A meta analysis on the interaction $p$-values from each replication dataset was performed to provide an overall replication statistic for each putative interaction.
 
 
 
@@ -121,7 +171,7 @@ The EGCUT study received targeted financing from Estonian Government SF0180142s0
 
 \subsection*{Author contributions}
 
-G.H., J.E.P., P.M.V., and G.W.M. conceived and designed the study. G.H., J.E.P., K.S., H-J.W., and J.Y. performed the analysis. T.E. and A.M. provided the EGCUT data. A.K.H., A.F.M., G.W.M., N.G.M., and J.E.P. provided the BSGS data. H-J.W. and L.F. provided the Fehrmann data. G.H. and J.E.P. wrote the manuscript with the participation of all authors.
+G.H., J.E.P., P.M.V., and G.W.M. conceived and designed the study. G.H., J.E.P., K.S., H-J.W., and J.Y. performed the analysis. T.E. and A.M. provided the EGCUT data. A.K.H., A.F.M., G.W.M., N.G.M., and J.E.P. provided the BSGS data. G.G. provided the CHDWB data. H-J.W. and L.F. provided the Fehrmann data. G.H. and J.E.P. wrote the manuscript with the participation of all authors.
 
 
 \subsection*{Author information}
@@ -190,28 +240,252 @@ The authors declare no financial competing interests.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=2.5in]{gpbonfrep.pdf}
+	% \includegraphics[width=2.5in]{gpbonfrep.pdf}
 	\caption{\textbf{Replication of GP maps in two independent populations} The GP maps for each epistatic interaction that is significant at the Bonferroni level in both replication datasets are shown. Each GP map consists of nine tiles where each tile represents the expression level for that two-locus genotype class. Phenotypes are for gene transcript levels (dark coloured tiles = high expression, light coloured tiles = low expression). Columns of GP maps are for each independent dataset. Rows of GP maps are for each of 30 significantly replicated interactions at the Bonferroni level, corresponding to the rows in Table \ref{tab:bonferroni}. There is a clear trend of the GP maps replicating across all three datasets.}
 	\label{fig:gpmaps}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=2.5in]{qqMeta.pdf}
+	% \includegraphics[width=2.5in]{qqMeta.pdf}
 	\caption{\textbf{Q-Q plots of interaction $p$-values from replication datasets} The top panel shows all 434 discovery SNPs that were tested for interactions. Observed $p$-values ($y$-axis, $-\log_{10}$ scale) are plotted against the expected $p$-values ($x$-axis, $-\log_{10}$ scale). The multiple testing correction threshold for significance following Bonferroni correction is denoted by a dotted line. The bottom panel shows the same data as the top panel but excluding the 30 interactions that were significant at the Bonferroni level in the replication datasets. The shaded grey area represents the 5\% confidence interval for the expected distribution of $p$-values. Dark blue points represent $p$-values that exceed the confidence interval, light blue are within the confidence interval.}
 	\label{fig:qqMeta}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=5in]{pale_gray_graph_of_interactions_2_lists_GrayEdges}
+	% \includegraphics[width=5in]{pale_gray_graph_of_interactions_2_lists_GrayEdges}
 	\caption{\textbf{Discovery and replication of epistatic networks} All 434 putative genetic interactions (edges) with data common to discovery and replication sets is shown, where black nodes represent SNPs and red nodes represent traits (gene expression probes). Three hundred and forty-five interactions had $p$-values exceeding the 2.5\% confidence interval following meta analysis of the replication data The remaining 89 interactions that did not replicate are depicted in grey. It is evident that a large proportion of the complex networks identified in the discovery set also exist in independent populations. An interactive version of this graph can be found here: \url{http://kn3in.github.io/detecting_epi/}}
 	\label{fig:fireworks}
 \end{figure}
 
 \clearpage
 
-\bibliography{refs}
+% \bibliography{refs}{References 1}
+\printbibliography[category=Category1]
+\clearpage
+
+
+\section*{Online methods}
+
+\section{Discovery data}
+
+\subsection{Data description}
+
+The Brisbane Systems Genetics Study (BSGS) comprises 846 individuals of European descent from 274 independent families \supercite{Powell2012}. DNA samples from each individual were genotyped on the Illumina 610-Quad Beadchip by the Scientific Services Division at deCODE Genetics Iceland. Full details of genotyping procedures are given in Medland et al. \supercite{Medland2009} Standard quality control (QC) filters were applied and the remaining 528,509 autosomal SNPs were carried forward for further analysis. 
+
+Gene expression profiles were generated from peripheral blood collected with PAXgene TM tubes (QIAGEN, Valencia, CA) using Illumina HT12-v4.0 bead arrays. The Illumina HT-12 v4.0 chip contains 47,323 probes, although some probes are not assigned to RefSeq genes. We removed any probes that did not match the following criteria: contained a SNP within the probe sequence with MAF $ > 0.05$ within 1000 genomes data; did not map to a listed RefSeq gene; were not significantly expressed (based on a detection $p$-value $< 0.05$) in at least 90\% of samples. After this stringent QC 7339 probes remained for 2D-eQTL mapping. These data are accessible through GEO Series accession number GSE53195.
+
+
+\subsection{Normalisation}
+
+Gene expression profiles were normalised and adjusted for batch and polygenic effects. Profiles were first adjusted for raw background expression in each sample. Expression levels were then adjusted using quantile and $\log_2$ transformation to standardise distributions between samples. Batch and polygenic effects were adjusted using the linear model
+
+\begin{equation}
+y = \mu + \beta_{1}c + \beta_{2}p + \beta_{3}s + \beta_{4}a + g + e
+\label{eq:lm}
+\end{equation}
+where $\mu$ is the population mean expression levels, $c$, $p$, $s$ and $a$ are vectors of chip, chip position, sex and generation respectively, fitted as fixed effects; and $g$ is a random additive polygenic effect with a variance covariance matrix 
+\begin{equation}
+G_{jk} = \left \{ 
+\begin{array}{ll}
+\sigma _a ^2             &          j = k \\ 
+2\phi _{jk} \sigma _a ^2& 			j \neq k \\
+\end{array} \right.
+\end{equation}
+The parameter $\sigma_a^2$ is the variance component for additive background genetic. Here, we are using family based pedigree information rather than SNP based IBD to account for relationships between individuals and so $\phi _{jk}$ is the kinship coefficient between individuals $j$ and $k$. The residual, $e$, from equation \ref{eq:lm} is assumed to follow a multivariate normal distribution with a mean of zero. Residuals were normalised by rank transformation and used as the adjusted phenotype for the pairwise epistasis scan to remove any skewness and avoid results being driven by outliers. The GenABEL package for R was used to perform the normalisation \supercite{Aulchenko2007}.
+
+
+\section{Exhaustive 2D-eQTL analysis}
+
+\subsection{Two stage search}
+
+We used epiGPU \supercite{Hemani2011} software to perform an exhaustive scan for pairwise interactions, such that each SNP is tested against all other SNPs for statistical association with the expression values for each of the 7339 probes. This uses the massively parallel computational architecture of graphical processing units (GPUs) to speed up the exhaustive search. For each SNP pair there are 9 possible genotype classes. We treat each genotype class as a fixed effect and fit an 8 \emph{d.f.} $F$-test to test the following hypotheses:
+
+\begin{equation}
+H _0 : \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \mu) ^2 = 0; 
+\end{equation}
+
+\begin{equation}
+H _1 : \sum _{i=1} ^3 \sum _{j=1} ^3 (\bar x _{ij} - \mu) ^2 > 0; 
+\label{eq:8df}
+\end{equation}
+where $\mu$ is the mean expression level and $x _{ij}$ is the pairwise genotype class mean for genotype $i$ at SNP 1 and genotype $j$ at SNP 2. This type of test does not parameterize for specific types of epistasis, rather it tests for the joint genetic effects at two loci. This has been demonstrated to be statistically more efficient when searching for a wide range of epistatic patterns, although will also include any marginal effects of SNPs which must be dealt with post-hoc \supercite{Hemani2013}.
+
+\subsubsection{Stage 1}
+ 
+The complete exhaustive scan for 7339 probes comprises $1.03 \times 10^{15}$ $F$-tests. We used permutation analysis to estimate an appropriate significance threshold for the study. To do this we performed a further 1600 exhaustive 2D scans on permuted phenotypes to generate a null distribution of the extreme $p$-values expected to be obtained from this number of multiple tests given the correlation structure between the SNPs. We took the most extreme $p$-value from each of the 1600 scans and set the 5\% FWER to be the 95\% most extreme of these $p$-values, $T_{*} = 2.13 \times 10^{-12}$. The effective number of tests in one 2D scan being performed is therefore $N_{*} = 0.05 / T_{*} \approx 2.33 \times 10^{10}$. To correct for the testing of multiple traits we established an experiment wide threshold of $T_{e} = 0.05 / (N_{*} \times 7339) = 2.91 \times 10^{-16}$. This is likely to be conservative as it assumes independence between probes.
+
+\paragraph{Filtering} We used two approaches to filter SNPs from stage 1 to be tested for significant interaction effects in stage 2.
+
+\paragraph{Filter 1} After keeping SNP pairs that surpassed the $2.91 \times 10^{-16}$ threshold in stage 1 only SNP pairs with at least 5 data points in all 9 genotype classes were kept. We then calculated the LD between interacting SNPs (amongst unrelated individuals within the discovery sample and also from 1000 genomes data) and removed any pairs with $r^2 > 0.1$ or $D'^{2} > 0.1$ to avoid the inclusion of haplotype effects and to increase the accuracy of genetic variance decomposition. If multiple SNP pairs were present on the same chromosomes for a particular expression trait then only the sentinel SNP pair was retained, \emph{i.e.} if a probe had multiple SNP pairs that were on chromosomes one and two then only the SNP pair with the most significant $p$-value was retained. At this stage 6404 filtered SNP pairs remained. 
+
+\paragraph{Filter 2} We also performed a second filtering screen applied to the list of SNP pairs from stage 1 that was identical to filter 1 but an additional step was included where any SNPs that had previously been shown to have a significant additive or dominant effect ($p < 1.29 \times 10^{-11}$) were removed \supercite{Powell2013}, creating a second set of 4751 unique filtered SNP pairs.
+
+\subsubsection{Stage 2}
+
+To ensure that interacting SNPs were driven by epistasis and not marginal effects we performed a nested ANOVA on each pair in the filtered set to test if the interaction terms were significant. We did this by contrasting the full genetic model (8 \emph{d.f.}) against the reduced marginal effects model which included the additive and dominance terms at both SNPs (4 \emph{d.f.}). Thus, a 4 \emph{d.f.} $F$-test was performed on the residual genetic variation, representing the contribution of epistatic variance. Significance of epistasis was determined using a Bonferroni threshold of $0.05 / (6404+4751) = 4.48 \times 10^{-6}$. This resulted in 406 and 95 SNP pairs with significant interaction terms from filters 1 and 2, respectively.
+
+
+\subsection{Type 1 error rate}
+
+Using a Bonferroni correction of $0.05$ in the second stage of the two stage discovery scan implies a type 1 error rate of $\alpha = 0.05$. However, this could be underestimated because the number tests performed in the second stage depends on the number of tests in the first stage, and this depends on statistical power and model choice. We performed simulations to estimate the type 1 error rate of this study design.
+
+We assumed a null model where there was one true additive effect and 7 other terms with no effect. To simulate a test statistic we simulated 8 z-scores, $z_1 \sim N(\sqrt{NCP}, 1)$ and $z_{2..8} \sim N(0,1)$. Thus $z_{full} = \sum^8_{i=1}{z_i} \sim \chi^{2}_{8}$ (representing the 8 d.f. test) and $z_{int} = \sum^8_{i=5}{z_i} \sim \chi^{2}_{4}$ (representing the 4 d.f. test where the null hypothesis of no epistasis is true). For a particular value of $NCP$ we simulated 100,000 $z$ values, and calculated the $p_{full}$-value for the $z_{full}$ test statistic. The $n_{int}$ test statistics with $p_{full} < 2.31 \times 10^{-16}$ were kept for the second stage, where the type 1 error rate of stage 2 was calculated as the proportion of $p_{int} < 0.05 / n_{int}$. The power at stage 1 was calculated as $n_{int} / 100,000$. This procedure was performed for a range of $NCP$ parameters that represented power ranging from $\sim 0$ to $\sim 1$.
+
+
+\subsection{Population stratification}
+
+We ruled out population stratification as a possible cause of inflated test statistics. To test for cryptic relatedness driving the interaction terms we tested for increased LD among the SNPs \supercite{Yang2011}. We calculated the mean of the off-diagonal elements of the correlation matrix of all unique SNPs from the 501 interactions (731 SNPs) using only unrelated individuals, $\bar{r^2} = 0.0039$. This is not significantly different from the null hypothesis of zero (sampling error $= 1/n_{\textrm{unrelated}} = 0.0039$).
+
+
+\subsection{Probe mapping}
+
+To avoid possibility that epistatic signals might arise due to expression probes hybridising in multiple locations we verified that probe sequences for genes with significant interactions mapped to only a single location. As an initial verification we performed a BLAST search of the full probe sequence against 1000 genomes phase 1 version 3 human genome reference and ensured that only one genomic location aligned significantly ($p < 0.05$). As a second step, to mitigate the possibility of weak hybridisation elsewhere in the genome we divided the probe sequence into three sections (1-25bp, 13-37bp, 26-50bp) and performed a BLAST search of these probe sequence fragments. No probe sequemces or probe sequence fragments mapped to positions other than the single expected genomic target ($p < 0.05$).
+
+
+\section{Replication}
+
+
+\subsection{Data description}
+
+We attempted replication of the 501 significant interactions from the discovery set using three independent cohorts; Fehrmann, EGCUT, and CHDWB. It was required that LD $r^2 < 0.1$ and $D'^{2} < 0.1$ between interacting SNPs (as measured in the replication sample directly), and all nine genotype classes had at least 5 individuals present in order to proceed with statistical testing for replication in both datasets. We also excluded any putative SNPs that had discordant allele frequencies in any of the datasets. Details of the cohorts are as follows.
+
+\paragraph{Fehrmann: $n=1240$}
+The Fehrmann dataset \supercite{Fehrmann2011} consists of peripheral blood samples of 1240 unrelated individuals from the United Kingdom and the Netherlands. Some of these individuals are patients, while others are healthy controls. Individuals were genotyped using the Illumina HumanHap300, Illumina HumanHap370CNV, and Illumina 610 Quad platforms. RNA levels were quantified using the Illumina HT-12 V3.0 platform. These data are accessible through GEO Series accession numbers GSE20332 and GSE20142.
+
+\paragraph{EGCUT: $n=891$}
+The Estonian Genome Center of the University of Tartu (EGCUT) study \supercite{Metspalu2004} consists of peripheral blood samples of 891 unrelated individuals from Estonia. They were genotyped using the Illumina HumanHap370CNV platform. RNA levels were quantified using the Illumina HT-12 V3.0 platform. These data are accessible through GEO Series accession number GSE48348.
+
+\paragraph{CDHWB: $n=139$}
+The Center for Health Discovery and Well Being (CDHWB) Study \supercite{Preininger2013} is a population based cohort consisting of 139 individuals of European descent collected in Atlanta USA. Gene expression profiles were generated with Illumina HT-12 V3.0 arrays from peripheral blood collected from Tempus tubes that preserve RNA. Whole genome genotypes were measured using Illumina OmniQuad arrays. Due to the small sample size, most SNP pairs did not pass filtering in this dataset (20 SNP pairs remained) and so we have excluded it from the rest of the analysis.
+
+\subsection{Meta Analysis}
+
+The 4 \emph{d.f.} interaction $p$-values for each independent replication dataset were calculated using the same statistical test as was performed in the discovery dataset. We then took the interaction $p$-values from EGCUT and Fehrmann and calculated a joint $p$-value using Fisher's method of combining $p$-values for a meta analysis as $-2 \ln p_{1} - 2 \ln p_{2} \sim \chi^{2}_{4 d.f.}$. As in the discovery analysis, all gene expression levels were normalised using rank transformation to avoid skew or outliers in the distribution \supercite{Westra2011}.
+
+
+\subsection{Concordance of direction of effects}
+
+We used four methods to calculate the concordance of the direction of effects between the discovery and replication datasets. 
+
+
+\paragraph{Test 1} Is the most significant epistatic effect in the discovery set in the same direction as the same epistatic effect in the replication sets? We decomposed the genetic variance into 8 orthogonal effects, four of which are epistatic ($A \times A$, $A \times D$, $D \times A$, $D \times D$). The sign of the epistatic effect that had the largest variance in the discovery was recorded, and then was compared to the same epistatic effect in the two replication datasets (regardless of whether or not the same epistatic effect was the largest in the replication datasets). The probability of the sign being the same in one dataset is $1/2$. The probability of the sign being the same in two is $1/4$.
+
+\paragraph{Test 2} Is the most significant epistatic effect in the discovery the same as the largest epistatic effect in the replication set with the sign being concordant. As in Test 1, but this time we required that the largest effect was the same in the discovery and the replication, and that they had the same sign (\emph{e.g.} if the largest effect in the discovery is $A \times A$, with a positive effect, then concordance is achieved if the same is true in the replication). The probability of one replication dataset being concordant by chance is $1/8$, and concordance in both is $1/64$.
+
+\paragraph{Test 3} Do the epistatic effects that are significant at nominal $p < 0.05$ in the discovery have the same direction of effect as in the replication? Here we count all the epistatic variance components in the discovery that have $p < 0.05$ (1133 amongst the 434 discovery SNP pairs, $i.e.$ each SNP pair has at least 1 and at most 4 significant epistatic variance components). Then we compare the direction of the effect in the replication dataset. The probability of the sign being the same in one dataset for any one significant effect is $1/2$. The probability of the sign being the same in two is $1/4$.
+
+\paragraph{Test 4} If we count how many of the 4 epistatic effects are concordant between the discovery and replication data for each interaction then is this significant from what we expect by chance? There can be either 0, 1, 2, 3 or 4 concordant signs at each interaction, each with expectation of $p=1/16, 4/16, 6/16, 4/16, 1/16$ under the null, respectively. Observed counts are multinomially distributed, and we tested if the observed proportions were statistically different from the expected proportions using an approximation of the multinomial test \supercite{Williams1976}.
+
+
+The probability of observing the number of concordant signs in tests 1-3 is calculated using a binomial test. All variance decompositions were calculated using the NOIA method \supercite{Alvarez-Castro2008}.
+
+
+\section{Effects of LD on detection and replication}
+
+The power to detect genetic effects, when the observed markers are in LD with the causal variants, is proportional to $r^x$. For additive effects $x = 2$, but for non-additive effects $x$ is larger, \emph{i.e.} $x = 4$ for dominance or $A \times A$, $x = 6$ for $A \times D$ or $D \times A$, and $x = 8$ for $D \times D$. Many biologically realistic GP maps may be comprised of all 8 variance components \supercite{Hemani2013}. 
+
+This is important for both detection and for replication of epistasis. For detection, if the epistatic effect includes the $D \times D$ term then if the two causal variants are tagged by observed markers that are each in LD $r = 0.9$, then if the true variance is $V_{t}$ then the observed variance $V_{o}$ at the markers will be $0.9^{8}V_{t} = 0.43V_{t}$. Therefore, it is important to consider the sampling variation of $\hat{r}^x$ in a sample given some true population value of $r$. 
+
+\subsection{Simulation 1}
+
+For some values of fixed population parameters, $p_{1}$ (minor allele frequency at observed marker), $q_{1}$ (minor allele frequency at causal variant), and $r$ (LD between marker and causal variant), the expected haplotype frequencies are
+
+\begin{align}
+h_{11} &= r \sqrt{p_{1}q_{1}p_{2}q_{2}} + p_{1}q_{1} \\
+h_{12} &= p_{1}q_{2} - r \sqrt{p_{1}q_{1}p_{2}q_{2}} \\
+h_{21} &= p_{2}q_{1} - r \sqrt{p_{1}q_{1}p_{2}q_{2}} \\
+h_{22} &= r \sqrt{p_{1}q_{1}p_{2}q_{2}} + p_{2}q_{2}
+\end{align}
+where $p_{2} = 1 - p_{1}$ and $q_{2} = 1 - q_{1}$. For a range of population parameters we randomly sampled $2n$ haplotypes where the expected haplotype frequencies were $h_{11}, h_{12}, h_{21}, h_{22}$. From the sample haplotype frequencies we then calculated sample estimates of $\hat{r}$ where 
+
+\begin{equation}
+\hat{r} = \frac{\hat{h}_{11} - \hat{p}_{1}\hat{q}_{1}}{\sqrt{\hat{p}_{1}\hat{q}_{1}\hat{p}_{2}\hat{q}_{2}}}
+\end{equation}
+
+For each value of combination of the parameters $p_{1}, q_{1}, r, n$ 1000 simulations were performed and the sampling mean and sampling standard deviation of $\hat{r}, \hat{r}^2, \hat{r}^4, \hat{r}^6, \hat{r}^8$ were recorded. It was observed that sampling variance increases for increasing $x$ in $\hat{r}^x$.
+
+
+\subsection{Simulation 2}
+
+We assume that the discovery SNP pairs are ascertained (from a very large number of tests) have high $\hat{r}$ between observed SNPs and causal variants because otherwise power of detection would be low. We can hypothesis that the distribution of $\hat{r}$ in this ascertained sample will be a mixture of $r$ that is high and $r$ that is lower but with ascertained higher values from sampling. Therefore, we would expect those with truly high $r$ to have a higher replication rate in independent datasets, and those with ascertained high $\hat{r}$ to have lower replication because resampling is unlikely to result in the same extreme ascertainment. To obtain empirical estimates of $\hat{r}$ in discovery and replication datasets we conducted the following simulation.
+
+\begin{enumerate}
+\item Using 1000 genomes data (phase 1, version 3, 379 European samples) we selected the 528,509 ``markers'' used in the original discovery analysis, plus 100,000 randomly chosen ``causal variants'' (CVs) with minor allele frequence $> 0.05$.
+\item The 379 individuals were split into discovery (190) and replication (189) sets.
+\item For each CV the marker with the maximum $\hat{r}^2_{D}$ from the marker panel was recorded in the discovery set. This marker was known as the ``discovery marker'' (DM).
+\item The $\hat{r}^2_{R}$ for each CV/DM pair was then calculated in the replication set where the discovery LD was ascertained to be high, such that $\hat{r}^2_{D} > 0.9$.
+\end{enumerate}
+
+We observed that there was an average decrease in $\hat{r}^x_{R}$ relative to $\hat{r}^x_{D}$, and that this decrease was larger with increasing $x$. We observed that $(\hat{r}^2_{R} - \hat{r}^2_{D}) / \hat{r}^2_{D} = 0.029$ whereas $(\hat{r}^8_{R} - \hat{r}^8_{D}) / \hat{r}^8_{D} = 0.092$. The average drop in in replication $\hat{r}^8$ was 3 times higher than the drop in $\hat{r}^2$.
+
+
+\subsection{Interpretation}
+
+Simulation 1 shows that sampling variance of $r^x$ increases as $x$ increases. Detection of epistatis is highly dependent upon high $\hat{r}$. Amongst the discovery SNPs there will be a mixture of interactions where observed SNPs are either in true high LD with causal variants, or will have highly inflated sample $\hat{r}^{x}$ compared to the population $r^x$. Simulation 2 shows that as $x$ gets larger, the average decrease in $\hat{r}^x$ between discovery and replication becomes larger, likely to be a result of ascertained high $\hat{r}$ in the discovery and increased sampling variance with increasing $x$ in the replication. These results demonstrate that if all else is equal, the impact of sampling variance of $r$ alone will reduce the replication rate of epistatic effects compared to additive effects.
+
+
+\section{Additive and non-additive variance estimation}
+
+\subsection{Fixed effects}
+
+To compare the relative contribution to the phenotypic variance of gene expression levels between additive and epistatic effects we are constrained by the problem that non-additive variance components for a phenotype cannot be calculated directly. Here, we only have SNP pairs that exceed a threshold of $p < 2.91 \times 10^{-16} = T_{e}$. A strong conclusion cannot be made about the genome-wide variance contribution, but we can compare the variance explained by SNP effects at this threshold for additive scans and epistatic scans. 
+
+In Powell \emph{et al} 2012 \supercite{Powell2012} an expression quantitative trait locus (eQTL) study was performed searching for additive effects in the same BSGS dataset as was used for the discovery here. Using the threshold $T_{e}$ for the additive eQTL study, 453 of the 7339 probes analysed here had at least one significant additive effect. Assuming that the phenotypic variance for each of the probes is normalised to 1, the total phenotypic variance of all 7339 explained by the significant additive effects was 1.73\%.
+
+Following the same procedure, at the threshold $T_{e}$ there were 238 gene expression probes with at least one significant pairwise epistatic interaction out of the 7339 tested. In total the proportion of the phenotypic variance explained by the epistatic effects at these SNP pairs was 0.25\%.
+
+\subsection{Limitations of this type of comparison}
+
+Though it is useful to compare the relative variances of epistatic and additive effects, it must be stressed that our results here are approximations that are very limited by the study design. We estimate that additive effects explain approximately 10 times more variance than epistatic effects, but this could be an overestimate or an underestimate due to a number of different caveats. Firstly, the ratio of additive to epistatic variance may differ at different minimum variance thresholds, and our estimate is determined by the threshold used. Secondly, the power of a 1 \emph{d.f.} test exceeds that of an 8 \emph{d.f.} test. Thirdly, the non-additive variance at causal variants is expected to be underestimated by observed SNPs in comparison to estimates for additive variance. And forthly, the extent of winner's curse in estimation of effect sizes may differ between the two studies.
+
+
+\subsection{Pedigree estimates}
+
+The gene expression levels for MBNL1, TMEM149, NAPRT1, TRAPPC5 and CAST are influenced by large \emph{cis}-\emph{trans} epistatic networks (eight interactions or more). Though it is not possible to orthogonally estimate the non-additive genetic variance for non-clonal populations, an approximation of a component of non-additive variance can be estimated using pedigree information. The BSGS data is comprised of some related individuals and standard quantitative genetic analysis was used to calculate the additive and dominance variance components for each gene expression phenotype in Powell \emph{et al} 2013 \supercite{Powell2013}. The dominance effect is likely to capture additive $\times$ additive genetic variance plus some fraction of other epistatic variance components. We found that the aforementioned genes had dominance variance component estimates within the top 5\% of all 17,994 gene expression probes that were analysed in Powell \emph{et al} 2013.
+
+
+\section{Functional enrichment analysis}
+
+\subsection{Tissue specific transcriptionally active regions}
+
+We employed a recently published method (\url{http://www.broadinstitute.org/mpg/epigwas/}) \supercite{Trynka2013} that tests for cell-type-specific enrichment of active chromatin, measured through H3K4me3 chromatin marks \supercite{Koch2007} in regions surrounding the 731 SNPs that comprise the 501 discovery interactions. The exact method used to perform this analysis has been described previously \supercite{Rietveld2013}. Briefly, we tested the hypothesis that the 731 SNPs were more likely to be in transcriptionally active regions (as measured by chromatin marks) than a random set of SNPs selected from the same SNP chip. This hypothesis was tested for 34 cell types across four broad tissue types (haematopoietic, gastrointenstinal, musculoskeletal and endocrine, and brain).
+
+
+\subsection{Chromosome interactions}
+
+It has been shown \supercite{Lieberman-Aiden2009} that different regions on different chromosomes or within chromosomes spatially colocalise within the cell. We shall refer to the colocalisation of two chromosome regions as a chromosome interaction. A map of pairwise chromosome interactions for K562 blood cell lines was recently produced \supercite{Lan2012}, and we hypothesised that part of the underlying biological mechanism behind some of the 501 epistatic interactions may arise from chromosome interactions. We found that 44 of the putative epistatic interactions were amongst SNPs that were within 5Mb of known chromosome interactions. This means that SNP A was no more than 2.5Mb from the focal point of the chromosome interaction on chromosome A, and SNP B was no more than 2.5Mb from the focal point on chromosome B.
+
+We performed simulations to test how extreme the observation of 44 epistatic interactions overlapping with chromosome interactions is compared to chance. Chromosome interactions fall within functional genomic regions \supercite{Lieberman-Aiden2009, Lan2012}, and the SNPs in our epistatic interactions are enriched for functional genomic regions. Therefore, we designed the simulations to ensure that the null distribution was of chromosome interactions between SNPs enriched for functional genomic regions but with no known epistatic interactions. To do this we used the 731 SNPs that form the 501 putative epistatic interactions and randomly shuffled them to create new sets of 501 pairs, disallowing any SNP combinations that were in the original set. Therefore, each new random set was enriched for functional regions but had no genetic interactions. We scanned the map of chromosome interactions for overlaps with the new sets and then repeated the random shuffling process. We performed 1,000 such permutations to generate a null distribution of chromosome interaction overlaps.
+
+We repeated this process, searching for overlaps within 1Mb, 250kb, and 10kb.
+
+
+\subsection{SNP colocalisation with genomic features}
+\label{sub:snp_colocalisation_with_genomic_features}
+
+We tested for enrichment of genomic features for the 687 IndexSNPs that comprise the 434 epistatic interactions with data present in discovery and replication datasets. For each of the 687 IndexSNPs we calculated LD with all regional SNPs within a radius of 0.5Mb and kept all regional SNPs with LD $r^{2} > 0.8$. We then cross-referenced the remaining regional SNPs with the annotated chromatin structure reference \supercite{Hoffman2012}) querying whether the regional SNPs fell in Predicted promoter region including TSS (TSS), Predicted promoter flanking region (PF), Predicted enhancer (E), Predicted weak enhancer or open chromatin cis regulatory element (WE), CTCF enriched element (CTCF), Predicted transcribed region (T), or Predicted Repressed or Low Activity region (R) positions. Therefore a particular IndexSNP might cover multiple genomic features through LD.
+
+We then performed the whole querying process for each of the 528,509 SNPs present in the SNP chip used in the scan, and used the results from this second analysis to establish a null distribution for the expected proportion of SNPs for each genomic feature. We calculated $p$-values for enrichment of each of the seven genomic features independently, and for \emph{cis}- and \emph{trans}-SNPs separately, using a binomial test. For each genomic feature we used the expected proportion of SNPs as the expected probability of ``success'' ($p$). Here, a success is defined as an IndexSNP residing in a region that includes the genomic feature. The observed number of successes for each IndexSNP ($k$) out of the total count of IndexSNPs ($n$) was then modelled as $\Pr (X = k) = {n \choose k} p^{k}(1-p)^{n-k}$.
+
+
+
+\subsection{Transcription factor enrichment}
+
+To test for enrichment of transcription factor binding sites (TFBS) we followed a procedure similar to that described in Section \ref{sub:snp_colocalisation_with_genomic_features}. For each of the 687 IndexSNPs we extracted regional SNPs as previously described. We then used the PWMEnrich package in Bioconductor (\url{http://www.bioconductor.org/packages/2.12/bioc/html/PWMEnrich.html}) to identify which TFBSs each of the regional SNPs for one IndexSNP falls in (within a radius of 250bp). Thus, the number of occurrences of a particular TFBS was counted for each IndexSNP. We used the ``Threshold-free affinity'' method for identifying TFBSs \supercite{Stormo2000}.
+
+We constructed a null distribution of expected TFBS occurrences based on the same null hypothesis as described in Section \ref{sub:snp_colocalisation_with_genomic_features} - the probability of an IndexSNP covering a particular TFBS is identical to any of the 528,509 SNPs in the discovery SNP chip. To do this, we performed the same procedure for each SNP in the discovery SNP chip as was performed for each IndexSNP to obtain an expected probability of covering a particular TFBS. We then tested the IndexSNPs for enrichment of each TFBS independently, and for \emph{cis}- and \emph{trans}-SNPs separately. $p$-values were obtained using Z-scores, calculated by using a normal approximation to the sum of binomial random variables representing motif hits along the sequence \supercite{HoSui2005}.
+
+
+\subsection{Defining previously identified SNP associations}
+
+The discovery dataset (BSGS) had previously been analysed for additive and dominant marginal effects for all gene expression levels \supercite{Powell2012, Powell2013}. To define SNPs that had been previously detected to have effects for a particular gene expression level we used a significance threshold accounting for multiple testing across SNPs and expression probes, $T_{m} = 0.05 / (528509 \times 7339) = 1.29 \times 10^{-11}$. From this, we found that only nine of the 501 discovery interactions had known main effects, 64 were between SNPs that had no known marginal effects, and 439 were between a SNP with a known marginal effect and a SNP with no known marginal effect.
+
+
+
+\printbibliography[category=Category2]
+
 \clearpage
 
 \setcounter{page}{1}
@@ -246,10 +520,11 @@ The authors declare no financial competing interests.
 \end{figure}
 \clearpage
 
+
 \begin{figure}
 	\centering
 	\includegraphics[width=5in]{ChromatinStatesOverlapFixedOrder}
-	\caption{\textbf{Location of SNPs relative to genomic features} We used chromatin segmentation \cite{Hoffman2012} as a method for labelling genomic features. All SNPs within 1Mb and $r^2 > 0.8$ of each \emph{cis}- and \emph{trans}-SNP were taken to find which genomic features (\emph{x}-axis) were covered by the SNPs that compose the 501 significant interactions. Green bars represent the proportion (\emph{y}-axis) of the 528,509 SNPs used in the analysis that fall within the range of the different genomic features. There is enrichment for \emph{cis}-acting SNPs (red bars) in promotor regions, but \emph{trans}-acting SNPs (blue bars) are not enriched for genomic features. The labels on the $x$-axis are as follows: E = Predicted enhancer, CTCF = CTCF enriched element, WE = Predicted weak enhancer or open chromatin cis regulatory element, PF = Predicted promoter flanking region, TSS = Predicted promoter region including transcriptional start site, T = Predicted transcribed region, R = Predicted Repressed or Low Activity region}
+	\caption{\textbf{Location of SNPs relative to genomic features} We used chromatin segmentation \supercite{Hoffman2012} as a method for labelling genomic features. All SNPs within 1Mb and $r^2 > 0.8$ of each \emph{cis}- and \emph{trans}-SNP were taken to find which genomic features (\emph{x}-axis) were covered by the SNPs that compose the 501 significant interactions. Green bars represent the proportion (\emph{y}-axis) of the 528,509 SNPs used in the analysis that fall within the range of the different genomic features. There is enrichment for \emph{cis}-acting SNPs (red bars) in promotor regions, but \emph{trans}-acting SNPs (blue bars) are not enriched for genomic features. The labels on the $x$-axis are as follows: E = Predicted enhancer, CTCF = CTCF enriched element, WE = Predicted weak enhancer or open chromatin cis regulatory element, PF = Predicted promoter flanking region, TSS = Predicted promoter region including transcriptional start site, T = Predicted transcribed region, R = Predicted Repressed or Low Activity region}
 	\label{fig:snplocations}
 \end{figure}
 \clearpage
@@ -257,7 +532,7 @@ The authors declare no financial competing interests.
 \begin{figure}
 	\centering
 	\includegraphics[width=5in]{H3K4me3Enrichment501_list}
-	\caption{\textbf{Tissue specific enrichment of SNPs in transcriptionally active regions} The locations of transcriptional activity can be predicted by chromatin marks, assayed by H3K4me3 \cite{Trynka2013}. Enrichment $p$-values are calculated using permutation analysis for 34 different cell types ($y$-axis) in four tissue types (Rows of boxes). The dotted red line denotes significance (Bonferroni correction for 34 cell types, $x$-axis). There is enrichment for \emph{cis}-acting SNPs in Haematopoietic tissue types only. \emph{Trans}-acting SNPs have no tissue specificity.}
+	\caption{\textbf{Tissue specific enrichment of SNPs in transcriptionally active regions} The locations of transcriptional activity can be predicted by chromatin marks, assayed by H3K4me3 \supercite{Trynka2013}. Enrichment $p$-values are calculated using permutation analysis for 34 different cell types ($y$-axis) in four tissue types (Rows of boxes). The dotted red line denotes significance (Bonferroni correction for 34 cell types, $x$-axis). There is enrichment for \emph{cis}-acting SNPs in Haematopoietic tissue types only. \emph{Trans}-acting SNPs have no tissue specificity.}
 	\label{fig:h3k4me3}
 \end{figure}
 \clearpage
@@ -964,7 +1239,7 @@ ZYX & ILMN\_1701875 & 7 & rs6056281 & 20 & 8935312 &  & rs2242601 & 7 & 14309382
 
 \begin{table}[ht]
 \begin{threeparttable}
-\caption{\textbf{Estimation of additive and non-additive variance components from pedigree information} Taken from previous analysis in Powell et al 2013 \cite{Powell2013}}
+\caption{\textbf{Estimation of additive and non-additive variance components from pedigree information} Taken from previous analysis in Powell et al 2013 \supercite{Powell2013}}
 \label{tab:vc}
 \begin{tabular}{llrrrr}
 
