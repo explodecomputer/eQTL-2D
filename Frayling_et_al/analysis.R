@@ -41,11 +41,47 @@ out[,3] <- qchisq(pval[,3], df=1, lower.tail=F)
 out[,4] <- qchisq(pval[,4], df=8, lower.tail=F)
 
 # var explained
+n <- 200
 out2 <- array(0, c(nrow(pval), ncol(pval)))
-out2[,1] <- round((out[,1]/500)/(1+(out[,1]/500))*100, 2)
-out2[,2] <- round((out[,2]/500)/(1+(out[,2]/500))*100, 2)
-out2[,3] <- round((out[,3]/500)/(1+(out[,3]/500))*100, 2)
-out2[,4] <- round((8*out[,4]/500)/(1+8*(out[,4]/500))*100, 2)
+out2[,1] <- round((out[,1]/n)/(1+(out[,1]/n))*100, 2)
+out2[,2] <- round((out[,2]/n)/(1+(out[,2]/n))*100, 2)
+out2[,3] <- round((out[,3]/n)/(1+(out[,3]/n))*100, 2)
+out2[,4] <- round((8*out[,4]/n)/(1+8*(out[,4]/n))*100, 2)
 
 out_all <- cbind(out, out2)
 write.csv(out_all, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/chisq_var.csv", quote=F, row.names=F)
+
+
+
+
+# get additive effects of their inc snps
+info <- read.csv("Frayling_et_al/data_files/inc_info_bsgs.csv", header=T)
+
+
+dir <- "/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Var_eQTL/data/Output_Z/"
+
+
+for(i in 1:nrow(info)) {
+
+	if(!is.na(info$chr[i])) {
+
+		if(nchar(info$chr[i])==1) {
+			tmp <- read.table(paste(dir, as.character(info$Probe[i]), "/", as.character(info$Probe[i]), "_Z-fastassoc-chr0", as.character(info$chr[i]), ".tbl", sep=""), header=T)
+			out <- tmp[which(tmp$SNP==as.character(info$rs_id[i])),]
+			print(out)
+		}
+
+		if(nchar(info$chr[i])==2) {
+			tmp <- read.table(paste(dir, as.character(info$Probe[i]), "/", as.character(info$Probe[i]), "_Z-fastassoc-chr", as.character(info$chr[i]), ".tbl", sep=""), header=T)
+			out <- tmp[which(tmp$SNP==as.character(info$rs_id[i])),]
+			print(out)
+		}
+	}	
+}
+
+
+
+
+
+
+
