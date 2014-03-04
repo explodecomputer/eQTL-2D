@@ -60,7 +60,7 @@ info <- read.csv("Frayling_et_al/data_files/inc_info_bsgs.csv", header=T)
 
 dir <- "/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Var_eQTL/data/Output_Z/"
 
-
+s <- array(0, c(nrow(info), 11))
 for(i in 1:nrow(info)) {
 
 	if(!is.na(info$chr[i])) {
@@ -68,16 +68,48 @@ for(i in 1:nrow(info)) {
 		if(nchar(info$chr[i])==1) {
 			tmp <- read.table(paste(dir, as.character(info$Probe[i]), "/", as.character(info$Probe[i]), "_Z-fastassoc-chr0", as.character(info$chr[i]), ".tbl", sep=""), header=T)
 			out <- tmp[which(tmp$SNP==as.character(info$rs_id[i])),]
-			print(out)
+			s[i,] <- as.matrix(out)	
+			
 		}
 
 		if(nchar(info$chr[i])==2) {
 			tmp <- read.table(paste(dir, as.character(info$Probe[i]), "/", as.character(info$Probe[i]), "_Z-fastassoc-chr", as.character(info$chr[i]), ".tbl", sep=""), header=T)
 			out <- tmp[which(tmp$SNP==as.character(info$rs_id[i])),]
-			print(out)
+			s[i,] <- as.matrix(out)	
+		
 		}
+		print(i)
+	}
+
+	else {
+
+		
+
 	}	
 }
+
+s <- as.data.frame(s)
+names(s) <- names(tmp)
+write.csv(s, "Frayling_et_al/data_files/inc_snps_in_bsgs.csv", quote=F, row.names=F)
+
+
+
+
+# extract sig results
+
+index <- array(0, c(nrow(info)))
+for(i in 1:nrow(info)) {
+	tmp <- which(sig$probename==as.character(info$Probe[i]) & sig$snp1==as.character(info$SNP1[i]) & sig$snp2==as.character(info$SNP2[i]))
+	if(length(tmp)>0) {
+
+		index[i] <- tmp
+	}
+
+
+}
+
+
+
 
 
 
