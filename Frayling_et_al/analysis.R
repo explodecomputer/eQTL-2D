@@ -132,25 +132,44 @@ for(i in 1:ncol(epi_geno)) {
 	allele_freq[i,3] <- round(1-((2*aa)+Aa)/(sum(AA,Aa,aa)*2), 3)
 	allele_freq[i,1] <- colnames(epi_geno)[i]
 
-	allele_freq[i,4] <- round(n*as.numeric(allele_freq[i,2])^2,0)
-	allele_freq[i,5] <- round(as.numeric(allele_freq[i,2])*as.numeric(allele_freq[i,2])*2*n,0)
-	allele_freq[i,6] <- round(n*as.numeric(allele_freq[i,3])^2,0)
+	allele_freq[i,4] <- round(as.numeric(allele_freq[i,2])^2,3)
+	allele_freq[i,5] <- round(as.numeric(allele_freq[i,2])*as.numeric(allele_freq[i,2])*2,3)
+	allele_freq[i,6] <- round(as.numeric(allele_freq[i,3])^2,3)
 }
 
-allele_freq <- as.data.frame(allele_freq)
-names(allele_freq) <- c("snp", "freq_a_0", "freq_A_2", "exp_aa_0", "exp_aA_1", "exp_AA_2")
+#allele_freq <- as.data.frame(allele_freq)
+#names(allele_freq) <- c("snp", "freq_a_0", "freq_A_2", "exp_aa_0", "exp_aA_1", "exp_AA_2")
 
 
 
 
 # calc expected genotype classes
-expected_gcs_n450 <- 
 
 
 
+s1 <- which(allele_freq$snp==as.character(epi_info$snp1[i]))
+s2 <- which(allele_freq$snp==as.character(epi_info$snp2[i]))
+
+pair <- array(0, c(nrow(epi_info),9))
 
 
+for(i in 1:nrow(epi_info)) {
+	s1 <- which(allele_freq[,1]==as.character(epi_info$snp1[i]))
+	s2 <- which(allele_freq[,1]==as.character(epi_info$snp2[i]))
 
+	pair[i,1:3] <- round(as.numeric(allele_freq[s1,4:6])*as.numeric(allele_freq[s2,4])*n,0)
+	pair[i,4:6] <- round(as.numeric(allele_freq[s1,4:6])*as.numeric(allele_freq[s2,5])*n,0)
+	pair[i,7:9] <- round(as.numeric(allele_freq[s1,4:6])*as.numeric(allele_freq[s2,6])*n,0)
+}
+
+
+pair <- as.data.frame(pair)
+names(pair) <- c("aa1aa2", "aA1aa2", "AA1aa2", "aa1aA2", "aA1aA2", "AA1aA2", "aa1AA2", "aA1AA2", "AA1AA2")
+
+pair <- cbind(info$Probe, info$SNP1, info$SNP2, pair)
+names(pair)[1] <- "probe"
+names(pair)[2] <- "snp1"
+names(pair)[3] <- "snp2"
 
 
 
