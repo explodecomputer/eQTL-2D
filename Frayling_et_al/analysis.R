@@ -97,16 +97,56 @@ write.csv(s, "Frayling_et_al/data_files/inc_snps_in_bsgs.csv", quote=F, row.name
 
 # extract sig results
 
+info <- read.csv("repo/eQTL-2D/Frayling_et_al/data_files/inc_info_bsgs.csv", header=T)
 index <- array(0, c(nrow(info)))
 for(i in 1:nrow(info)) {
 	tmp <- which(sig$probename==as.character(info$Probe[i]) & sig$snp1==as.character(info$SNP1[i]) & sig$snp2==as.character(info$SNP2[i]))
 	if(length(tmp)>0) {
-
 		index[i] <- tmp
 	}
-
-
 }
+
+
+epi_info <- sig[index,]
+save
+
+
+
+# load in genotype data and clac freq
+
+snps <- c(epi_info$snp1, epi_info$snp2)
+geno <-genolists[[1]]
+index <- which(colnames(geno) %in% snps)
+epi_geno <- geno[,index]
+
+
+n <- 450
+allele_freq <- array(0, c(ncol(epi_geno), 6))
+for(i in 1:ncol(epi_geno)) {
+	g <- as.numeric(epi_geno[,i])
+	AA <- length(which(g==2))
+	Aa <- length(which(g==1))
+	aa <- length(which(g==0))
+
+	allele_freq[i,2] <- round(((2*aa)+Aa)/(sum(AA,Aa,aa)*2), 3)
+	allele_freq[i,3] <- round(1-((2*aa)+Aa)/(sum(AA,Aa,aa)*2), 3)
+	allele_freq[i,1] <- colnames(epi_geno)[i]
+
+	allele_freq[i,4] <- round(n*as.numeric(allele_freq[i,2])^2,0)
+	allele_freq[i,5] <- round(as.numeric(allele_freq[i,2])*as.numeric(allele_freq[i,2])*2*n,0)
+	allele_freq[i,6] <- round(n*as.numeric(allele_freq[i,3])^2,0)
+}
+
+allele_freq <- as.data.frame(allele_freq)
+names(allele_freq) <- c("snp", "freq_a_0", "freq_A_2", "exp_aa_0", "exp_aA_1", "exp_AA_2")
+
+
+
+
+# calc expected genotype classes
+expected_gcs_n450 <- 
+
+
 
 
 
