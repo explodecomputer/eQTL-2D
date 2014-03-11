@@ -89,8 +89,8 @@ for(i in 1:nrow(info)) {
 
 out <- round(out, 3)
 out <- as.data.frame(out)
-out <- cbind(out)
-
+out <- cbind(info[,c(1,2,3,4,5,10)], out)
+write.csv(out, "conditional_results.csv", quote=F, row.names=F)
 
 
 
