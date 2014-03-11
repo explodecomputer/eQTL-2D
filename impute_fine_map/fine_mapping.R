@@ -18,9 +18,13 @@
 #=======================================================#
 
 
-load("/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/agg_filtered.RData")
+#load("/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/agg_filtered.RData")
+
+info <- read.csv("/fileserver/group/wrayvisscher/josephP/Projects/Genomics/Expression_main/Epistasis/eQTL-2D/Frayling_et_al/data_files/inc_info_bsgs.csv", header=T)
+
 snp_info <- read.table("/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Var_eQTL/bsgs_imputed_R2_80_cleaned_stage2_chr_all_SNP_info.txt", header=T)
 snp_info_geno <- read.table("/ibscratch/wrayvisscher/josephP/BSGS/Genotype/GWAS.map", header=T)
+# pheno
 load("/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/residuals.RData")
 
 
@@ -58,21 +62,21 @@ SNP_pair_find.fun <- function(
 #=======================================================#
 
 make_snp_region_files.fun <- function(
-	snp, 		# SNP pairs files
+	info, 		# SNP pairs files
 	) {
 
-	for(i in 1:nrow(snp)) {
+	for(i in 1:nrow(info)) {
 
 		# Data surrounding SNP 1
-		snp1 <- as.character(snp$snp1[i])	
+		snp1 <- as.character(info$SNP1[i])	
 		system(paste("/clusterdata/apps/plink/plink-1.07-x86_64/plink --bfile /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Clean_R2_Imputed_BSGS_data/bsgs_imputed_R2_80_cleaned_stage2_chr_all --snp ", snp1, " --window 100 --recode12 --out /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp1,  sep=""))	
 
 		# Data surrounding SNP 2
-		snp2 <- as.character(snp$snp2[i])	
+		snp2 <- as.character(info$SNP2[i])	
 		system(paste("/clusterdata/apps/plink/plink-1.07-x86_64/plink --bfile /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Clean_R2_Imputed_BSGS_data/bsgs_imputed_R2_80_cleaned_stage2_chr_all --snp ", snp2, " --window 100 --recode12 --out /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp2,  sep=""))	
 
 		# Merge the two files
-		p_name <- as.character(snp$probename[i])
+		p_name <- as.character(info$Probe[i])
 		system(paste("/clusterdata/apps/plink/plink-1.07-x86_64/plink --file /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp1, " --merge /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp2, ".ped /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp2, ".map", " --recode --out /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp1, "_", snp2, "_", p_name, sep=""))	
 
 	}
