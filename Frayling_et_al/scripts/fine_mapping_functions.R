@@ -18,7 +18,7 @@
 #=======================================================#
 
 make_snp_region_files.fun <- function(
-	info, 		# SNP pairs files
+	info 		# SNP pairs files
 	) {
 
 	for(i in 3:nrow(info)) {
