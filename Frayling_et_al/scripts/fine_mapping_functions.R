@@ -149,3 +149,103 @@ epi_scan.fun <- function(
 }
 
 
+
+
+#' Replication statistical tests
+#'
+#' Calculates allele frequencies, correlation between SNPs, class sizes, variance components
+#'
+#' @param geno \code{matrix} of genotype data
+#' @param probes \code{data.frame} of probes
+#' @param sig Output from \link{LoadIntList}
+#' @param i Which row of \code{sig} to run the analysis on
+#'
+#' @return Returns \code{data.frame} with row \code{i} complete
+#' @export
+ReplicationTests <- function(geno, probes, sig, i)
+{
+	require(noia)
+	# Extract data
+	snp1 <- geno[, colnames(geno) == sig$snp1[i]]
+	snp2 <- geno[, colnames(geno) == sig$snp2[i]]
+	probe <- probes[, colnames(probes) == sig$probename[i]]
+
+	# Summary statistics
+	tab <- table(snp1 + 3*snp2)
+	gcm <- tapply(probe, list(snp1, snp2), function(x) { mean(x, na.rm=T)})
+	gcs <- table(snp1, snp2)
+	mod <- linearRegression(probe, cbind(snp1, snp2)+1)
+
+	sig$replication_p1[i] <- mean(snp1, na.rm=T) / 2
+	sig$replication_p2[i] <- mean(snp2, na.rm=T) / 2
+	sig$replication_r[i] <- cor(snp1, snp2, use="pair")
+	sig$replication_nclass[i] <- length(tab)
+	sig$replication_minclass[i] <- min(tab, na.rm=T)
+	sig$replication_nid[i] <- sum(!is.na(snp1) & !is.na(snp2))
+
+	# Statistical tests
+	fullmod <- lm(probe ~ as.factor(snp1) * as.factor(snp2))
+	margmod <- lm(probe ~ as.factor(snp1) + as.factor(snp2))
+	fulltest <- summary(fullmod)$fstatistic
+	inttest <- anova(margmod, fullmod)
+
+	sig$replication_pfull[i] <- -log10(pf(fulltest[1], fulltest[2], fulltest[3], low=FALSE))
+	sig$replication_pnest[i] <- -log10(inttest$P[2])
+
+	l <- list()
+	l$sig <- sig
+	l$gcm <- gcm
+	l$gcs <- gcs
+	l$mod <- mod
+
+	return(l)
+}
+
+
+#' Run replication analysis
+#'
+#' Test all SNP pairs in interaction list in replication dataset.
+#'
+#' @param sig Output from \link{LoadIntList}
+#' @param checked Output from \link{DataChecks}
+#'
+#' @return Returns \code{data.frame} with new columns for results from replication data
+#' @export
+RunReplication <- function(sig, checked)
+{
+	sig$replication_pfull <- NA
+	sig$replication_pnest <- NA
+	sig$replication_p1 <- NA
+	sig$replication_p2 <- NA
+	sig$replication_r <- NA
+	sig$replication_nclass <- NA
+	sig$replication_minclass <- NA
+	sig$replication_nid <- NA
+
+	geno <- checked$geno
+	probes <- checked$probes
+
+	gcm <- list()
+	gcs <- list()
+	mod <- list()
+
+	for(i in 1:nrow(sig))
+	{
+		cat(i, "of", nrow(sig), "\n")
+		out <- ReplicationTests(geno, probes, sig, i)
+		sig <- out$sig
+		gcm[[i]] <- out$gcm
+		gcs[[i]] <- out$gcs
+		mod[[i]] <- out$mod
+	}
+
+	l <- list()
+	l$sig <- sig
+	l$gcm <- gcm
+	l$gcs <- gcs
+	l$mod <- mod
+
+	return(l)
+}
+
+
