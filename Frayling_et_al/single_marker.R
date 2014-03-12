@@ -45,5 +45,29 @@ plink_to_012.fun <- function(
 	return(geno)
 }
 
+block <- plink_to_012.fun(ped, map)
 
+
+R2 <- array(0, c(nrow(info)))
+for(i in 1:nrow(info)) {
+	a1 <- which(colnames(pheno)==as.character(info$Probe[i]))
+	a2 <- which(colnames(block)==as.character(info$rs_id[i]))
+
+	if(length(a2)==0){
+		R2[i] <- NA
+	}
+
+	if(length(a2)!=0){
+		pheno1 <- pheno[,a1]
+		snp1 <- block[,a2]
+		R2[i] <- summary(lm(pheno1~snp1))$r.squared
+	}
+
+}
+
+R2 <- round(R2, 3)
+
+out <- cbind(info, R2)
+
+head(in)
 

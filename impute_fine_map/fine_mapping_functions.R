@@ -14,22 +14,6 @@
 #=======================================================#
 
 #=======================================================#
-#		READ IN THE FILTERED DATASETS (FROM GIB)		#
-#=======================================================#
-
-
-#load("/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/agg_filtered.RData")
-
-info <- read.csv("/fileserver/group/wrayvisscher/josephP/Projects/Genomics/Expression_main/Epistasis/eQTL-2D/Frayling_et_al/data_files/inc_info_bsgs.csv", header=T)
-
-snp_info <- read.table("/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Var_eQTL/bsgs_imputed_R2_80_cleaned_stage2_chr_all_SNP_info.txt", header=T)
-snp_info_geno <- read.table("/ibscratch/wrayvisscher/josephP/BSGS/Genotype/GWAS.map", header=T)
-# pheno
-load("/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/residuals.RData")
-
-
-
-#=======================================================#
 #	EXTRACT THE RELAVENT SNP REGIONS FROM IMPUTED		#
 #=======================================================#
 
@@ -37,133 +21,43 @@ make_snp_region_files.fun <- function(
 	info, 		# SNP pairs files
 	) {
 
-	for(i in 1:nrow(info)) {
+	for(i in 3:nrow(info)) {
 
 		# Data surrounding SNP 1
 		snp1 <- as.character(info$SNP1[i])	
-		system(paste("/clusterdata/apps/plink/plink-1.07-x86_64/plink --bfile /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Clean_R2_Imputed_BSGS_data/bsgs_imputed_R2_80_cleaned_stage2_chr_all --snp ", snp1, " --window 100 --recode12 --out /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp1,  sep=""))	
+		system(paste("/clusterdata/apps/plink/plink-1.07-x86_64/plink --bfile /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Clean_R2_Imputed_BSGS_data/bsgs_imputed_R2_80_cleaned_stage2_chr_all --snp ", snp1, " --window 10 --recode12 --out /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp1,  sep=""))	
 
 		# Data surrounding SNP 2
 		snp2 <- as.character(info$SNP2[i])	
-		system(paste("/clusterdata/apps/plink/plink-1.07-x86_64/plink --bfile /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Clean_R2_Imputed_BSGS_data/bsgs_imputed_R2_80_cleaned_stage2_chr_all --snp ", snp2, " --window 100 --recode12 --out /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp2,  sep=""))	
+		system(paste("/clusterdata/apps/plink/plink-1.07-x86_64/plink --bfile /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Clean_R2_Imputed_BSGS_data/bsgs_imputed_R2_80_cleaned_stage2_chr_all --snp ", snp2, " --window 10 --recode12 --out /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp2,  sep=""))	
 
 		# Merge the two files
-		p_name <- as.character(info$Probe[i])
-		system(paste("/clusterdata/apps/plink/plink-1.07-x86_64/plink --file /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp1, " --merge /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp2, ".ped /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp2, ".map", " --recode --out /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp1, "_", snp2, "_", p_name, sep=""))	
+		#p_name <- as.character(info$Probe[i])
+		#system(paste("/clusterdata/apps/plink/plink-1.07-x86_64/plink --file /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp1, " --merge /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp2, ".ped /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp2, ".map", " --recode --out /ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/", snp1, "_", snp2, "_", p_name, sep=""))	
 
 	}
 }
 
 
-
-#=======================================================#
-#	IDENTIFYALL SNPS NOT IN THE IMPUTE DATA AND PROXYS	#
-#=======================================================#
-
-
-
-missing_snps.fun <- function(
-	lf, 		# List of files in the output directory	
-	set2,		# the set of epistasis associations (filtered)
-
-	info1,		# snp infor from genotyped (only) data
-	info2) {		# snp info from the imputed data
-
-	tmp1 <- NULL
-
-	for(i in 1:nrow(set2)) {
-		i1 <- which(lf==paste(as.character(set2$snp1[i]), ".ped", sep=""))
-		if(length(i1)==0) {
-			tmp1 <- rbind(tmp1, as.character(set2$snp1[i]))	
-		}
-	}
-
-	for(i in 1:nrow(set2)) {
-		i2 <- which(lf==paste(as.character(set2$snp2[i]), ".ped", sep=""))
-		if(length(i2)==0) {
-			tmp1 <- rbind(tmp1, as.character(set2$snp2[i]))	
-		}
-	}
-
-
-	# find proxy
-	snps <- unique(tmp1)
-	out <- array(NA, c(length(snps), 2))
-
-	for(k in 1:length(snps)) {
-
-		index <- snp_info_geno[which(snp_info_geno$rs_id==snps[k]),]
-
-		if(index$chr !< 23)
-	}
-
-	# mainly on the X chromosome - function unfinished
-
-}
-
-#=======================================================#
-#	IDENTIFY ALL IMPUTED (FULL) EPI ASSOCIATIONS LEFT	#
-#=======================================================#
-
-
-
-epi_impute_match.fun <- function(
-	lf, 		# List of files in the output directory	
-	set2		# the set of epistasis associations (filtered)
-	) {		# snp info from the imputed data
-
-	out <- array("NA", c(nrow(set2)))
-
-	for(i in 1:nrow(set2)) {
-
-		i1 <- which(lf==paste(as.character(set2$snp1[i]), ".ped", sep=""))
-		i2 <- which(lf==paste(as.character(set2$snp2[i]), ".ped", sep=""))
-
-		if(length(i1)!=0 & length(i2)!=0) {
-			out[i] <- "GOOD"
-		}
-
-		else{
-			out[i] <- "BAD"
-		}
-
-	}
-
-
-	set3 <- cbind(set2, out)
-	set3 <- as.data.frame(set3)
-	names(set3)[ncol(set3)] <- "IMPUTE_OK"
-	return(set3)
-}
-
-
-lf <- list.files("/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Epistasis/snp_region_data/")
-set3 <- epi_impute_match.fun(lf, set2)
-save(set3, file="set3.RData")
 
 
 #=======================================================#
 #		CONVERT THE PED FORMT TO A 0, 1, 2, FORMAT 		#
 #=======================================================#
 
-
 plink_to_012.fun <- function(
-	pedfile, 		# Address of ped file
-	mapfile) {		# Address of map file
+	ped, 		# ped file
+	map) {		# map file
 
-	# Read files in
-	pformat <- read.table(pedfile, header=FALSE, colClasses="character")
-	map <- read.table(mapfile, header=FALSE, colClasses=c("character", "character", "numeric", "numeric"))
-
-	ids <- pformat[, 1:6]
+	ids <- ped[, 1:6]
 	nid <- nrow(ids)
-	pformat <- pformat[, -c(1:6)]
-	index <- seq(1, ncol(pformat), 2)
+	ped <- ped[, -c(1:6)]
+	index <- seq(1, ncol(ped), 2)
 	geno <- matrix(0, nid, length(index))
 
 	# Convert to 0, 1, 2 format
 	for(i in 1:length(index)) {
-		snp <- pformat[,c(index[i], index[i]+1)]
+		snp <- ped[,c(index[i], index[i]+1)]
 		x <- array(NA, nid)
 		snp[snp == "0"] <- NA
 
@@ -180,7 +74,6 @@ plink_to_012.fun <- function(
 	rownames(geno) <- ids$V2
 	return(geno)
 }
-
 
 
 
@@ -225,6 +118,7 @@ epi_scan.fun <- function(
 				# 4 and 8df tests	
 
 				fullmod <- lm(probe ~ as.factor(snpi) + as.factor(snpk) + as.factor(snpi):as.factor(snpk))
+#				out[i,10] <- summary(fullmod)$r.squared
 				redmod <- lm(probe ~ as.factor(snpi) + as.factor(snpk))
 				# This is the interaction terms on their own (nested test)
 				intmod <- anova(redmod, fullmod)	
