@@ -96,15 +96,6 @@ lf <- list.files()
 
 
 
-
-
-
-
-
-
-
-
-
 #=======================================================#
 #		ANALYSIS ADJUSTING ON THE INC SNP ADDITIVE 		#
 #=======================================================#
@@ -117,7 +108,7 @@ ped3 <- read.table("/fileserver/group/wrayvisscher/josephP/Projects/Genomics/Exp
 map3 <- read.table("/fileserver/group/wrayvisscher/josephP/Projects/Genomics/Expression_main/Epistasis/eQTL-2D/Frayling_et_al/test/snp_list.map", header=F)
 block3 <- plink_to_012.fun(ped3, map3)
 
-for(i in 15:nrow(info)) {
+for(i in 7:14) {
 	ped1 <- read.table(paste(blockdir, as.character(info$SNP1[i]), ".ped", sep=""), header=F)
 	ped2 <- read.table(paste(blockdir, as.character(info$SNP2[i]), ".ped", sep=""), header=F)
 	
@@ -142,6 +133,43 @@ for(i in 15:nrow(info)) {
 	}
 	print(i)
 }
+
+
+
+#=======================================================#
+#		ANALYSIS OF THE IMPUTED REGION EPI SCAN 		#
+#=======================================================#
+
+load("/fileserver/group/wrayvisscher/josephP/Projects/Genomics/Expression_main/Epistasis/eQTL-2D/analysis/interaction_list_meta_analysis.RData")
+
+out <- array(0, c(nrow(info), 18))
+
+lf <- 1:28
+lf <- lf[-6]
+for(i in lf) {
+
+	m <- which(meta$probename==as.character(info$Probe[i]) & meta$snp1==as.character(info$SNP1[i]) & meta$snp2==as.character(info$SNP2[i]))
+	out[i,1:6] <- as.matrix(meta[m,c(1,2, 8, 9, 11, 12)])
+
+	tmp <- read.csv(paste(outdir, as.character(info$Probe[i]), "_", as.character(info$SNP1[i]), "_", as.character(info$SNP2[i]), "adj.csv", sep=""), header=T)
+	tmp$probe <- as.character(info$Probe[i])
+	filter <- which(tmp$rsq < 0.2 & tmp$nclass==9 & tmp$minclass > 5)
+	tmp2 <- tmp[filter,]
+	hit <- tmp2[which.max(tmp2$intP),]
+	out[i,8:17] <- as.matrix(hit)
+
+}
+
+
+
+out <- as.data.frame(out)
+names(out)[8:17] <- names(hit)
+names(out)[18] <- "R2_new"
+names(out)[7] <- "R2_original"
+names(out)[1:6] <- c("snp1", "snp2", "probe", "gene", "8df_p_original", "4df_p_original")
+write.csv(out, "/fileserver/group/wrayvisscher/josephP/Projects/Genomics/Expression_main/Epistasis/eQTL-2D/Frayling_et_al/data/fine_mapping_adj.csv", quote=F, row.names=T)
+
+lf <- list.files()
 
 
 

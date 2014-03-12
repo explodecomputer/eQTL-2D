@@ -55,7 +55,7 @@ write.csv(out_all, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/chisq_
 
 
 # get additive effects of their inc snps
-info <- read.csv("Frayling_et_al/data_files/inc_info_bsgs.csv", header=T)
+info <- read.csv("data_files/inc_info_bsgs.csv", header=T)
 
 
 dir <- "/ibscratch/wrayvisscher/josephP/BSGS/Imputed/Var_eQTL/data/Output_Z/"

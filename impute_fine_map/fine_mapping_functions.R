@@ -139,7 +139,7 @@ epi_scan.fun <- function(
 			}	
 
 		}	
-		print(i)
+		#print(i)
 	}
 
 	out <- as.data.frame(out)
