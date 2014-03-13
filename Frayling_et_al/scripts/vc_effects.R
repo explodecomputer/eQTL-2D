@@ -42,54 +42,86 @@ inc_snp <- block[,which(colnames(block)==as.character(info$rs_id[i]))]
 pheno <- bsgs[,which(colnames(bsgs)==as.character(info$Probe[i]))]
 pheno_adj <- summary(lm(pheno ~ inc_snp))$residuals
 
-ReplicationTests <- function(snp1, snp2, inc_snp, pheno)
+
+
+VCTests.fun <- function(snp1, snp2, inc_snp, pheno)
 {
 	require(noia)
 	# Extract data
 
-	# Summary statistics original
-	tab1 <- table(snp1 + 3*snp2)
-	gcm1 <- tapply(pheno, list(snp1, snp2), function(x) { mean(x, na.rm=T)})
-	mod1 <- linearRegression(pheno, cbind(snp1, snp2)+1)
-
-	# Summary statistics adjusted
-	tab2 <- table(snp1 + 3*snp2)
-	gcm2 <- tapply(pheno, list(snp1, snp2), function(x) { mean(x, na.rm=T)})
-	mod2 <- linearRegression(pheno_adj, cbind(snp1, snp2)+1)
-
-	# Summary statistics inc snp1
-	tab3 <- table(snp1 + 3*inc_snp)
-	gcm3 <- tapply(pheno, list(snp1, inc_snp), function(x) { mean(x, na.rm=T)})
-	mod3 <- linearRegression(pheno, cbind(snp1, inc_snp)+1)
-
-	# Summary statistics inc snp1
-	tab4 <- table(inc_snp + 3*snp2)
-	gcm4 <- tapply(pheno, list(inc_snp, snp2), function(x) { mean(x, na.rm=T)})
-	mod4 <- linearRegression(pheno, cbind(inc_snp, snp2)+1)
+	effects_all <- NULL
+	effects <- array(0, c(1,36))
+	se_all <- NULL
+	se <- array(0, c(1,36))
 
 
+	for(i in 1:nrow(info)) {
+	
+		if(i==6) {
+			effects[1:36] <- NA
 
-	sig$replication_p1[i] <- mean(snp1, na.rm=T) / 2
-	sig$replication_p2[i] <- mean(snp2, na.rm=T) / 2
-	sig$replication_r[i] <- cor(snp1, snp2, use="pair")
-	sig$replication_nclass[i] <- length(tab)
-	sig$replication_minclass[i] <- min(tab, na.rm=T)
-	sig$replication_nid[i] <- sum(!is.na(snp1) & !is.na(snp2))
+		}
 
-	# Statistical tests
-	fullmod <- lm(probe ~ as.factor(snp1) * as.factor(snp2))
-	margmod <- lm(probe ~ as.factor(snp1) + as.factor(snp2))
-	fulltest <- summary(fullmod)$fstatistic
-	inttest <- anova(margmod, fullmod)
+		else {
+			snp1  <- block[,which(colnames(block)==as.character(info$SNP1[i]))] 
+			snp2  <- block[,which(colnames(block)==as.character(info$SNP2[i]))] 
+			inc_snp <- block[,which(colnames(block)==as.character(info$rs_id[i]))] 
 
-	sig$replication_pfull[i] <- -log10(pf(fulltest[1], fulltest[2], fulltest[3], low=FALSE))
-	sig$replication_pnest[i] <- -log10(inttest$P[2])
+			pheno <- bsgs[,which(colnames(bsgs)==as.character(info$Probe[i]))]
+			pheno_adj <- summary(lm(pheno ~ inc_snp))$residuals
 
-	l <- list()
-	l$sig <- sig
-	l$gcm <- gcm
-	l$gcs <- gcs
-	l$mod <- mod
+
+			# Summary statistics original
+			tab1 <- table(snp1 + 3*snp2)
+			gcm1 <- tapply(pheno, list(snp1, snp2), function(x) { mean(x, na.rm=T)})
+			mod1 <- linearRegression(pheno, cbind(snp1, snp2)+1)
+
+			# Summary statistics adjusted
+			tab2 <- table(snp1 + 3*snp2)
+			gcm2 <- tapply(pheno, list(snp1, snp2), function(x) { mean(x, na.rm=T)})
+			mod2 <- linearRegression(pheno_adj, cbind(snp1, snp2)+1)
+
+			# Summary statistics inc snp1
+			tab3 <- table(snp1 + 3*inc_snp)
+			gcm3 <- tapply(pheno, list(snp1, inc_snp), function(x) { mean(x, na.rm=T)})
+			mod3 <- linearRegression(pheno, cbind(snp1, inc_snp)+1)
+
+			# Summary statistics inc snp1
+			tab4 <- table(inc_snp + 3*snp2)
+			gcm4 <- tapply(pheno, list(inc_snp, snp2), function(x) { mean(x, na.rm=T)})
+			mod4 <- linearRegression(pheno, cbind(inc_snp, snp2)+1)
+
+			effects[1:9] <- mod1$E
+			effects[10:18] <- mod2$E
+			effects[19:27] <- mod3$E
+			effects[28:36] <- mod4$E
+
+			se[1:9] <- mod1$std.err
+			se[10:18] <- mod2$std.err
+			se[19:27] <- mod3$std.err
+			se[28:36] <- mod4$std.err
+
+
+		}	
+
+		effects_all <- rbind(effects_all, effects)
+		se_all <- rbind(se_all, se)
+	}	
+	
+	effects_all <- round(effects_all, 3)	
+	effects_all <- as.data.frame(effects_all)
+	names(effects_all)[1:9] <- paste(names(mod1$E), "_ori", sep="")
+	names(effects_all)[10:18] <- paste(names(mod1$E), "_adj", sep="")
+	names(effects_all)[19:27] <- paste(names(mod1$E), "_s1inc", sep="")
+	names(effects_all)[28:36] <- paste(names(mod1$E), "_s2inc", sep="")
+
+	se_all <- round(se_all, 3)	
+	se_all <- as.data.frame(se_all)
+	names(se_all)[1:9] <- paste(names(mod1$E), "_ori", sep="")
+	names(se_all)[10:18] <- paste(names(mod1$E), "_adj", sep="")
+	names(se_all)[19:27] <- paste(names(mod1$E), "_s1inc", sep="")
+	names(se_all)[28:36] <- paste(names(mod1$E), "_s2inc", sep="")
+
 
 	return(l)
 }
