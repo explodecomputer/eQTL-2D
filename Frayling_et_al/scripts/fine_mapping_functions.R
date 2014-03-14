@@ -293,7 +293,7 @@ three_snp_test.fun <- function(info, block, bsgs){
 
 inc_snp_epi.fun <- function(info, block, bsgs){
 
-	out <- array(0, c(nrow(info), 4)) 
+	out <- array(0, c(nrow(info), 8)) 
 
 	for(i in 1:nrow(info)) {
 		
@@ -308,23 +308,39 @@ inc_snp_epi.fun <- function(info, block, bsgs){
 			inc_snp <- block[,which(colnames(block)==as.character(info$rs_id[i]))] 
 
 			pheno <- bsgs[,which(colnames(bsgs)==as.character(info$Probe[i]))]
-			pheno_adj <- summary(lm(pheno ~ inc_snp))$residuals
-
-
-			fullmod <- lm(pheno ~ as.factor(inc_snp) + as.factor(snp1) + as.factor(snp2) + as.factor(snp1):as.factor(snp2):as.factor(inc_snp))
-			redmod <- lm(pheno ~ as.factor(snp1) + as.factor(snp2) + as.factor(inc_snp))
+			
+			fullmod1 <- lm(pheno ~ as.factor(inc_snp) + as.factor(snp1) + as.factor(snp1):as.factor(inc_snp))
+			redmod1 <- lm(pheno ~ as.factor(snp1) + as.factor(inc_snp))
 			# This is the interaction terms on their own (nested test)
-			intmod <- anova(redmod, fullmod)	
+			intmod1 <- anova(redmod1, fullmod1)	
 			# Extract statistics	
-			tmp <- summary(fullmod)$fstatistic
-			out[i,1] <- round(-log10(pf(tmp[1], tmp[2], tmp[3], low=F)),2)		
-			out[i,2] <- (summary(fullmod))$fstatistic[2]	
-			out[i,3] <- round(-log10(intmod$Pr[2]), 2)
-			out[i,4] <- intmod$Df[2]
+
+			fullmod2 <- lm(pheno ~ as.factor(inc_snp) + as.factor(snp2) + as.factor(snp2):as.factor(inc_snp))
+			redmod2 <- lm(pheno ~ as.factor(snp2) + as.factor(inc_snp))
+			# This is the interaction terms on their own (nested test)
+			intmod2 <- anova(redmod2, fullmod2)	
+
+
+			tmp1 <- summary(fullmod1)$fstatistic
+			out[i,1] <- round(-log10(pf(tmp1[1], tmp1[2], tmp1[3], low=F)),2)		
+			out[i,2] <- (summary(fullmod1))$fstatistic[2]	
+			out[i,3] <- round(-log10(intmod1$Pr[2]), 2)
+			out[i,4] <- intmod1$Df[2]
+			
+			tmp2 <- summary(fullmod2)$fstatistic
+			out[i,5] <- round(-log10(pf(tmp2[1], tmp2[2], tmp2[3], low=F)),2)		
+			out[i,6] <- (summary(fullmod2))$fstatistic[2]	
+			out[i,7] <- round(-log10(intmod2$Pr[2]), 2)
+			out[i,8] <- intmod2$Df[2]
 		}
 	}
 
-	colnames(out) <- c("Full3Pval", "Full3DF", "Int3Pval", "Int3DF")
+	colnames(out) <- c("FullPval1", "FullDF1", "IntPval1", "IntDF1", "FullPval2", "FullDF2", "IntPval2", "IntDF2")
 	out <- cbind(info, out)
 	return(out)
 }
+
+
+
+
+
