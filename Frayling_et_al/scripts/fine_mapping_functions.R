@@ -291,3 +291,40 @@ three_snp_test.fun <- function(info, block, bsgs){
 
 
 
+inc_snp_epi.fun <- function(info, block, bsgs){
+
+	out <- array(0, c(nrow(info), 4)) 
+
+	for(i in 1:nrow(info)) {
+		
+		if(i == 6) {
+
+			out[i,] <- NA
+		}
+
+		else {
+			snp1  <- block[,which(colnames(block)==as.character(info$SNP1[i]))] 
+			snp2  <- block[,which(colnames(block)==as.character(info$SNP2[i]))] 
+			inc_snp <- block[,which(colnames(block)==as.character(info$rs_id[i]))] 
+
+			pheno <- bsgs[,which(colnames(bsgs)==as.character(info$Probe[i]))]
+			pheno_adj <- summary(lm(pheno ~ inc_snp))$residuals
+
+
+			fullmod <- lm(pheno ~ as.factor(inc_snp) + as.factor(snp1) + as.factor(snp2) + as.factor(snp1):as.factor(snp2):as.factor(inc_snp))
+			redmod <- lm(pheno ~ as.factor(snp1) + as.factor(snp2) + as.factor(inc_snp))
+			# This is the interaction terms on their own (nested test)
+			intmod <- anova(redmod, fullmod)	
+			# Extract statistics	
+			tmp <- summary(fullmod)$fstatistic
+			out[i,1] <- round(-log10(pf(tmp[1], tmp[2], tmp[3], low=F)),2)		
+			out[i,2] <- (summary(fullmod))$fstatistic[2]	
+			out[i,3] <- round(-log10(intmod$Pr[2]), 2)
+			out[i,4] <- intmod$Df[2]
+		}
+	}
+
+	colnames(out) <- c("Full3Pval", "Full3DF", "Int3Pval", "Int3DF")
+	out <- cbind(info, out)
+	return(out)
+}
