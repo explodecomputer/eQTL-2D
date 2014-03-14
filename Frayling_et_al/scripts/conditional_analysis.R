@@ -39,7 +39,7 @@ westra <-
 
 
 three_snp_analysis <- three_snp_test.fun(info, block, bsgs)
-
+write.csv(three_snp_analysis, "/fileserver/group/wrayvisscher/josephP/Projects/Genomics/Expression_main/Epistasis/eQTL-2D/Frayling_et_al/three_snp_analysis.csv", quote=F, row.names=F)
 
 
 
