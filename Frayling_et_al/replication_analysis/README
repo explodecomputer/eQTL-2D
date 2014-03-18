@@ -1,0 +1,51 @@
+# Joseph Powell
+# Analysis following comments from Exeter 
+
+################
+# REQUIREMENTS #
+################
+
+- R64 2.15.1
+- snpStats (Bioconductor library)
+- R/noia (available on CRAN)
+- Running in Mac/Linux
+
+
+########
+# DATA #
+########
+
+1. Genotypes in binary plink format, they will be matched by RS SNP ID to our list. Please ensure that individual IDs are all unique.
+
+2. Expression phenotypes should be adjusted for any fixed effects / covariates. The phenotype should be normalised (e.g. rank transformation, a function for this exists in the R/GenABEL). Please use the following format for the expression phenotype data:
+
+FID IID ILMN_xxxx ILMN_xxxx ILMN_xxxx ...
+f1  i1  x         x         x         ...
+f2  i2  x         x         x         ...
+f3  i3  x         x         x         ...
+.
+.
+.
+
+A note on normalisation: We have corrected the expression probe values for sex, age, chip, chip position, day of processing, and a polygenic component because these are family data. We then rank transformed the residuals to normality, and used these as phenotypes. We did not use principle components as this is liable to remove genetic effects.
+
+3. "interaction_list.RData" file that is included in replication/run. This contains the top hits from our data.
+
+
+#########################
+# How to use the script #
+#########################
+
+Run the following command:
+
+cd replication/run
+R --no-save --args /path/to/binary_plink_data /path/to/probe_data.txt interaction_list2.RData < replication.R
+
+It will do the following things:
+
+1. Extract all the required SNPs from binary plink file
+2. Read in all the probes required and rank transform them to normality
+4. For each significant pair in our dataset it will perform a test for interaction in your dataset
+5. Save the results in a file called "replication.RData"
+
+Once it is complete, please just send us the "replication.RData" file.
