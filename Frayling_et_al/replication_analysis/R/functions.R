@@ -1,3 +1,54 @@
+
+
+#' Read in and convert genotype file
+#'
+#' @param plinkfile Path to ped and map file (excluding any suffixes)
+#'
+#' @return Exits with an error if any files are missing
+#' @export
+
+GenoIN <- function(plinkfile) 
+{
+	ped <- read.table(paste(plinkfile, ".ped", sep=""), header=F)
+	map <- read.table(paste(plinkfile, ".map", sep=""), header=F)
+
+	nsnps <- nrow(map)
+	n <- ncol(ped)-(2*nsnps)
+
+	ids <- ped[, 1:n]
+	nid <- nrow(ids)
+	ped <- ped[, -c(1:n)]
+	index <- seq(1, ncol(ped), 2)
+	geno <- matrix(0, nid, length(index))
+
+	# Convert to 0, 1, 2 format
+	for(i in 1:length(index)) {
+		snp <- ped[,c(index[i], index[i]+1)]
+		x <- array(NA, nid)
+		snp[snp == "0"] <- NA
+
+		i0 <- snp[,1] == 1 & snp[,2] == 1
+		i2 <- snp[,1] == 2 & snp[,2] == 2
+		i1 <- (snp[,1] == 1 & snp[,2] == 2) | (snp[,1] == 2 & snp[,2] == 1)
+		x[i0] <- 0
+		x[i1] <- 1
+		x[i2] <- 2
+		geno[, i] <- x
+	}
+
+	colnames(geno) <- map$V2
+	rownames(geno) <- ids$V2
+	return(geno)
+}
+
+# 1. Read the expression in file
+# 2. Alter the subsequent functions to analyse the new data format
+# 3. add the functions to run the following;
+# 3a. Predicting genotypes
+# 3b. Fitting the effects before and after the inc snp
+# 3c. Where possible the analysis of the inc snp and the 'other' snp
+# 3d. anythink else?
+
 #' Check files are present
 #'
 #' Makes sure that all the files required for the replication are present
