@@ -251,3 +251,138 @@ RunReplication <- function(sig, checked)
 
 	return(l)
 }
+
+
+
+#' Run genotype prediction
+#'
+#' predict the genogtypes of one snp from the other two.
+#'
+#' @param sig Output from \link{LoadIntList}
+#' @param checked Output from \link{DataChecks}
+#'
+#' @return Returns \code{data.frame} with new columns for results from replication data
+#' @export
+GenoPrediction <- function(sig, checked)
+{
+	
+	sig_new <- sig[which(sig$pfull==0),]
+
+	out <- array(0, c(nrow(sig_new)/2, 4))
+	k <- 0
+	for(i in seq(1, nrow(sig_new), 2)) {
+		k <- k+1
+		y <- which(checked$snps==as.character(sig_new$snp2[i]))
+		x1 <- which(checked$snps==as.character(sig_new$snp1[i]))
+		x2 <- which(checked$snps==as.character(sig_new$snp1[i+1]))
+
+		if(length(y)==1 & length(x1)==1 & length(x2)==1) {
+
+			out[k,1] <- summary(lm(checked$geno[,y] ~ as.factor(checked$geno[,x1])))$adj.r.squared
+			out[k,2] <- summary(lm(checked$geno[,y] ~ as.factor(checked$geno[,x2])))$adj.r.squared
+			out[k,3] <- summary(lm(checked$geno[,y] ~ as.factor(checked$geno[,x1]) + as.factor(checked$geno[,x2])))$adj.r.squared
+			out[k,4] <- summary(lm(checked$geno[,y] ~ as.factor(checked$geno[,x1]) + as.factor(checked$geno[,x2]) + as.factor(checked$geno[,x1]):as.factor(checked$geno[,x2])))$adj.r.squared
+
+		}
+	}
+	out <- round(out, 2)	
+	return(out)
+}
+
+
+#' Run before and after analysis
+#'
+#' estimate the effects before and after correcting for the inc seq snp
+#'
+#' @param sig Output from \link{LoadIntList}
+#' @param checked Output from \link{DataChecks}
+#'
+#' @return Returns \code{data.frame} with new columns for results from replication data
+#' @export
+CorrectionTest <- function(sig, checked)
+{
+	require(noia)
+	sig_new <- sig[which(sig$pfull==0),]
+
+	geno <- checked$geno
+	probes <- checked$probes
+
+	gcm <- list()
+	gcs <- list()
+	mod <- list()
+
+	k <- 0
+	for(i in seq(1, nrow(sig_new), 2)) {
+		k <- k+1
+		y <- which(checked$snps==as.character(sig_new$snp2[i]))
+		x1 <- which(checked$snps==as.character(sig_new$snp1[i]))
+		x2 <- which(checked$snps==as.character(sig_new$snp1[i+1]))
+		p1 <- which(names(checked$probes)==as.character(sig_new$probename[i]))
+
+		if(length(y)==1 & length(x1)==1 & length(x2)==1 & length(p1)==1) {
+
+			padj <- summary(lm(probes[,p1] ~ as.factor(geno[,x1])))
+			porj <- probes[,p1] 
+
+			# Extract data
+			snp1 <- geno[, x1]
+			snp2 <- geno[, x2]
+			padj <- summary(lm(probes[,p1] ~ as.factor(geno[,x1])))
+
+			# Summary statistics
+			tab <- table(snp1 + 3*snp2)
+			gcm <- tapply(padj, list(snp1, snp2), function(x) { mean(x, na.rm=T)})
+			gcs <- table(snp1, snp2)
+			mod1 <- linearRegression(padj, cbind(snp1, snp2)+1)
+			mod2 <- linearRegression(porj, cbind(snp1, snp2)+1)
+			
+			# find a way to store the output
+			sig_new$replication_p1[k] <- mean(snp1, na.rm=T) / 2
+			sig_new$replication_p2[k] <- mean(snp2, na.rm=T) / 2
+			sig_new$replication_r[k] <- cor(snp1, snp2, use="pair")
+			sig_new$replication_nclass[i] <- length(tab)
+			sig_new$replication_minclass[i] <- min(tab, na.rm=T)
+			sig_new$replication_nid[i] <- sum(!is.na(snp1) & !is.na(snp2))
+
+			# Statistical tests 1
+			fullmod1 <- lm(padj ~ as.factor(snp1) * as.factor(snp2))
+			margmod1 <- lm(padj ~ as.factor(snp1) + as.factor(snp2))
+			fulltest1 <- summary(fullmod1)$fstatistic
+			inttest1 <- anova(margmod1, fullmod1)
+
+			# Statistical tests 2
+			fullmod2 <- lm(porj ~ as.factor(snp1) * as.factor(snp2))
+			margmod2 <- lm(porj ~ as.factor(snp1) + as.factor(snp2))
+			fulltest2 <- summary(fullmod2)$fstatistic
+			inttest2 <- anova(margmod2, fullmod2)
+
+
+			# find a way to store the output
+
+			sig$replication_pfull[i] <- -log10(pf(fulltest[1], fulltest[2], fulltest[3], low=FALSE))
+			sig$replication_pnest[i] <- -log10(inttest$P[2])
+
+			l <- list()
+			l$sig <- sig
+			l$gcm <- gcm
+			l$gcs <- gcs
+			l$mod <- mod
+
+			return(l)
+
+
+
+		}
+	}
+}
+
+
+
+
+
+# put in a seperate list 
+	l2 <- list()
+	l2$prediction <- out
+	l2$gcm <- gcm
+	l2$gcs <- gcs
+	l2$mod <- mod

@@ -11,7 +11,7 @@ probefile   <- args[2]
 intlistfile <- args[3]
 outfile     <- "replication_plus.RData"
 
-source("/R/functions.R")
+source("../R/functions.R")
 
 CheckFiles(plinkfile, probefile, intlistfile)
 geno 	<- GenoIN(plinkfile)
