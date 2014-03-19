@@ -1,4 +1,3 @@
-# 1. Read the expression in file
 # 2. Alter the subsequent functions to analyse the new data format
 # 3. add the functions to run the following;
 # 3a. Predicting genotypes
@@ -20,7 +19,7 @@ CheckFiles <- function(plinkfile, probefile, intlistfile)
 {
 	stopifnot(file.exists(paste(plinkfile, ".map", sep="")))
 	stopifnot(file.exists(paste(plinkfile, ".ped", sep="")))
-	#stopifnot(file.exists(probefile))
+	stopifnot(file.exists(probefile))
 	stopifnot(file.exists(intlistfile))
 }
 
@@ -103,8 +102,8 @@ LoadIntList <- function(intlistfile, plinkfile, probes)
 	cat(sum(sig$probename %in% repprobes), "out of", nrow(sig), "interactions have expression probes in common with the replication data set\n")
 	
 	dim1 <- nrow(sig)
-	sig1 <- subset(sig, snp1 %in% bim$V2 & snp2 %in% bim$V2)
-	dim2 <- nrow(sig)
+	sig1 <- subset(sig, snp1 %in% colnames(geno) & snp2 %in% colnames(geno))
+	dim2 <- nrow(sig1)
 
 	cat(dim2, "out of", dim1, "interactions have SNPs in common with the replication data set\n")
 

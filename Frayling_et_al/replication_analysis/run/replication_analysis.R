@@ -9,7 +9,7 @@ args        <- commandArgs(T)
 plinkfile   <- args[1]
 probefile   <- args[2]
 intlistfile <- args[3]
-outfile     <- "replication.RData"
+outfile     <- "replication_plus.RData"
 
 source("/R/functions.R")
 
