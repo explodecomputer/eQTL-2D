@@ -19,10 +19,15 @@ probes  <- ReadProbeFile(probefile)
 sig     <- LoadIntList(intlistfile, plinkfile, probes)
 checked <- DataChecks(probes, geno)
 l       <- RunReplication(sig, checked)
+predict <- GenoPrediction(sig, checked)
+fit 	<- CorrectionTest(sig, checked)
 
 newsig <- l$sig
 gcm    <- l$gcm
 gcs    <- l$gcs
 mod    <- l$mod
 
-save(newsig, gcm, gcs, mod, file=outfile)
+
+
+
+save(newsig, gcm, gcs, mod, predict, fit, file=outfile)

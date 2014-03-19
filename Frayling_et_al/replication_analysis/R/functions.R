@@ -312,6 +312,8 @@ CorrectionTest <- function(sig, checked)
 	mod <- list()
 
 	k <- 0
+	out2 <- list()
+
 	for(i in seq(1, nrow(sig_new), 2)) {
 		k <- k+1
 		y <- which(checked$snps==as.character(sig_new$snp2[i]))
@@ -321,28 +323,34 @@ CorrectionTest <- function(sig, checked)
 
 		if(length(y)==1 & length(x1)==1 & length(x2)==1 & length(p1)==1) {
 
-			padj <- summary(lm(probes[,p1] ~ as.factor(geno[,x1])))
+			out <- NULL
+
+			out$snp1 <- as.character(sig_new$snp1[i])
+			out$snp2 <- as.character(sig_new$snp1[i+1])
+			out$incsnp <- as.character(sig_new$snp2[i])
+			out$probe <- as.character(sig_new$probename[i])
+
+			padj <- summary(lm(probes[,p1] ~ as.factor(geno[,y])))$residuals
 			porj <- probes[,p1] 
 
 			# Extract data
 			snp1 <- geno[, x1]
 			snp2 <- geno[, x2]
-			padj <- summary(lm(probes[,p1] ~ as.factor(geno[,x1])))
 
 			# Summary statistics
-			tab <- table(snp1 + 3*snp2)
-			gcm <- tapply(padj, list(snp1, snp2), function(x) { mean(x, na.rm=T)})
-			gcs <- table(snp1, snp2)
-			mod1 <- linearRegression(padj, cbind(snp1, snp2)+1)
-			mod2 <- linearRegression(porj, cbind(snp1, snp2)+1)
+			out$tab <- table(snp1 + 3*snp2)
+			out$gcm <- tapply(padj, list(snp1, snp2), function(x) { mean(x, na.rm=T)})
+			out$gcs <- table(snp1, snp2)
+			out$mod1 <- linearRegression(padj, cbind(snp1, snp2)+1)
+			out$mod2 <- linearRegression(porj, cbind(snp1, snp2)+1)
 			
 			# find a way to store the output
-			sig_new$replication_p1[k] <- mean(snp1, na.rm=T) / 2
-			sig_new$replication_p2[k] <- mean(snp2, na.rm=T) / 2
-			sig_new$replication_r[k] <- cor(snp1, snp2, use="pair")
-			sig_new$replication_nclass[i] <- length(tab)
-			sig_new$replication_minclass[i] <- min(tab, na.rm=T)
-			sig_new$replication_nid[i] <- sum(!is.na(snp1) & !is.na(snp2))
+			out$replication_p1 <- mean(snp1, na.rm=T) / 2
+			out$replication_p2 <- mean(snp2, na.rm=T) / 2
+			out$replication_r <- cor(snp1, snp2, use="pair")
+			out$replication_nclass <- length(tab)
+			out$replication_minclass <- min(tab, na.rm=T)
+			out$replication_nid <- sum(!is.na(snp1) & !is.na(snp2))
 
 			# Statistical tests 1
 			fullmod1 <- lm(padj ~ as.factor(snp1) * as.factor(snp2))
@@ -356,33 +364,21 @@ CorrectionTest <- function(sig, checked)
 			fulltest2 <- summary(fullmod2)$fstatistic
 			inttest2 <- anova(margmod2, fullmod2)
 
-
 			# find a way to store the output
 
-			sig$replication_pfull[i] <- -log10(pf(fulltest[1], fulltest[2], fulltest[3], low=FALSE))
-			sig$replication_pnest[i] <- -log10(inttest$P[2])
+			out$replication_pfull <- -log10(pf(fulltest1[1], fulltest1[2], fulltest1[3], low=FALSE))
+			out$replication_pnest <- -log10(inttest1$P[2])
 
-			l <- list()
-			l$sig <- sig
-			l$gcm <- gcm
-			l$gcs <- gcs
-			l$mod <- mod
-
-			return(l)
-
-
-
+			out$replication_pfull2 <- -log10(pf(fulltest2[1], fulltest2[2], fulltest2[3], low=FALSE))
+			out$replication_pnest2 <- -log10(inttest2$P[2])
 		}
+
+	out2[[k]] <- out 		
+
 	}
+
+	return(out2)
+
 }
 
 
-
-
-
-# put in a seperate list 
-	l2 <- list()
-	l2$prediction <- out
-	l2$gcm <- gcm
-	l2$gcs <- gcs
-	l2$mod <- mod
