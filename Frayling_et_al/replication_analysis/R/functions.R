@@ -1,4 +1,28 @@
+# 1. Read the expression in file
+# 2. Alter the subsequent functions to analyse the new data format
+# 3. add the functions to run the following;
+# 3a. Predicting genotypes
+# 3b. Fitting the effects before and after the inc snp
+# 3c. Where possible the analysis of the inc snp and the 'other' snp
+# 3d. anythink else?
 
+#' Check files are present
+#'
+#' Makes sure that all the files required for the replication are present
+#'
+#' @param plinkfile Path to binary plinkfile (excluding any suffixes)
+#' @param probefile Path to file with expression probe data
+#' @param intlistfile Path to the \code{.RData} file that has all the target SNPs for replication
+#'
+#' @return Exits with an error if any files are missing
+#' @export
+CheckFiles <- function(plinkfile, probefile, intlistfile)
+{
+	stopifnot(file.exists(paste(plinkfile, ".map", sep="")))
+	stopifnot(file.exists(paste(plinkfile, ".ped", sep="")))
+	#stopifnot(file.exists(probefile))
+	stopifnot(file.exists(intlistfile))
+}
 
 #' Read in and convert genotype file
 #'
@@ -6,7 +30,6 @@
 #'
 #' @return Exits with an error if any files are missing
 #' @export
-
 GenoIN <- function(plinkfile) 
 {
 	ped <- read.table(paste(plinkfile, ".ped", sep=""), header=F)
@@ -39,33 +62,6 @@ GenoIN <- function(plinkfile)
 	colnames(geno) <- map$V2
 	rownames(geno) <- ids$V2
 	return(geno)
-}
-
-# 1. Read the expression in file
-# 2. Alter the subsequent functions to analyse the new data format
-# 3. add the functions to run the following;
-# 3a. Predicting genotypes
-# 3b. Fitting the effects before and after the inc snp
-# 3c. Where possible the analysis of the inc snp and the 'other' snp
-# 3d. anythink else?
-
-#' Check files are present
-#'
-#' Makes sure that all the files required for the replication are present
-#'
-#' @param plinkfile Path to binary plinkfile (excluding any suffixes)
-#' @param probefile Path to file with expression probe data
-#' @param intlistfile Path to the \code{.RData} file that has all the target SNPs for replication
-#'
-#' @return Exits with an error if any files are missing
-#' @export
-CheckFiles <- function(plinkfile, probefile, intlistfile)
-{
-	stopifnot(file.exists(paste(plinkfile, ".bed", sep="")))
-	stopifnot(file.exists(paste(plinkfile, ".bim", sep="")))
-	stopifnot(file.exists(paste(plinkfile, ".fam", sep="")))
-	stopifnot(file.exists(probefile))
-	stopifnot(file.exists(intlistfile))
 }
 
 
@@ -102,8 +98,6 @@ LoadIntList <- function(intlistfile, plinkfile, probes)
 {
 	load(intlistfile)
 	
-	# Check overlap between SNPs in sig and replication data
-	bim <- read.table(paste(plinkfile, ".bim", sep=""))
 	repprobes <- colnames(probes)
 
 	cat(sum(sig$probename %in% repprobes), "out of", nrow(sig), "interactions have expression probes in common with the replication data set\n")
@@ -116,31 +110,6 @@ LoadIntList <- function(intlistfile, plinkfile, probes)
 
 	sig2 <- subset(sig1, probename %in% repprobes)
 	return(sig2)
-}
-
-
-#' Read in SNPs required for replication
-#'
-#' Extracts all SNPs present in interaction list and reads in as 0/1/2 format matrix
-#'
-#' @param sig Output from \link{LoadIntList}
-#' @param plinkfile Path to binary plinkfile (excluding any suffixes)
-#'
-#' @return Returns \code{matrix} of genotype data
-#' @export
-ExtractSNPs <- function(sig, plinkfile)
-{
-	require(snpStats)
-	snplist <- with(sig, unique(c(as.character(snp1), as.character(snp2))))
-	rawdata <- read.plink(bed=plinkfile, select.snps=snplist)
-	geno <- apply(rawdata$genotypes@.Data, 2, as.numeric)
-	geno[geno==0] <- NA
-	geno <- geno - 1
-
-	rownames(geno) <- rawdata$fam$member
-	colnames(geno) <- rawdata$map$snp.name
-
-	return(geno)
 }
 
 
