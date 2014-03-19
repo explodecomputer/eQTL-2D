@@ -1,3 +1,10 @@
+# 2. Alter the subsequent functions to analyse the new data format
+# 3. add the functions to run the following;
+# 3a. Predicting genotypes
+# 3b. Fitting the effects before and after the inc snp
+# 3c. Where possible the analysis of the inc snp and the 'other' snp
+# 3d. anythink else?
+
 #' Check files are present
 #'
 #' Makes sure that all the files required for the replication are present

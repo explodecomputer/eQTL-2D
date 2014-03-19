@@ -1,14 +1,9 @@
 # Joseph Powell
 # Replicate epistatic signals + additional analyses for the Exeter correspondence
 
-# Fist extract the relevant snp genotype using plink (see README)
-# /path/to/plink --bfile /path/to/plink_binary_file --extract snp_list.txt --recode12 --out name_of_plink_output_data
-
-
 # To run, e.g.:
 # cd replication_analysis/run
-# R --no-save --args /path/to/name_of_plink_output_data /path/to/probe_data.txt new_interactions_list.RData < replication_analysis.R
-
+# R --no-save --args /path/to/binary_plink_data /path/to/probe_data.txt input.RData < replication_analysis.R
 
 args        <- commandArgs(T)
 plinkfile   <- args[1]

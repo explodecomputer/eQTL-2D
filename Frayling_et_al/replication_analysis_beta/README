@@ -36,17 +36,10 @@ A note on normalisation: We have corrected the expression probe values for sex, 
 # How to use the script #
 #########################
 
-
-First extract the genotypes of the snp_list using plink
-
-cd replication/run
-/path/to/plink --bfile /path/to/plink_binary_file --extract snp_list.txt --recode12 --out name_of_plink_output_data
-
-
 Run the following command:
 
 cd replication/run
-R --no-save --args /path/to/name_of_plink_output_data /path/to/probe_data.txt new_interactions_list.RData < replication_analysis.R
+R --no-save --args /path/to/binary_plink_data /path/to/probe_data.txt interaction_list2.RData < replication.R
 
 It will do the following things:
 
