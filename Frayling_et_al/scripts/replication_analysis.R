@@ -13,7 +13,7 @@ load("/Users/jpowell/repo/eQTL-2D/Frayling_et_al/replication_analysis/results/Gr
 feh1 <- fit
 
 load("/Users/jpowell/repo/eQTL-2D/Frayling_et_al/replication_analysis/results/Groningen/groningen-40pcs/replication_plus.RData")
-reh2 <- fit
+feh2 <- fit
 
 
 
@@ -30,12 +30,6 @@ egcut2[[i]]$replication_pnest
 feh1[[i]]$replication_pnest
 feh2[[i]]$replication_pnest
 
-
-
-out <- combine(a,b)
-combine(out,c)
-
-
-
+-log10(combine(a,b))
 
 
