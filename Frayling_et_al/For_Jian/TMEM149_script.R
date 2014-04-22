@@ -17,7 +17,6 @@ snp2 <- bsgs_TMEM149$rs6926382
 inc <- bsgs_TMEM149$IncSeq
 adj_probe <- bsgs_TMEM149$adj_ILMN_1786426
 
-
 # LD
 cor(snp1,snp2)^2
 cor(snp1,inc)^2
@@ -27,6 +26,9 @@ cor(snp2,inc)^2
 boxplot(probe~as.numeric(as.matrix(snp1)))
 boxplot(probe~as.numeric(as.matrix(snp2)))
 boxplot(probe~as.numeric(as.matrix(inc)))
+
+summary(lm(inc~snp1+snp2+snp1:snp2))
+
 
 # note, the direction of the effect by the inc snp is in the opposit direction
 
