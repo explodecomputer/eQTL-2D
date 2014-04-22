@@ -33,6 +33,7 @@ isnp <- readXmat("isnpall.xmat.gz")
 l <- list()
 m1 <- list()
 m2 <- list()
+
 for(i in 1:nrow(tab))
 {
 	cat(i, "\n")
@@ -58,11 +59,24 @@ pvals <- ldply(l, function(x)
 	mod2 <- lm(res ~ as.factor(snp1) + as.factor(snp2), x)
 	p2 <- anova(mod1, mod2)$P[2]
 
-	return(data.frame(p1 = p1, p2 = p2))
+	mod1 <- lm(phen ~ as.factor(snp1) * as.factor(snpi), x)
+	mod2 <- lm(phen ~ as.factor(snp1) + as.factor(snpi), x)
+	p1xi <- anova(mod1, mod2)$P[2]
+
+	mod1 <- lm(phen ~ as.factor(snp2) * as.factor(snpi), x)
+	mod2 <- lm(phen ~ as.factor(snp2) + as.factor(snpi), x)
+	p2xi <- anova(mod1, mod2)$P[2]
+
+	a <- min(p1xi, p2xi)
+	b <- which.min(c(p1xi, p2xi))
+	return(data.frame(p1 = p1, p2 = p2, p1xi = a, minint <- b))
 })
 
 tab$p1 <- pvals$p1
 tab$p2 <- pvals$p2
+tab$p1xi <- pvals$p1xi
+tab$minint <- pvals$minint
+
 tab
 
 subset(tab, cistrans == "cis")
@@ -107,7 +121,7 @@ plot3dGp <- function(gp, title="", snp1="SNP1", snp2="SNP2", z=-45)
 }
 
 
-save(m1, m2, tab, l, file="isnp_analysis.RData")
+save(m1, m2, tab, l, file="isnp_analysis2.RData")
 
 m1 <- lapply(m1, function(x) x - min(x))
 m2 <- lapply(m2, function(x) x - min(x))
@@ -151,3 +165,99 @@ summary(lm(phen ~ snp2, l20))
 
 
 write.table(subset(tab, select=c(cistrans, probe, snp1, snp2, snpi, p1, p2)), file="isnp_analysis.txt", row=T, col=T, qu=F)
+
+
+
+
+load("isnp_analysis2.RData")
+
+
+## HWE
+
+hwe.test <- function(x)
+{
+	p1 <- (sum(x == 0) + 0.5 * sum(x == 1)) / length(x)
+	e0 <- length(x) * p1^2
+	e1 <- length(x) * p1 * (1 - p1) * 2
+	e2 <- length(x) * (1 - p1)^2
+
+	a <- table(x)
+	print(length(a))
+	dat <- rbind(a, c(e0, e1, e2))
+	return(chisq.test(dat)$p.value)
+}
+
+hwe <- lapply(l, function(x) hwe.test(x$snpi))
+unlist(hwe)
+
+tab$isnp_hwe <- unlist(hwe)
+
+
+
+## They are all in hwe but this is expected because they are imputed.
+
+# Extract table info
+
+# grep tabulate 2014_03_05_genotype_matricies.log | tr '_' ':' | sed "s/. tabulate //g"| sed "s/chr//g" > table_snp_names.txt
+# grep -E '^\s+([012]\s\|)' 2014_03_05_genotype_matricies.log > temp
+# sed -E "s/\|//g" temp > temp2
+
+nom <- read.table("table_snp_names.txt", he=F, colClass="character")
+mats <- as.matrix(read.table("temp2", he=F, colClass="numeric"))
+mats <- mats[,-c(1, 5)]
+index <- rep(1:nrow(nom), each=3)
+mats <- cbind(index, mats)
+head(mats)
+
+nom$gmc <- NULL
+for(i in 1:nrow(nom))
+{
+	temp <- mats[mats[,1] == i, ]
+	temp <- temp[,-1]
+	nom$gmc[i] <- list(temp)
+}
+
+
+tab$gmc_1x2 <- NULL
+tab$gmc_1xi <- NULL
+tab$gmc_2xi <- NULL
+
+for(i in 1:nrow(tab))
+{
+	temp <- subset(nom, V1 == tab$snp1_pos[i] & V2 == tab$snp2_pos[i])
+	if(nrow(temp) == 0)
+	{
+		temp <- subset(nom, V2 == tab$snp1_pos[i] & V1 == tab$snp2_pos[i])
+	}
+	if(nrow(temp) != 0)	tab$gmc_1x2[i] <- temp$gmc[1]
+
+	temp <- subset(nom, V1 == tab$snp1_pos[i] & V2 == tab$snpi[i])
+	if(nrow(temp) == 0)
+	{
+		temp <- subset(nom, V2 == tab$snp1_pos[i] & V1 == tab$snpi[i])
+	}
+	if(nrow(temp) != 0)	tab$gmc_1xi[i] <- temp$gmc[1]
+
+	temp <- subset(nom, V1 == tab$snp2_pos[i] & V2 == tab$snpi[i])
+	if(nrow(temp) == 0)
+	{
+		temp <- subset(nom, V2 == tab$snp2_pos[i] & V1 == tab$snpi[i])
+	}
+	if(nrow(temp) != 0)	tab$gmc_2xi[i] <- temp$gmc[1]
+
+}
+
+
+tab$min_gmc_1x2 <- unlist(lapply(tab$gmc_1x2, min))
+
+tab$minint_gmc_p1xi <- NULL
+for(i in 1:nrow(tab))
+{
+	temp <- paste("gmc_",tab$minint[i],"xi",sep="")
+	tab$minint_gmc[i] <- min(tab[[temp]][[i]])
+}
+
+tab$sig_p1xi_gmc <- with(tab, p1xi < 0.05 & minint_gmc > 0)
+tab$sig_p1xi <- with(tab, p1xi < 0.05)
+
+save(tab, m1, m2, file="isnp_analysis3.RData")
