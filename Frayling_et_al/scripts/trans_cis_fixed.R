@@ -16,28 +16,41 @@ geno <- plink_to_012(ped, map)
 
 
 
-# Models
 
 trans_cis_epi.fun <- function(geno, snp1_id, probe, probe_id) {
 
-	nsnps <- 				 ncol of geno data
+	nsnps <- 			# ncol of geno data
+	out <- 				# blank array of results
 
-
+	geno <- 			# remove snp1 from the geno panel	
 	snp1 <- 			# fixed at the cis snp
-	snp2 <- 			# this is to vary by i (1:nsnps)
 	pheno <- 			# name / info for 1 of 2 probes			
 
-	fullmod <- lm(pheno ~ as.factor(snp1) + as.factor(snp2) + as.factor(snp1):as.factor(snp2))
-	redmod <- lm(pheno ~ as.factor(snp1) + as.factor(snp2))
-	intmod <- anova(fullmod, redmod)
+	for(i in 1:nsnp)
+	
+		snp2 <- 			# this is to vary by i (1:nsnps)
+	
 
+		fullmod <- lm(pheno ~ as.factor(snp1) + as.factor(snp2) + as.factor(snp1):as.factor(snp2))
+		redmod <- lm(pheno ~ as.factor(snp1) + as.factor(snp2))
+		intmod <- anova(fullmod, redmod)
 
+		out[i,1] <- 		# store F-statistics
+		out[i,2] <- 		# store P-values
+		out[i,3] <- 		# store DF 2		
 
+		out[i,4] <- length(table(snp1 + 3*snp2))   	# nclass size
+		out[i,5] <- min(table(snp1 + 3*snp2))		# min class size
 
+		out[i,6] <- round(cor(snp1, snp2),2)		# LD / correlation between 2 snps 
+
+	}
+
+	out <- as.data.frame(out)
+	names(out) <- c()
+	return(out)
 
 }
-
-
 
 #=======================================================#
 #		*******			FUNCTIONS 		********		#
