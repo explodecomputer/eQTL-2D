@@ -29,10 +29,11 @@ write.csv(TMEM149_out, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/TM
 write.csv(MBLN1_out, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/MBLN1_out.csv", quote=F, row.names=F)
 
 
+
+
 #=======================================================#
 #		*******			FUNCTIONS 		********		#
 #=======================================================#
-
 
 
 #=======================================================#
@@ -74,8 +75,6 @@ plink_to_012.fun <- function(
 #=======================================================#
 #		ANALYSIS OF EPI SCAN BY FIXED CIS SNP 			#
 #=======================================================#
-
-
 
 trans_cis_epi.fun <- function(geno, snp1_id, probe, probe_id) {
 
