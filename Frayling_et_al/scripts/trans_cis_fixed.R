@@ -6,51 +6,25 @@
 # Run functions at the bottom of the script
 
 # Read in data 
-load("")			### Path dir to corrected expression data
+load("/Users/jpowell/repo/eQTL-2D/data/bsgs_egcut_fehr_data.RData")			### Path dir to corrected expression data
+pheno <- phenlist[[1]]
 
 # PLINK geno change function
-ped <- read.table("")			# path to ped file 
-map <- read.table("")			# path to map file
-
-geno <- plink_to_012(ped, map)
+load("/Users/jpowell/repo/eQTL-2D/data/geno.RData")
 
 
 
 
-trans_cis_epi.fun <- function(geno, snp1_id, probe, probe_id) {
+#=======================================================#
+#		RUN ANALYSIS USING FUNCTIONS LISTED BELOW		#
+#=======================================================#
 
-	nsnps <- 			# ncol of geno data
-	out <- 				# blank array of results
+# TMEM149 - ILMN_1786426
+# CIS SNPS - rs8106959 
 
-	geno <- 			# remove snp1 from the geno panel	
-	snp1 <- 			# fixed at the cis snp
-	pheno <- 			# name / info for 1 of 2 probes			
+TMEM149_out <- trans_cis_epi.fun(geno, "rs8106959", pheno, "ILMN_1786426")
 
-	for(i in 1:nsnp)
-	
-		snp2 <- 			# this is to vary by i (1:nsnps)
-	
 
-		fullmod <- lm(pheno ~ as.factor(snp1) + as.factor(snp2) + as.factor(snp1):as.factor(snp2))
-		redmod <- lm(pheno ~ as.factor(snp1) + as.factor(snp2))
-		intmod <- anova(fullmod, redmod)
-
-		out[i,1] <- 		# store F-statistics
-		out[i,2] <- 		# store P-values
-		out[i,3] <- 		# store DF 2		
-
-		out[i,4] <- length(table(snp1 + 3*snp2))   	# nclass size
-		out[i,5] <- min(table(snp1 + 3*snp2))		# min class size
-
-		out[i,6] <- round(cor(snp1, snp2),2)		# LD / correlation between 2 snps 
-
-	}
-
-	out <- as.data.frame(out)
-	names(out) <- c()
-	return(out)
-
-}
 
 #=======================================================#
 #		*******			FUNCTIONS 		********		#
@@ -93,6 +67,56 @@ plink_to_012.fun <- function(
 }
 
 
+
+#=======================================================#
+#		ANALYSIS OF EPI SCAN BY FIXED CIS SNP 			#
+#=======================================================#
+
+
+
+trans_cis_epi.fun <- function(geno, snp1_id, probe, probe_id) {
+
+
+	snp1 <- geno[,which(colnames(geno)==snp1_id)]
+	g <- geno[,-which(colnames(geno)==snp1_id)]				
+	probe <- pheno[,which(colnames(pheno)==probe_id)]						
+
+	nsnps <- ncol(geno)	# ncol of geno data
+
+	out <- array(0, c(nsnps, 5))				# blank array of results
+	telliter <- 1000
+
+	for(i in 1:nsnps) {
+	
+		snp2 <- g[,i]			# this is to vary by i (1:nsnps)
+	
+
+		fullmod <- lm(probe ~ as.factor(snp1) + as.factor(snp2) + as.factor(snp1):as.factor(snp2))
+		redmod <- lm(probe ~ as.factor(snp1) + as.factor(snp2))
+		intmod <- anova(fullmod, redmod)
+
+		out[i,1] <- round(intmod$F[2],2)		# store F-statistics
+		out[i,2] <- -log10(intmod$Pr[2])		# store P-values
+
+		out[i,3] <- length(table(snp1 + 3*snp2))   	# nclass size
+		out[i,4] <- min(table(snp1 + 3*snp2))		# min class size
+
+		out[i,5] <- round(cor(snp1, snp2, use="pairwise.complete.obs"),2)^2		# LD / correlation between 2 snps 
+
+
+		# print iteraction
+		if(i %% telliter==0) {
+			cat(paste("iteraction ", i, " complete\n"))
+		}
+
+
+	}
+
+	out <- as.data.frame(out)
+	names(out) <- c("F", "P", "nclass", "minclass", "LD")
+	return(out)
+
+}
 
 
 
