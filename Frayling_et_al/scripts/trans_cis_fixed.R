@@ -81,7 +81,7 @@ trans_cis_epi.fun <- function(geno, snp1_id, probe, probe_id) {
 	g <- geno[,-which(colnames(geno)==snp1_id)]				
 	probe <- pheno[,which(colnames(pheno)==probe_id)]						
 
-	nsnps <- ncol(geno)	# ncol of geno data
+	nsnps <- ncol(g)	# ncol of geno data
 
 	out <- array(0, c(nsnps, 5))				# blank array of results
 	telliter <- 1000
