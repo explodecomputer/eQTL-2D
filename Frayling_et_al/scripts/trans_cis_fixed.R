@@ -23,7 +23,7 @@ load("/Users/jpowell/repo/eQTL-2D/data/geno.RData")
 # CIS SNPS - rs8106959 
 
 TMEM149_out <- trans_cis_epi.fun(geno, "rs8106959", pheno, "ILMN_1786426")
-
+MBLN1_out <- trans_cis_epi.fun(geno, "rs13069559", pheno, "ILMN_2313158")
 
 
 #=======================================================#
