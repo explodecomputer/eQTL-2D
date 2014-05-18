@@ -30,6 +30,24 @@ write.csv(MBLN1_out, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/MBLN
 
 
 
+#=======================================================#
+#				ANALYSIS OF THE RESULTS					#
+#=======================================================#
+
+TMEM149_out <- cbind(bim[which(which(bim$V2=="rs8106959"))], TMEM149_out)
+MBLN1_out <- cbind(bim[-which(bim$V2=="rs13069559"),], MBLN1_out)
+
+
+# TMEM149 Regions 
+
+
+
+
+
+
+
+
+
 
 #=======================================================#
 #		*******			FUNCTIONS 		********		#
@@ -121,4 +139,103 @@ trans_cis_epi.fun <- function(geno, snp1_id, probe, probe_id) {
 }
 
 
+
+#=======================================================#
+#				MANHATTEN PLOT FUNCTION					#
+#=======================================================#
+
+
+Manhat_plot.fun <- function(data, x, name) {
+	# data: Data
+	# x: Position of the "red" line 
+	# name: name of the figure to be written out
+
+	#**# Define the colour system
+	use=c("blue", "steelblue1")
+
+	#**# Name for the output file
+	name <- as.character(name)
+
+	#==# order data by chromosome and bp
+	# Data provided in correct order
+	# Add cumulative bp
+	data <- cbind(data, c(1:nrow(data)))
+	
+	#==# Determine cumulative bp per chromosome
+	chr_ends_bp <- array(0, c(length(unique(data[,1]))))
+	for(i in unique(data[,1])) {
+		chr_ends_bp[i] <- max(data[data[,1]==i, 5])
+	}
+
+	for(i in 2:length(chr_ends_bp)) {
+		chr_ends_bp[i] <- chr_ends_bp[i-1]+chr_ends_bp[i]
+	}
+
+	#==# Make cumulative bp position
+	data_c <- cbind(data, data[,5])
+	for(i in 2:length(chr_ends_bp)) {
+		data_c[data_c[,4]==i, 6] <- data_c[data_c[,4]==i,5]+chr_ends_bp[i-1]		
+	}
+
+	#==# the new data file with cumulative position is called "data_c"
+	#==# Make the graphic identifiers
+
+	#==# Make colors for chromosomes
+	col=use[data[,1]%%length(use)+1]
+
+	#==# Make the x-axis position identifier 
+	chr_mid <- array(0, c(length(unique(data[,1]))))
+
+	out <- array(0, c(length(unique(data[,1]))))
+	for(i in unique(data[,1])) {
+		tmp <- length(which(data[,1]==unique(data[,1])[i]))
+		out[i] <- tmp
+	}
+
+	for(i in unique(data[,1])) {
+		tmp <- length(which(data[,1]==unique(data[,1])[i]))
+		
+		if(i==1) {
+			chr_mid[i] <- tmp/2
+		}
+		else {
+			chr_mid[i] <- sum(out[1:i-1])+(tmp/2) 
+		}	
+	}
+
+	#==# Plot the "whole genome" plot
+	jpeg(paste(name, ".jpg", sep=""), height=480, width=2200)
+	plot(-log10(data[,4]), ylim=c(0,7), col=col, xlab="Chromosome", ylab="-log10 p values", axes=F, pch=19, cex=0.7)
+	axis(1, at=chr_mid, labels=c(1:22), las=2, cex.axis=1, las=1)
+	axis(2, at=seq(0,max(-log10(data[,4]))+1,1), labels=seq(0,max(-log10(data[,4]))+1,1), las=1, cex.axis=1)
+	abline(x, 0, col="red")
+	dev.off()
+}
+
+
+#=======================================================#
+#					QQ-PLOT FUNCTION					#
+#=======================================================#
+
+
+qqplot.fun <- function(pvector, main=NULL, ...) {
+    o = -log10(sort(pvector,decreasing=F))
+    e = -log10( 1:length(o)/length(o) )
+    plot(e,o,pch=19,cex=1, main=main, ...,
+        xlab=expression(Expected~~-log[10](italic(p))),
+        ylab=expression(Observed~~-log[10](italic(p))),
+        xlim=c(0,max(e)), ylim=c(0,max(o)))
+    lines(e,e,col="red")
+}
+ 
+#Generate some fake data that deviates from the null
+pvalues=runif(10000)
+pvalues[sample(10000,10)]=pvalues[sample(10000,10)]/5000
+ 
+# pvalues is a numeric vector
+pvalues[1:10]
+ 
+# Using the ggd.qqplot() function
+qqplot.fun(pvalues)
+ 
 
