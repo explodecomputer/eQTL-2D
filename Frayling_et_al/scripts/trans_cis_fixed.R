@@ -23,9 +23,12 @@ load("/Users/jpowell/repo/eQTL-2D/data/geno.RData")
 # CIS SNPS - rs8106959 
 
 TMEM149_out <- trans_cis_epi.fun(geno, "rs8106959", pheno, "ILMN_1786426")
-MBLN1_out <- trans_cis_epi.fun(geno, "rs13069559", pheno, "ILMN_2313158")
-
 write.csv(TMEM149_out, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/TMEM149_out.csv", quote=F, row.names=F)
+
+# MBLN1 - ILMN_2313158
+# CIS SNPS - rs13069559 
+
+MBLN1_out <- trans_cis_epi.fun(geno, "rs13069559", pheno, "ILMN_2313158")
 write.csv(MBLN1_out, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/MBLN1_out.csv", quote=F, row.names=F)
 
 
@@ -38,13 +41,17 @@ TMEM149_out <- cbind(bim[which(which(bim$V2=="rs8106959"))], TMEM149_out)
 MBLN1_out <- cbind(bim[-which(bim$V2=="rs13069559"),], MBLN1_out)
 
 
-# TMEM149 Regions 
+# TMEM149 CHR
+index <- which(TMEM149_out$V1==19 | TMEM149_out$V1==6 | TMEM149_out$V1==1 | TMEM149_out$V1==4 | TMEM149_out$V1==2 | TMEM149_out$V1==8 | TMEM149_out$V1==13)
+pdf(file="/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/TMEM149_QQ.pdf")
+qqplot.fun(10^-TMEM149_out$P[-index])
+dev.off()
 
-
-
-
-
-
+# MBLN1 CHR
+index <- which(MBLN1_out$V1==3 | MBLN1_out$V1==6 | MBLN1_out$V1==14 | MBLN1_out$V1==17 | MBLN1_out$V1==7)
+pdf(file="/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/MBLN1_QQ.pdf")
+qqplot.fun(10^-MBLN1_out$P[-index])
+dev.off()
 
 
 
@@ -227,15 +234,5 @@ qqplot.fun <- function(pvector, main=NULL, ...) {
         xlim=c(0,max(e)), ylim=c(0,max(o)))
     lines(e,e,col="red")
 }
- 
-#Generate some fake data that deviates from the null
-pvalues=runif(10000)
-pvalues[sample(10000,10)]=pvalues[sample(10000,10)]/5000
- 
-# pvalues is a numeric vector
-pvalues[1:10]
- 
-# Using the ggd.qqplot() function
-qqplot.fun(pvalues)
  
 
