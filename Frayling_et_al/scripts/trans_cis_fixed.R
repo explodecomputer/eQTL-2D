@@ -14,7 +14,10 @@ load("/Users/jpowell/repo/eQTL-2D/data/geno.RData")
 
 
 
-
+#=======================================================#
+#						FULL DATASET					#
+#=======================================================#
+#														#	
 #=======================================================#
 #		RUN ANALYSIS USING FUNCTIONS LISTED BELOW		#
 #=======================================================#
@@ -57,6 +60,81 @@ qqplot.fun(10^-MBLN1_out$P[-index])
 dev.off()
 
 lambda.fun(10^-MBLN1_out$P)
+
+
+
+
+
+#=======================================================#
+#					UNRELATED DATASET					#
+#=======================================================#
+#														#	
+#=======================================================#
+#		RUN ANALYSIS USING FUNCTIONS LISTED BELOW		#
+#=======================================================#
+
+load("/Users/jpowell/repo/eQTL-2D/data/bsgs_egcut_fehr_data.RData")			### Path dir to corrected expression data
+pheno <- phenlist[[1]]
+row.names(pheno) <- row.names(geno)
+
+# PLINK geno change function
+load("/Users/jpowell/repo/eQTL-2D/data/geno.RData")
+
+unrel <- read.table("/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/unrel_ids_plink_final.txt", header=F)
+
+
+index <- which(row.names(geno) %in% unrel$V2)
+tmpG <- geno[index,]
+tmpP <- pheno[index,]
+
+
+
+# TMEM149 - ILMN_1786426
+# CIS SNPS - rs8106959 
+
+TMEM149_unrel_out <- trans_cis_epi.fun(tmpG, "rs8106959", tmpP, "ILMN_1786426")
+write.csv(TMEM149_unrel_out, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/TMEM149_unrel_out.csv", quote=F, row.names=F)
+
+# MBLN1 - ILMN_2313158
+# CIS SNPS - rs13069559 
+
+MBLN1_unrel_out <- trans_cis_epi.fun(tmpG, "rs13069559", tmpP, "ILMN_2313158")
+write.csv(MBLN1_unrel_out, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/MBLN1_unrel_out.csv", quote=F, row.names=F)
+
+
+
+#=======================================================#
+#				ANALYSIS OF THE RESULTS					#
+#=======================================================#
+
+TMEM149_out <- cbind(bim[which(which(bim$V2=="rs8106959"))], TMEM149_out)
+MBLN1_out <- cbind(bim[-which(bim$V2=="rs13069559"),], MBLN1_out)
+
+
+# TMEM149 CHR
+index <- which(TMEM149_out$V1==19 | TMEM149_out$V1==6 | TMEM149_out$V1==1 | TMEM149_out$V1==4 | TMEM149_out$V1==2 | TMEM149_out$V1==8 | TMEM149_out$V1==13)
+pdf(file="/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/TMEM149_QQ.pdf")
+qqplot.fun(10^-TMEM149_out$P[-index])
+dev.off()
+
+lambda.fun(10^-TMEM149_out$P)
+
+
+# MBLN1 CHR
+index <- which(MBLN1_out$V1==3 | MBLN1_out$V1==6 | MBLN1_out$V1==14 | MBLN1_out$V1==17 | MBLN1_out$V1==7)
+pdf(file="/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/MBLN1_QQ.pdf")
+qqplot.fun(10^-MBLN1_out$P[-index])
+dev.off()
+
+lambda.fun(10^-MBLN1_out$P)
+
+
+
+
+
+
+
+
 
 
 
