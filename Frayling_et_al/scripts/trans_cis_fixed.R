@@ -107,26 +107,31 @@ write.csv(MBLN1_unrel_out, "/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_file
 #				ANALYSIS OF THE RESULTS					#
 #=======================================================#
 
-TMEM149_out <- cbind(bim[which(which(bim$V2=="rs8106959"))], TMEM149_out)
-MBLN1_out <- cbind(bim[-which(bim$V2=="rs13069559"),], MBLN1_out)
+TMEM149_unrel_out <- read.csv("/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/TMEM149_unrel_out.csv", header=T)
+MBLN1_unrel_out <- read.csv("/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/MBLN1_unrel_out.csv", header=T)
+
+
+
+TMEM149_unrel_out <- cbind(bim[-which(bim$V2=="rs8106959"),], TMEM149_unrel_out)
+MBLN1_unrel_out <- cbind(bim[-which(bim$V2=="rs13069559"),], MBLN1_unrel_out)
 
 
 # TMEM149 CHR
-index <- which(TMEM149_out$V1==19 | TMEM149_out$V1==6 | TMEM149_out$V1==1 | TMEM149_out$V1==4 | TMEM149_out$V1==2 | TMEM149_out$V1==8 | TMEM149_out$V1==13)
-pdf(file="/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/TMEM149_QQ.pdf")
-qqplot.fun(10^-TMEM149_out$P[-index])
+index <- which(TMEM149_unrel_out$V1==19 | TMEM149_unrel_out$V1==6 | TMEM149_unrel_out$V1==1 | TMEM149_unrel_out$V1==4 | TMEM149_unrel_out$V1==2 | TMEM149_unrel_out$V1==8 | TMEM149_unrel_out$V1==13)
+pdf(file="/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/TMEM149_unrel_QQ.pdf")
+qqplot.fun(10^-TMEM149_unrel_out$P[-index])
 dev.off()
 
-lambda.fun(10^-TMEM149_out$P)
+lambda.fun(10^-TMEM149_unrel_out$P)
 
 
 # MBLN1 CHR
-index <- which(MBLN1_out$V1==3 | MBLN1_out$V1==6 | MBLN1_out$V1==14 | MBLN1_out$V1==17 | MBLN1_out$V1==7)
-pdf(file="/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/MBLN1_QQ.pdf")
-qqplot.fun(10^-MBLN1_out$P[-index])
+index <- which(MBLN1_unrel_out$V1==3 | MBLN1_unrel_out$V1==6 | MBLN1_unrel_out$V1==14 | MBLN1_unrel_out$V1==17 | MBLN1_unrel_out$V1==7)
+pdf(file="/Users/jpowell/repo/eQTL-2D/Frayling_et_al/data_files/MBLN1_unrel_QQ.pdf")
+qqplot.fun(10^-MBLN1_unrel_out$P[-index])
 dev.off()
 
-lambda.fun(10^-MBLN1_out$P)
+lambda.fun(10^-MBLN1_unrel_out$P)
 
 
 
