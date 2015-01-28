@@ -15,7 +15,7 @@ fi
 
 i=${SGE_TASK_ID}
 
-R --no-save --args // ${i} // < epi_empirical.R
+R --no-save --args /clusterdata/josephp/epi_investigation/investigation_data.RData ${i} /clusterdata/josephp/epi_investigation/output < epi_empirical.R
 
 
 
