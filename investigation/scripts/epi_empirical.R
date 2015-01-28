@@ -18,27 +18,27 @@ rm(phenlist)
 
 
 
-
-
-
-for(i in 1:nrow(sig)) {
-
 	probe <- as.character(sig$probename[i])
 	snp1 <- as.character(sig$snp1[i])
 	snp2 <- as.character(sig$snp2[i])
 
-	probe <- bsgs[,which(names(bsgs)==probe)]
+
+
+analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
+
+
+	pheno <- bsgs[,which(names(bsgs)==probe)]
 	geno1 <- geno[,which(names(geno)==snp1)]
 	geno2 <- geno[,which(names(geno)==snp2)]
 
 	# check everything is the correct length
-	if(length(geno1)!=846 | length(geno2)!=846 | length(probe)!=846) {
+	if(length(geno1)!=846 | length(geno2)!=846 | length(pheno)!=846) {
 		stop(print(paste(i, " incorrect data length")))
 	}
 
 	# Run single marker additive model
-	add1 <- summary(lm(probe~geno1))$coefficients[2,4]
-	add2 <- summary(lm(probe~geno2))$coefficients[2,4]
+	add1 <- summary(lm(pheno~geno1))$coefficients[2,4]
+	add2 <- summary(lm(pheno~geno2))$coefficients[2,4]
 
 	# perform genome-wide anaysis
 	p <- which.min(c(add1, add2))
@@ -64,22 +64,27 @@ for(i in 1:nrow(sig)) {
 
 
 	out <- matrix(0, nrow=ncol(g), ncol=4)
-	for(k in 1:100){#nrow(out)) {
+	telliter <- 1000
+	for(k in 1:nrow(out)) {
 
-		fit <- summary(lm(probe~g[,k]))
+		fit <- summary(lm(pheno~g[,k]))
 		out[k,1] <- fit$coefficients[2,4]
 		out[k,2] <- fit$df[2]
 		out[k,3] <- fit$coefficients[2,2]
 		out[k,4] <- fit$coefficients[2,3]
 
+		if(k %% telliter==0){
+			print(k)
+		}
+
 	}
 
 	out <- as.data.frame(out)
 	names(out) <- c("pval", "df", "se", "fstat")
-	
-	save(out, "")
-
-
-
+	return(out)
+	#save(out, "")
 
 }
+
+
+test <- analysis.fun(probe, snp1, snp2, bsgs, geno, bim)
