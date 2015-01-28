@@ -5,22 +5,32 @@
 
 # Read in data 
 # sig data
-load('~/repo/eQTL-2D/investigation/data/sig_501_data.RData')	
+#load('~/repo/eQTL-2D/investigation/data/sig_501_data.RData')	
 
 # Genotype data
-load('~/repo/eQTL-2D/data/geno.RData')
-geno <- as.data.frame(geno)
+#load('~/repo/eQTL-2D/data/geno.RData')
+#geno <- as.data.frame(geno)
 
 # Probe (residuals) data
-load('~/repo/eQTL-2D/data/bsgs_egcut_fehr_data.RData')
-bsgs <- as.data.frame(phenlist[[1]])
-rm(phenlist)
+#load('~/repo/eQTL-2D/data/bsgs_egcut_fehr_data.RData')
+#bsgs <- as.data.frame(phenlist[[1]])
+#rm(phenlist)
+# save(bim, bsgs, fam, freq, geno, sig, file="~/repo/eQTL-2D/investigation/data/investigation_data.RData")
 
+# To run, e.g.:
+# cd analysis/run
+# R --no-save --args /path/to/investigation/RData array_iteration /path/to/output < epi_empirical.R
 
+args        		<- commandArgs(T)
+data   				<- args[1]			
+iter				<- args[2]
+outdir     			<- args[3]	
 
-	probe <- as.character(sig$probename[i])
-	snp1 <- as.character(sig$snp1[i])
-	snp2 <- as.character(sig$snp2[i])
+load(data)
+
+probe <- as.character(sig$probename[iter])
+snp1 <- as.character(sig$snp1[iter])
+snp2 <- as.character(sig$snp2[iter])
 
 
 
@@ -64,8 +74,8 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
 
 	out <- matrix(0, nrow=ncol(g), ncol=4)
-	telliter <- 1000
-	for(k in 1:nrow(out)) {
+	telliter <- 100
+	for(k in 1:1000) {#nrow(out)) {
 
 		fit <- summary(lm(pheno~g[,k]))
 		out[k,1] <- fit$coefficients[2,4]
@@ -86,4 +96,12 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 }
 
 
-test <- analysis.fun(probe, snp1, snp2, bsgs, geno, bim)
+output <- analysis.fun(probe, snp1, snp2, bsgs, geno, bim)
+save(output, file=paste(outdir, probe, "_output.RData"))
+
+
+
+
+
+
+

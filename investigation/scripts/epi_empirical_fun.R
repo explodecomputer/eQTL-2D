@@ -7,6 +7,73 @@
 #		*******			FUNCTIONS 		********		#
 #=======================================================#
 
+#=======================================================#
+#	RUN THE ANALYSIS FOR STEP ONE OF THE INVESTIGATION 	#
+#=======================================================#
+
+
+analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
+
+
+	pheno <- bsgs[,which(names(bsgs)==probe)]
+	geno1 <- geno[,which(names(geno)==snp1)]
+	geno2 <- geno[,which(names(geno)==snp2)]
+
+	# check everything is the correct length
+	if(length(geno1)!=846 | length(geno2)!=846 | length(pheno)!=846) {
+		stop(print(paste(i, " incorrect data length")))
+	}
+
+	# Run single marker additive model
+	add1 <- summary(lm(pheno~geno1))$coefficients[2,4]
+	add2 <- summary(lm(pheno~geno2))$coefficients[2,4]
+
+	# perform genome-wide anaysis
+	p <- which.min(c(add1, add2))
+	if(p==1) {
+		snp_fix <- snp1
+		snp_other <- snp2
+	}
+	if(p==2) {
+		snp_fix <- snp2
+		snp_other <- snp1
+	}
+
+	# make the 'remaining' geno
+	i1 <- which(bim$V1==bim$V1[which(bim$V2==snp_other)])
+	MB_plus5 <- bim$V4[which(bim$V2==snp_fix)]+5000000 
+	MB_minus5 <- bim$V4[which(bim$V2==snp_fix)]-5000000 
+	chr <- bim$V1[which(bim$V2==snp_fix)]
+	i2 <- which(bim$V1==chr & bim$V4 > MB_minus5 & bim$V4 < MB_plus5)
+	index <- unique(c(i1,i2))
+	
+	# none conflicted geno matrix
+	g <- geno[,-index]
+
+
+	out <- matrix(0, nrow=ncol(g), ncol=4)
+	telliter <- 1000
+	for(k in 1:nrow(out)) {
+
+		fit <- summary(lm(pheno~g[,k]))
+		out[k,1] <- fit$coefficients[2,4]
+		out[k,2] <- fit$df[2]
+		out[k,3] <- fit$coefficients[2,2]
+		out[k,4] <- fit$coefficients[2,3]
+
+		if(k %% telliter==0){
+			print(k)
+		}
+
+	}
+
+	out <- as.data.frame(out)
+	names(out) <- c("pval", "df", "se", "fstat")
+	return(out)
+
+}
+
+
 
 #=======================================================#
 #		CONVERT THE PED FORMT TO A 0, 1, 2, FORMAT 		#
