@@ -82,7 +82,6 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 	out <- as.data.frame(out)
 	names(out) <- c("pval", "df", "se", "fstat")
 	return(out)
-	#save(out, "")
 
 }
 
