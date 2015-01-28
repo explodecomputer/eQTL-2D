@@ -63,13 +63,23 @@ for(i in 1:nrow(sig)) {
 	g <- geno[,-index]
 
 
-	out <- matrix(0, nrow=ncol(g), ncol=6)
-	for(k in 1:nrow(out)) {
+	out <- matrix(0, nrow=ncol(g), ncol=4)
+	for(k in 1:100){#nrow(out)) {
 
 		fit <- summary(lm(probe~g[,k]))
 		out[k,1] <- fit$coefficients[2,4]
+		out[k,2] <- fit$df[2]
+		out[k,3] <- fit$coefficients[2,2]
+		out[k,4] <- fit$coefficients[2,3]
 
 	}
+
+	out <- as.data.frame(out)
+	names(out) <- c("pval", "df", "se", "fstat")
+	
+	save(out, "")
+
+
 
 
 }
