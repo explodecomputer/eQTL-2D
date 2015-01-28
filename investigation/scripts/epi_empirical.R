@@ -23,7 +23,7 @@
 
 args        		<- commandArgs(T)
 data   				<- args[1]			
-iter				<- args[2]
+iter				<- as.numeric(args[2])
 outdir     			<- args[3]	
 
 load(data)
@@ -31,7 +31,6 @@ load(data)
 probe <- as.character(sig$probename[iter])
 snp1 <- as.character(sig$snp1[iter])
 snp2 <- as.character(sig$snp2[iter])
-
 
 
 analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
@@ -43,7 +42,7 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
 	# check everything is the correct length
 	if(length(geno1)!=846 | length(geno2)!=846 | length(pheno)!=846) {
-		stop(print(paste(i, " incorrect data length")))
+		stop(print(paste(probe, " incorrect data length")))
 	}
 
 	# Run single marker additive model
@@ -75,7 +74,7 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
 	out <- matrix(0, nrow=ncol(g), ncol=4)
 	telliter <- 100
-	for(k in 1:1000) {#nrow(out)) {
+	for(k in 1:nrow(out)) {
 
 		fit <- summary(lm(pheno~g[,k]))
 		out[k,1] <- fit$coefficients[2,4]
@@ -97,7 +96,7 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
 
 output <- analysis.fun(probe, snp1, snp2, bsgs, geno, bim)
-save(output, file=paste(outdir, probe, "_output.RData"))
+save(output, file=paste(outdir, probe, "_output.RData", sep=""))
 
 
 
