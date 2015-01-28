@@ -6,7 +6,7 @@
 #$ -o /clusterdata/josephp/job_reports/
 #$ -e /clusterdata/josephp/job_reports/
 #$ -S /bin/bash
-#$ -t 1-5
+#$ -t 1-501
 
 if [ -n "${1}" ]; then
   echo "${1}"
