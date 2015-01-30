@@ -35,7 +35,6 @@ snp2 <- as.character(sig$snp2[iter])
 
 analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
-
 	pheno <- bsgs[,which(names(bsgs)==probe)]
 	geno1 <- geno[,which(names(geno)==snp1)]
 	geno2 <- geno[,which(names(geno)==snp2)]
@@ -54,10 +53,12 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 	if(p==1) {
 		snp_fix <- snp1
 		snp_other <- snp2
+		geno_fix <- geno1
 	}
 	if(p==2) {
 		snp_fix <- snp2
 		snp_other <- snp1
+		geno_fix <- geno2
 	}
 
 	# make the 'remaining' geno
@@ -72,15 +73,22 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 	g <- geno[,-index]
 
 
-	out <- matrix(0, nrow=ncol(g), ncol=4)
+	out <- matrix(0, nrow=ncol(g), ncol=5)
 	telliter <- 100
-	for(k in 1:nrow(out)) {
+	for(k in 1:10000){#nrow(out)) {
 
-		fit <- summary(lm(pheno~g[,k]))
-		out[k,1] <- fit$coefficients[2,4]
-		out[k,2] <- fit$df[2]
-		out[k,3] <- fit$coefficients[2,2]
-		out[k,4] <- fit$coefficients[2,3]
+		snp2 <- g[,k]			# this is to vary by k (1:nsnps)
+		fullmod <- lm(pheno ~ as.factor(geno_fix) + as.factor(snp2) + as.factor(geno_fix):as.factor(snp2))
+		redmod <- lm(pheno ~ as.factor(geno_fix) + as.factor(snp2))
+		intmod <- anova(fullmod, redmod)
+
+		out[k,1] <- round(intmod$F[2],2)		# store F-statistics
+		out[k,2] <- -log10(intmod$Pr[2])		# store P-values
+
+		out[k,3] <- length(table(geno_fix + 3*snp2))   	# nclass size
+		out[k,4] <- min(table(geno_fix + 3*snp2))		# min class size
+
+		out[k,5] <- round(cor(geno_fix, snp2, use="pairwise.complete.obs"),2)^2		# LD / correlation between 2 snps 
 
 		if(k %% telliter==0){
 			print(k)
@@ -89,7 +97,7 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("pval", "df", "se", "fstat")
+	names(out) <- c("F", "P", "nclass", "minclass", "LD")
 	return(out)
 
 }
