@@ -75,7 +75,7 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
 	out <- matrix(0, nrow=ncol(g), ncol=5)
 	telliter <- 100
-	for(k in 1:10000){#nrow(out)) {
+	for(k in 1:nrow(out)) {
 
 		snp2 <- g[,k]			# this is to vary by k (1:nsnps)
 		fullmod <- lm(pheno ~ as.factor(geno_fix) + as.factor(snp2) + as.factor(geno_fix):as.factor(snp2))
