@@ -83,7 +83,7 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 		intmod <- anova(fullmod, redmod)
 
 		out[k,1] <- round(intmod$F[2],2)		# store F-statistics
-		out[k,2] <- -log10(intmod$Pr[2])		# store P-values
+		out[k,2] <- intmod$Pr[2]				# store P-values
 
 		out[k,3] <- length(table(geno_fix + 3*snp2))   	# nclass size
 		out[k,4] <- min(table(geno_fix + 3*snp2))		# min class size
