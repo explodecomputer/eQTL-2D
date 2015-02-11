@@ -23,7 +23,7 @@ summarize.fun <- function(lf) {
 
 		# Calculate lambda (median)
 		Z <- qnorm(1-(foo$P/2))
-		out[i,5] <- (median(na.omit(Z)))^2/0.456
+		out[i,5] <- round((median(na.omit(Z)))^2/0.456, 2)
 		out[i,6] <- length(which(foo$P < 4.48e-6))
 
 		# 

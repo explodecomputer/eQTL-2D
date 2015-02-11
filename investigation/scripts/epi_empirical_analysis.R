@@ -21,7 +21,7 @@ lf <- list.files()
 ##################################################################
 # summary of the clean and total snps
 
-genome_summary <- genome_sum.fun(lf)
+gs <- genome_sum.fun(lf)
 
 
 ##################################################################
@@ -29,7 +29,7 @@ genome_summary <- genome_sum.fun(lf)
 ##################################################################
 # add the filter info and y/n in 30 sig
 
-genome_summary <- filter_add.fun(sig, genome_summary)
+gs <- filter_add.fun(sig, gs)
 
 
 
@@ -39,7 +39,7 @@ genome_summary <- filter_add.fun(sig, genome_summary)
 # Determine the summary of the output
 
 lambda <- summarize.fun(lf)
-
+gs <- cbind(gs, lambda[,5:6])
 
 
 ##################################################################
@@ -48,4 +48,35 @@ lambda <- summarize.fun(lf)
 # Calculate the additive eQTL effects for each pair
 
 add_test <- add_cal.fun(sig, bsgs, geno, bim)
+
+
+
+##################################################################
+##################################################################
+##################################################################
+# Make figures
+
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda_npairs.png")
+plot(as.numeric(as.matrix(gs$lambda)), as.numeric(as.matrix(gs$nthreshold)), 
+		col=as.numeric(as.matrix(gs$filter)),
+		pch=16,
+		xlab="lambda", ylab="n snp pairs > 4.48x10-6")
+dev.off()
+
+
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda.png")
+hist(as.numeric(as.matrix(gs$lambda)), breaks=25, 
+	col=as.numeric(as.matrix(gs$filter)),
+	xlab="lambda", main="")
+dev.off()
+
+
+
+
+
+
+
+
+
+
 
