@@ -13,7 +13,7 @@ lf <- list.files()
 
 summarize.fun <- function(lf) {
 
-	out <- matrix(0, nrow=length(lf), ncol=6)
+	out <- matrix(0, nrow=length(lf), ncol=5)
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
@@ -24,17 +24,23 @@ summarize.fun <- function(lf) {
 
 		out[i,1] <- substr(lf[i], 1, 12)
 		out[i,2] <- nrow(foo)
-		out[i,3] <- min(foo$P) 	
-		
+		#out[i,3] <- min(foo$P) 	
+		Z <- qnorm(1-(foo$P/2))
+		out[i,4] <- (median(na.omit(Z)))^2/0.456
+		out[i,5] <- length(which(foo$P < 4.48e-6))
 
 		rm(foo)
 		rm(output)
+
+		print(i)
 	}
 
-
-Z <- qnorm(1-(foo$P/2))
-lambda <- (median(na.omit(Z)))^2/0.456
-
+	out <- as.data.frame(out)
+	names(out) <- c("probename", "nsnps", "minp", "lambda", "nthreshold")	
+	return(out)
 }
 
-for
+
+out <- summarize.fun(lf)
+
+
