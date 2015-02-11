@@ -104,7 +104,7 @@ analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
 
 output <- analysis.fun(probe, snp1, snp2, bsgs, geno, bim)
-save(output, file=paste(outdir, probe, "_output.RData", sep=""))
+save(output, file=paste(outdir, probe, "_", snp1, "_", snp2, "_output.RData", sep=""))
 
 
 

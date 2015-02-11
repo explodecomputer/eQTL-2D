@@ -113,7 +113,7 @@ Using a Bonferroni correction of $0.05$ in the second stage of the two stage dis
 
 We assumed a null model where there was one true additive effect and 7 other terms with no effect. To simulate a test statistic we simulated 8 z-scores, $z_1 \sim N(\sqrt{NCP}, 1)$ and $z_{2..8} \sim N(0,1)$. Thus $z_{full} = \sum^8_{i=1}{z_i} \sim \chi^{2}_{8}$ (representing the 8 d.f. test) and $z_{int} = \sum^8_{i=5}{z_i} \sim \chi^{2}_{4}$ (representing the 4 d.f. test where the null hypothesis of no epistasis is true). For a particular value of $NCP$ we simulated 100,000 $z$ values, and calculated the $p_{full}$-value for the $z_{full}$ test statistic. The $n_{int}$ test statistics with $p_{full} < 2.31 \times 10^{-16}$ were kept for the second stage, where the type 1 error rate of stage 2 was calculated as the proportion of $p_{int} < 0.05 / n_{int}$. The power at stage 1 was calculated as $n_{int} / 100,000$. This procedure was performed for a range of $NCP$ parameters that represented power ranging from $\sim 0$ to $\sim 1$.
 
-
+\newpage
 
 \section*{Methods and results}
 
