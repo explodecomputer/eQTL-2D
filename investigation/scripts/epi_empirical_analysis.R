@@ -97,11 +97,11 @@ hist(-log10(as.numeric(as.matrix(gs$P_emp))), breaks=20,
 
 # 2. Given results from 1., display the empirical type-I error rate for the probe-SNP-SNP trios that are in the Nature article table (the top 30).
 
-3. For each probe-SNP pair, list the largest observed F-statistic from the empirical results, list the corresponding p-value (= 1/n I think, where n = number of SNPs that passed the filters), and list the F-statistic(s) from the probe-SNP-SNP trios that were among the 501.
+# 3. For each probe-SNP pair, list the largest observed F-statistic from the empirical results, list the corresponding p-value (= 1/n I think, where n = number of SNPs that passed the filters), and list the F-statistic(s) from the probe-SNP-SNP trios that were among the 501.
 
-4. Calculate a mean lambda per probe, for those probes that were in the 501 selected trios. I am guessing that the lambdas for probes MBLN1 and TMEM149 are large.
+# 4. Calculate a mean lambda per probe, for those probes that were in the 501 selected trios. I am guessing that the lambdas for probes MBLN1 and TMEM149 are large.
 
-5. For those probe-SNP-SNP trios that pass the empirical threshold (100 out of 400?), what proportion are cis and trans? I'm guessing that most will be cis.
+# 5. For those probe-SNP-SNP trios that pass the empirical threshold (100 out of 400?), what proportion are cis and trans? I'm guessing that most will be cis.
 
 Thanks again,
 
