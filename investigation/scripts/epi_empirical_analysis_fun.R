@@ -8,7 +8,7 @@
 # provide summary formation for the output results
 summarize.fun <- function(lf) {
 
-	out <- matrix(0, nrow=length(lf), ncol=6)
+	out <- matrix(0, nrow=length(lf), ncol=7)
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
@@ -25,6 +25,7 @@ summarize.fun <- function(lf) {
 		Z <- qnorm(1-(foo$P/2))
 		out[i,5] <- round((median(na.omit(Z)))^2/0.456, 2)
 		out[i,6] <- length(which(foo$P < 4.48e-6))
+		out[i,7] <- length(which(foo$P < 0.05/nrow(foo)))
 
 		# 
 
@@ -35,7 +36,7 @@ summarize.fun <- function(lf) {
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold")	
+	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold", "nadjustedthreshold")	
 	return(out)
 }
 

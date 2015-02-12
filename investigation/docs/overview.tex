@@ -3,7 +3,6 @@
 % Investigation into the architecture of epistasis
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\title{Gene expression underlying Endo susceptability}
 %
 %%% Preamble
 
@@ -51,6 +50,8 @@
 %%% Referencing
 \bibliographystyle{naturemag}
 
+%%% Figures
+\graphicspath{{/Users/jpowell/repo/eQTL-2D/investigation/docs/figures/}}
 
 %%% Maketitle metadata
 \newcommand{\horrule}[1]{\rule{\linewidth}{#1}} 					% Horizontal rule
@@ -131,16 +132,40 @@ c. This generates $\approx 500,000$ interaction p-values. Apply the same snp-pai
 
 d.  Use the (filtered) interaction p-values to determine the empirical distribution of null p-values. \\
 
-
 \newpage
 
-2. Identify the largest additive eQTL for the probe (irrespective of effect size). Regress out the effect of the additive loci and use the adjusted phenotype for 8df and 4df model analysis. Results reported are the 8df and 4df of original pair and the empirical p-values from genome-wide analysis fitting each of the two snps as fixed. As before these are determined by filtering out the snps on the same chromosome as the original fixed snp and also within +/- 5MB of the second snp. \\
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=3.5in]{lambda_107.png}
+\caption*{Figure | p-value distribution - ok}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=3.5in]{lambda_305.png}
+\caption*{Figure | p-value distribution - bad}
+\end{figure}
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=4in]{lambda.png}
+\caption*{Figure | Distribution of median lambda from the 501 fixed SNP analysis. Red denotes original pairs identified from filter 2 - i.e. no previous study-wide additive effects. Black denotes the original filter 1 pairs}
+\end{figure}
+
+
+
+2. Identify the largest additive eQTL for the probe (irrespective of effect size). Regress out the effect of the additive loci and use the adjusted phenotype for 8df and 4df model analysis. Results reported are the 8df and 4df of original pair and the empirical p-values from genome-wide analysis fitting each of the two SNPs as fixed. As before these are determined by filtering out the SNPs on the same chromosome as the original fixed SNP and also within +/- 5MB of the second SNP. \\
+
+[Currently running]
 
 \vspace{1cm}
 
 2. Prediction \\
 
-Of the 501 snp pairs, 484 have both snps in the EGCUT data. Most of the Inchianti snps need to be imputed, but we expect most to pass filtering. For pairs without and Inchiamti snp I propose using the snp with the largest additive effect in the egcut data. \\
+Of the 501 SNP pairs, 484 have both SNP in the EGCUT data. Most of the Inchianti SNPs need to be imputed, but we expect most to pass filtering. For pairs without and Inchianti SNP I propose using the SNP with the largest additive effect in the egcut data. \\
 
 For each pair; \\
 
@@ -177,6 +202,7 @@ a. Predict the phenotype in egcut data using a predictor with effects estimated 
 
 %%% End document
 \end{document}
+
 
 
 

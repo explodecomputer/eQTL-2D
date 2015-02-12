@@ -39,7 +39,7 @@ gs <- filter_add.fun(sig, gs)
 # Determine the summary of the output
 
 lambda <- summarize.fun(lf)
-gs <- cbind(gs, lambda[,5:6])
+gs <- cbind(gs, lambda[,5:7])
 
 
 ##################################################################
@@ -71,10 +71,20 @@ hist(as.numeric(as.matrix(gs$lambda)), breaks=25,
 dev.off()
 
 
+load(lf[3])
+index <- which(output$nclass==9 & output$minclass > 5 & output$LD < 0.1)
+foo <- output[index,]
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda_107.png")
+hist(foo$P, main="ILMN_1651886 - lambda = 1.07", xlab="p-value", col="lightgrey")
+dev.off()
 
 
-
-
+load(lf[17])
+index <- which(output$nclass==9 & output$minclass > 5 & output$LD < 0.1)
+foo <- output[index,]
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda_305.png")
+hist(foo$P, main="ILMN_1660549 - lambda = 3.05", xlab="p-value", col="lightgrey")
+dev.off()
 
 
 
