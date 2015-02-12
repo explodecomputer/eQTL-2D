@@ -87,6 +87,10 @@ hist(foo$P, main="ILMN_1660549 - lambda = 3.05", xlab="p-value", col="lightgrey"
 dev.off()
 
 
+hist(-log10(as.numeric(as.matrix(gs$P_emp))), breaks=20,
+	main="", xlab="-log10 p-values", col="lightgrey")
+
+
 
 
 
