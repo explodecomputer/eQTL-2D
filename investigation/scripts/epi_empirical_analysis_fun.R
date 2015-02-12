@@ -8,7 +8,7 @@
 # provide summary formation for the output results
 summarize.fun <- function(lf) {
 
-	out <- matrix(0, nrow=length(lf), ncol=7)
+	out <- matrix(0, nrow=length(lf), ncol=9)
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
@@ -27,8 +27,25 @@ summarize.fun <- function(lf) {
 		out[i,6] <- length(which(foo$P < 4.48e-6))
 		out[i,7] <- length(which(foo$P < 0.05/nrow(foo)))
 
-		# 
+		# Calculate N pairs with F_i > H0-F from 4.48x10-6
+		F_thres <- qf(1-(4.48e-6), df1=4, df2=846)
+		Q <- round(nrow(foo)*4.48e-6)
 
+		if(Q==0) {
+
+			out[i,8] <- NA
+			out[i,9] <- NA
+		}
+
+		else{
+			F_emp <- sort(foo$F, decreasing=T)[Q]
+			P_emp <- 1-pf(F_emp, df1=4, df2=842)
+
+			out[i,8] <- F_emp
+			out[i,9] <- P_emp
+		}
+		
+			
 		rm(foo)
 		rm(output)
 
@@ -36,7 +53,7 @@ summarize.fun <- function(lf) {
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold", "nadjustedthreshold")	
+	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold", "nadjustedthreshold", "F_emp", "P_emp")	
 	return(out)
 }
 

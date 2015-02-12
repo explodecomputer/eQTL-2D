@@ -39,7 +39,7 @@ gs <- filter_add.fun(sig, gs)
 # Determine the summary of the output
 
 lambda <- summarize.fun(lf)
-gs <- cbind(gs, lambda[,5:7])
+gs <- cbind(gs, lambda[,5:9])
 
 
 ##################################################################
