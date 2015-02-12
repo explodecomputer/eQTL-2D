@@ -103,7 +103,4 @@ hist(-log10(as.numeric(as.matrix(gs$P_emp))), breaks=20,
 
 # 5. For those probe-SNP-SNP trios that pass the empirical threshold (100 out of 400?), what proportion are cis and trans? I'm guessing that most will be cis.
 
-Thanks again,
-
-Peter
 
