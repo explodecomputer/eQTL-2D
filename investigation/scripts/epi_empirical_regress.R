@@ -78,18 +78,18 @@ analysis_regress.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 	# make adjusted phenotype (by 1 snp)
 	pheno_adj1 <- array(NA, length(pheno))
 	index1 <- !is.na(geno_fix)
-	fit1 <- lm(pheno~geno_fix)
+	fit1 <- lm(pheno~as.factor(geno_fix))
 	pheno_adj1[index1] <- fit1$residuals	
 
 	# make adjusted phenotype (by snps)
 	pheno_adj2 <- array(NA, length(pheno))
-	fit2 <- lm(pheno~geno_fix+geno_other)
+	fit2 <- lm(pheno~as.factor(geno_fix)+as.factor(geno_other))
 	pheno_adj2[index1] <- fit2$residuals
 
 
 	out <- matrix(0, nrow=ncol(g), ncol=7)
 	telliter <- 100
-	for(k in 1:50000){#nrow(out)) {
+	for(k in 1:nrow(out)) {
 
 		# run test for adjusted phenotype 1
 		snp2 <- g[,k]			# this is to vary by k (1:nsnps)
