@@ -174,7 +174,26 @@ filter_add.fun <- function(sig, gs) {
 ##################################################################
 # Calculate mean lambda for the multi-probe epi pairs
 
-multi_lambda.fun <- function() {}
+multi_lambda.fun <- function(gs, n) {
+	# n = the number of epi pairs for a probe
+
+	mp <- which(table(gs$probename)>n)
+
+	out <- matrix(0, nrow=length(mp), ncol=5)
+	for(i in 1:length(mp)) {
+
+		foo <- gs[which(gs$probename==names(mp[i])),]
+		out[i,4] <- round(mean(as.numeric(as.matrix(foo$lambda))),2)
+		out[i,1:3] <- as.matrix(foo[1,1:3])
+		out[i,5] <- nrow(foo)
+
+	}
+
+	out <- as.data.frame(out)
+	names(out) <- c("probename", "snp1", "snp2", "meanlambda", "npairs")
+	return(out)
+
+}
 
 
 
