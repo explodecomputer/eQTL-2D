@@ -10,7 +10,7 @@
 # provide summary formation for the output results
 summarize.fun <- function(lf) {
 
-	out <- matrix(0, nrow=length(lf), ncol=9)
+	out <- matrix(0, nrow=length(lf), ncol=10)
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
@@ -27,7 +27,7 @@ summarize.fun <- function(lf) {
 		Z <- qnorm(1-(foo$P/2))
 		out[i,5] <- round((median(na.omit(Z)))^2/0.456, 2)
 		out[i,6] <- length(which(foo$P < 4.48e-6))
-		out[i,7] <- length(which(foo$P < 0.05/nrow(foo)))
+		# out[i,7] <- length(which(foo$P < 0.05/nrow(foo)))
 
 		# Calculate N pairs with F_i > H0-F from 4.48x10-6
 		F_thres <- qf(1-(4.48e-6), df1=4, df2=846)
@@ -35,16 +35,31 @@ summarize.fun <- function(lf) {
 
 		if(Q==0) {
 
-			out[i,8] <- NA
-			out[i,9] <- NA
+			F_sort <- sort(foo$F, decreasing=T)
+			F_emp <- F_sort[1]
+			P_emp <- round(1-pf(F_emp, df1=4, df2=846), 3)
+			out[i,9] <- F_emp
+			out[i,10] <- P_emp
+
+			# Emp Type 1 error rate
+			F_empN <- qf(1-(0.05/nrow(foo)), df1=4, df2=846)
+			out[i,7] <- round(F_empN,2)
+			out[i,8] <- length(which(F_sort > F_empN))
+
 		}
 
 		else{
-			F_emp <- sort(foo$F, decreasing=T)[Q]
-			P_emp <- 1-pf(F_emp, df1=4, df2=842)
+			F_sort <- sort(foo$F, decreasing=T)
+			F_emp <- F_sort[Q]
+			P_emp <- round(1-pf(F_emp, df1=4, df2=842), 3)
 
-			out[i,8] <- F_emp
-			out[i,9] <- P_emp
+			out[i,9] <- F_emp
+			out[i,10] <- P_emp
+
+			# Emp Type1 error
+			F_empN <- qf(1-(0.05/nrow(foo)), df1=4, df2=846)
+			out[i,7] <- round(F_empN,2)
+			out[i,8] <- length(which(F_sort > F_empN))
 		}
 		
 			
@@ -55,7 +70,7 @@ summarize.fun <- function(lf) {
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold", "nadjustedthreshold", "F_emp", "P_emp")	
+	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold", "F_empNtests", "N_F_empNtests", "F_emp", "P_emp")	
 	return(out)
 }
 

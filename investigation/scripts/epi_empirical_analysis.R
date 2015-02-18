@@ -3,6 +3,8 @@
 # analysis and interpretation of the output from epi_empirical.R
 # joseph.powell@uq.edu.au
 
+library(xtable)
+
 # read in the functions
 source("/Users/jpowell/repo/eQTL-2D/investigation/scripts/epi_empirical_analysis_fun.R")
 
@@ -11,6 +13,9 @@ load("/Users/jpowell/repo/eQTL-2D/investigation/data/investigation_data.RData")
 
 # set the data dir
 setwd("/Users/jpowell/repo/eQTL-2D/investigation/data/output/")
+
+# Read in 30 sig list
+sig <- read.csv("/Users/jpowell/repo/eQTL-2D/investigation/data/sig_list.csv", header=T)
 
 # list files
 lf <- list.files()
@@ -105,6 +110,7 @@ hist(-log10(as.numeric(as.matrix(gs$P_emp))), breaks=20,
 # 4. Calculate a mean lambda per probe, for those probes that were in the 501 selected trios. I am guessing that the lambdas for probes MBLN1 and TMEM149 are large.
 
 multi_lambda <- multi_lambda.fun(gs,5)
+xtable(multi_lambda)
 
 
 
