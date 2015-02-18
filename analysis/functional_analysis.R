@@ -469,11 +469,13 @@ counts[3] <- sum((!is.na(a3$int1) | !is.na(a3$int2)))
 a4 <- ciOverlap(ci, sig2, 5000000)
 counts[4] <- sum((!is.na(a4$int1) | !is.na(a4$int2)))
 
-chrint <- subset(a4, !is.na(int1), select=c(snp1, snp2, code, position1, position2, chr1, chr2, probegene, int1, int2))
+
+chrint <- subset(a4, !is.na(int1), select=c(Probe, PCHR, PBP, SNP, SCHR, SBP, BSGS, LBC, int1, int2))
 
 head(chrint)
 chrint$int1[1]
 dim(chrint)
+
 
 chrint <- ddply(chrint, .(code), function(x)
 {
@@ -494,13 +496,13 @@ table(chrint$cluster)
 
 # Permutations performed on cluster. Plot results
 
-load("~/repo/eQTL-2D/analysis/chromosome_interactions/out_549_5e+06.RData")
+load("~/repo/small_projects/allan_mQTL_eQTL/chr_interactions/sim_results/collate_5e+06.RData")
 perm5mb <- a
-load("~/repo/eQTL-2D/analysis/chromosome_interactions/out_549_1e+06.RData")
+load("~/repo/small_projects/allan_mQTL_eQTL/chr_interactions/sim_results/collate_1e+06.RData")
 perm1mb <- a
-load("~/repo/eQTL-2D/analysis/chromosome_interactions/out_549_250000.RData")
+load("~/repo/small_projects/allan_mQTL_eQTL/chr_interactions/sim_results/collate_250000.RData")
 perm250kb <- a
-load("~/repo/eQTL-2D/analysis/chromosome_interactions/out_549_10000.RData")
+load("~/repo/small_projects/allan_mQTL_eQTL/chr_interactions/sim_results/collate_10000.RData")
 perm10kb <- a
 
 binom.test(x=44, n=434, p=mean(perm5mb)/549)$p.value
