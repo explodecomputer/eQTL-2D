@@ -176,28 +176,36 @@ d.  Use the (filtered) interaction p-values to determine the empirical distribut
 \end{table}
 \end{landscape}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=3.5in]{lambda_107.png}
-\caption*{Figure | p-value distribution - ok}
+\caption*{Figure | Example of p-value distribution - ok}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=3.5in]{lambda_305.png}
-\caption*{Figure | p-value distribution - bad}
+\caption*{Figure | Example of p-value distribution - bad}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+\newpage
 \begin{figure}[H]
 \centering
 \includegraphics[width=4in]{lambda.png}
 \caption*{Figure | Distribution of median lambda from the 501 fixed SNP analysis. Red denotes original pairs identified from filter 2 - i.e. no previous study-wide additive effects. Black denotes the original filter 1 pairs}
 \end{figure}
 
+\vspace{1cm}
 
 \begin{table}[ht]
 \centering
@@ -221,9 +229,43 @@ ILMN\_3231952 & rs12947580 & rs8079215 & 2.16 & 6 \\
 \caption*{Mean lambda per probe, when 5 or more interactions are identified amongst the 501 pairs}
 \end{table}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{empF.png}
+\caption*{Figure | The F-statistic corresponding to $p=4.48^{-6}$ and df1=4, df2=842 from a $H_0$ table is 7.67. This figure shows the empirical (ranked) F-statistic corresponding to $n * 4.48^{-6}$. Where $n * 4.48^{-6} < 1$, the largest F-statistic taken.}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{empPval.png}
+\caption*{Figure | The -log10 p-values corresponding to above F-statistics (df1=4, df2=842). The -log10 $p=4.48^{-6} = 5.35$}
+\end{figure}
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=4in]{Npairs_above_empthres.png}
+\caption*{Figure | For each pair (n=501) the number of tests where the test statistic is greater than the 95th percentile of an F-dist}
+\end{figure}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 
 2. Identify the largest additive eQTL for the probe (irrespective of effect size). Regress out the effect of the additive loci and use the adjusted phenotype for 8df and 4df model analysis. Results reported are the 8df and 4df of original pair and the empirical p-values from genome-wide analysis fitting each of the two SNPs as fixed. As before these are determined by filtering out the SNPs on the same chromosome as the original fixed SNP and also within +/- 5MB of the second SNP. \\

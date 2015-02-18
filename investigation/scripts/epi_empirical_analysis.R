@@ -44,7 +44,7 @@ gs <- filter_add.fun(sig, gs)
 # Determine the summary of the output
 
 lambda <- summarize.fun(lf)
-gs <- cbind(gs, lambda[,5:9])
+gs <- cbind(gs, lambda[,5:10])
 
 
 ##################################################################
@@ -91,18 +91,34 @@ png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda_305.png")
 hist(foo$P, main="ILMN_1660549 - lambda = 3.05", xlab="p-value", col="lightgrey")
 dev.off()
 
-
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/empPval.png")
 hist(-log10(as.numeric(as.matrix(gs$P_emp))), breaks=20,
 	main="", xlab="-log10 p-values", col="lightgrey")
+dev.off()
 
-
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/empF.png")
+hist(as.numeric(as.matrix(gs$F_emp)), breaks=20,
+	main="", xlab="Empirical F-value", col="lightgrey")
+dev.off()
 
 
 # 1. For each probe-SNP pair (where SNP = fixed), calculate an empirical 5% type-I error rate, as you suggested yourself this morning. This will be useful to assess replication results. So count the number of observed test statistics greater than the 95th percentile of an F-distribution with [4,N-5] degrees of freedom. I'm not sure what the df in the denominator are, something like N-4 or N-5. 
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/Npairs_above_empthres.png")
+hist(as.numeric(as.matrix(gs$N_F_empNtests)), breaks=25, 
+	xlab="N pairs above emp 0.05 threshold", col="lightgrey", main="")
+dev.off()
 
-# 2. Given results from 1., display the empirical type-I error rate for the probe-SNP-SNP trios that are in the Nature article table (the top 30).
 
-# 3. For each probe-SNP pair, list the largest observed F-statistic from the empirical results, list the corresponding p-value (= 1/n I think, where n = number of SNPs that passed the filters), and list the F-statistic(s) from the probe-SNP-SNP trios that were among the 501.
+
+
+
+# 2. Given results from 1.
+# a) display the empirical type-I error rate for the probe-SNP-SNP trios that are in the Nature article table (the top 30).
+
+# 3. For each probe-SNP pair, list 
+# a) the largest observed F-statistic from the empirical results
+# b) list the corresponding p-value (= 1/n I think, where n = number of SNPs that passed the filters)
+# c) and list the F-statistic(s) from the probe-SNP-SNP trios that were among the 501
 
 ##################################################################
 ##################################################################

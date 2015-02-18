@@ -37,7 +37,7 @@ summarize.fun <- function(lf) {
 
 			F_sort <- sort(foo$F, decreasing=T)
 			F_emp <- F_sort[1]
-			P_emp <- round(1-pf(F_emp, df1=4, df2=846), 3)
+			P_emp <- 1-pf(F_emp, df1=4, df2=846)
 			out[i,9] <- F_emp
 			out[i,10] <- P_emp
 
@@ -51,7 +51,7 @@ summarize.fun <- function(lf) {
 		else{
 			F_sort <- sort(foo$F, decreasing=T)
 			F_emp <- F_sort[Q]
-			P_emp <- round(1-pf(F_emp, df1=4, df2=842), 3)
+			P_emp <- 1-pf(F_emp, df1=4, df2=842)
 
 			out[i,9] <- F_emp
 			out[i,10] <- P_emp
