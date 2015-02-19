@@ -6,15 +6,15 @@
 %
 %%% Preamble
 
-\documentclass[paper=a4, fontsize=11pt]{scrartcl}					% Article class of KOMA-script with 11pt font and a4 format
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}         % Article class of KOMA-script with 11pt font and a4 format
 \usepackage[T1]{fontenc}
 \usepackage{fourier}
 \usepackage{float}
 \usepackage{placeins}
-\usepackage[english]{babel}											% English language/hyphenation
-\usepackage[protrusion=true,expansion=true]{microtype}				% Better typography
-\usepackage{amsmath,amsfonts,amsthm}								% Math packages
-\usepackage[pdftex]{graphicx}										% Enable pdflatex
+\usepackage[english]{babel}                     % English language/hyphenation
+\usepackage[protrusion=true,expansion=true]{microtype}        % Better typography
+\usepackage{amsmath,amsfonts,amsthm}                % Math packages
+\usepackage[pdftex]{graphicx}                   % Enable pdflatex
 \usepackage{url}
 \usepackage{multicol}
 \usepackage{lscape}
@@ -23,18 +23,18 @@
 
 
 %%% Custom sectioning (sectsty package)
-\usepackage{sectsty}												% Custom sectioning (see below)
-\allsectionsfont{\centering \normalfont\scshape}					% Change font of al section commands
+\usepackage{sectsty}                        % Custom sectioning (see below)
+\allsectionsfont{\centering \normalfont\scshape}          % Change font of al section commands
 
 %%% Custom headers/footers (fancyhdr package)
 \usepackage{fancyhdr}
 \pagestyle{fancyplain}
-\fancyhead{}														% No page header
-\fancyfoot[L]{}														% Empty 
-\fancyfoot[C]{}														% Empty
-\fancyfoot[R]{\thepage}												% Pagenumbering
-\renewcommand{\headrulewidth}{0pt}									% Remove header underlines
-\renewcommand{\footrulewidth}{0pt}									% Remove footer underlines
+\fancyhead{}                            % No page header
+\fancyfoot[L]{}                           % Empty 
+\fancyfoot[C]{}                           % Empty
+\fancyfoot[R]{\thepage}                       % Pagenumbering
+\renewcommand{\headrulewidth}{0pt}                  % Remove header underlines
+\renewcommand{\footrulewidth}{0pt}                  % Remove footer underlines
 \setlength{\headheight}{13.6pt}
 \setlength{\parindent}{0pt}
 
@@ -43,9 +43,9 @@
 \renewcommand\tabularxcolumn[1]{C{#1}}
 
 %%% Equation and float numbering
-\numberwithin{equation}{section}									% Equationnumbering: section.eq#
-\numberwithin{figure}{section}										% Figurenumbering: section.fig#
-\numberwithin{table}{section}										% Tablenumbering: section.tab#
+\numberwithin{equation}{section}                  % Equationnumbering: section.eq#
+\numberwithin{figure}{section}                    % Figurenumbering: section.fig#
+\numberwithin{table}{section}                   % Tablenumbering: section.tab#
 
 %%% Referencing
 \bibliographystyle{naturemag}
@@ -54,17 +54,17 @@
 \graphicspath{{/Users/jpowell/repo/eQTL-2D/investigation/docs/figures/}}
 
 %%% Maketitle metadata
-\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} 					% Horizontal rule
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}           % Horizontal rule
 
 \title{
-		%\vspace{-1in} 	
-		\usefont{OT1}{bch}{b}{n}
-		\normalfont \normalsize \textsc{University of Queensland} \\ [25pt]
-		\horrule{0.5pt} \\[0.4cm]
-		\huge Epistasis follow-up \\[0.3cm]
+    %\vspace{-1in}  
+    \usefont{OT1}{bch}{b}{n}
+    \normalfont \normalsize \textsc{University of Queensland} \\ [25pt]
+    \horrule{0.5pt} \\[0.4cm]
+    \huge Epistasis follow-up \\[0.3cm]
         \huge *** summary *** \\
-		\horrule{2pt} \\[0.5cm]
-		\date{}
+    \horrule{2pt} \\[0.5cm]
+    \date{}
 }
 
 \begin{document}
@@ -245,7 +245,7 @@ ILMN\_3231952 & rs12947580 & rs8079215 & 2.16 & 6 \\
 \begin{figure}[H]
 \centering
 \includegraphics[height=3in]{empF.png}
-\caption*{Figure | The F-statistic corresponding to $p=4.48^{-6}$ and df1=4, df2=842 from a $H_0$ table is 7.67. This figure shows the empirical (ranked) F-statistic corresponding to $n * 4.48^{-6}$. Where $n * 4.48^{-6} < 1$, the largest F-statistic taken.}
+\caption*{Figure | The F-statistic corresponding to $p=4.48^{-6}$ and df1=4, df2=842 from a $H_0$ table is 7.67. This figure shows the empirical (ranked) F-statistic corresponding to $n * 4.48^{-6}$. Where $n * 4.48^{-6} < 1$, the largest F-statistic taken. There are 96 pairs where the corresponding F statistic is less than 7.67}
 \end{figure}
 
 
@@ -281,6 +281,8 @@ ILMN\_3231952 & rs12947580 & rs8079215 & 2.16 & 6 \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
+
+
 
 \begin{table}[ht]
 \centering
@@ -320,7 +322,7 @@ RPL13 & ILMN\_2413278 & rs352935 & rs2965817 & 1.11 & 0.058 \\
 TRA2A & ILMN\_1731043 & rs7776572 & rs11770192 & 1.36 & 0.079 \\ 
    \hline
 \end{tabular}
-\caption*{The $\lambda$ and type 1 error rates for the 30 (bonferroni-correction) significant replicated pairs mentioned in Hemani \emph{et al}.}
+\caption*{The $\lambda$ and type 1 error rates for the 30 (Bonferroni-correction) significant replicated pairs mentioned in Hemani \emph{et al}.}
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -373,6 +375,7 @@ a. Predict the phenotype in egcut data using a predictor with effects estimated 
 
 %%% End document
 \end{document}
+
 
 
 
