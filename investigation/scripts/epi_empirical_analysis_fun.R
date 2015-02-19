@@ -218,6 +218,26 @@ multi_lambda.fun <- function(gs, n) {
 
 
 
+##################################################################
+##################################################################
+##################################################################
+# subset gs table to match the 30 paper significant pairs
+
+type1_30.fun <- function(gs, sig30) {
+
+	index <- rep(0, 30)
+	gene <- 
+	for(i in 1:nrow(sig30)) {
+		index[i] <- which(gs$probename==as.character(sig30$Probe[i]) & gs$snp1==as.character(sig30$SNP1[i]) & gs$snp2==as.character(sig30$SNP2[i]))	
+	}	
+
+	gs30 <- gs[index,]
+	gs30 <- cbind(sig30$GENE, gs30)
+	names(gs30)[1] <- "gene"
+	return(gs30)
+
+}
+
 
 
 

@@ -108,12 +108,17 @@ hist(as.numeric(as.matrix(gs$N_F_empNtests)), breaks=25,
 	xlab="N pairs above emp 0.05 threshold", col="lightgrey", main="")
 dev.off()
 
-
-
-
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/type1.png")
+hist(as.numeric(as.matrix(gs$Type1)), breaks=35,
+	xlab="Empirical type 1 error rate", col="lightgrey", main="")
+dev.off()
 
 # 2. Given results from 1.
 # a) display the empirical type-I error rate for the probe-SNP-SNP trios that are in the Nature article table (the top 30).
+gs30 <- type1_30.fun(gs, sig30)
+xtable(gs30[,c(1:4,13,19)])
+
+
 
 # 3. For each probe-SNP pair, list 
 # a) the largest observed F-statistic from the empirical results
