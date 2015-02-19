@@ -248,3 +248,4 @@ type1_30.fun <- function(gs, sig30) {
 
 
 
+
