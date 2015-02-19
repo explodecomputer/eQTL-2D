@@ -15,7 +15,7 @@ load("/Users/jpowell/repo/eQTL-2D/investigation/data/investigation_data.RData")
 setwd("/Users/jpowell/repo/eQTL-2D/investigation/data/output/")
 
 # Read in 30 sig list
-sig <- read.csv("/Users/jpowell/repo/eQTL-2D/investigation/data/sig_list.csv", header=T)
+sig30 <- read.csv("/Users/jpowell/repo/eQTL-2D/investigation/data/sig_list.csv", header=T)
 
 # list files
 lf <- list.files()
@@ -44,7 +44,7 @@ gs <- filter_add.fun(sig, gs)
 # Determine the summary of the output
 
 lambda <- summarize.fun(lf)
-gs <- cbind(gs, lambda[,5:10])
+gs <- cbind(gs, lambda[,5:11])
 
 
 ##################################################################
@@ -92,7 +92,7 @@ hist(foo$P, main="ILMN_1660549 - lambda = 3.05", xlab="p-value", col="lightgrey"
 dev.off()
 
 png(filename="~/repo/eQTL-2D/investigation/docs/figures/empPval.png")
-hist(-log10(as.numeric(as.matrix(gs$P_emp))), breaks=20,
+hist(as.numeric(as.matrix(gs$P_emp)), breaks=20,
 	main="", xlab="-log10 p-values", col="lightgrey")
 dev.off()
 

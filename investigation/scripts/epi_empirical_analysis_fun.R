@@ -10,7 +10,7 @@
 # provide summary formation for the output results
 summarize.fun <- function(lf) {
 
-	out <- matrix(0, nrow=length(lf), ncol=10)
+	out <- matrix(0, nrow=length(lf), ncol=11)
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
@@ -37,7 +37,7 @@ summarize.fun <- function(lf) {
 
 			F_sort <- sort(foo$F, decreasing=T)
 			F_emp <- F_sort[1]
-			P_emp <- 1-pf(F_emp, df1=4, df2=846)
+			P_emp <- round(-log10(1-pf(F_emp, df1=4, df2=846)),2)
 			out[i,9] <- F_emp
 			out[i,10] <- P_emp
 
@@ -51,7 +51,7 @@ summarize.fun <- function(lf) {
 		else{
 			F_sort <- sort(foo$F, decreasing=T)
 			F_emp <- F_sort[Q]
-			P_emp <- 1-pf(F_emp, df1=4, df2=842)
+			P_emp <- round(-log10(1-pf(F_emp, df1=4, df2=842)),2)
 
 			out[i,9] <- F_emp
 			out[i,10] <- P_emp
@@ -62,6 +62,10 @@ summarize.fun <- function(lf) {
 			out[i,8] <- length(which(F_sort > F_empN))
 		}
 		
+		# calculate the type 1 error rate
+		F <- qf(1-(0.05), df1=4, df2=842) 
+		out[i,11] <- round(length(which(foo$F > F))/nrow(foo),3)
+
 			
 		rm(foo)
 		rm(output)
@@ -70,7 +74,7 @@ summarize.fun <- function(lf) {
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold", "F_empNtests", "N_F_empNtests", "F_emp", "P_emp")	
+	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold", "F_empNtests", "N_F_empNtests", "F_emp", "P_emp", "Type1")	
 	return(out)
 }
 
