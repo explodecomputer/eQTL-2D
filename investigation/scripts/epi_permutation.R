@@ -5,11 +5,12 @@
 
 
 
-# load data
-load("/Users/jpowell/repo/eQTL-2D/investigation/data/investigation_data.RData")
+args        		<- commandArgs(T)
+data   				<- args[1]			
+iter				<- as.numeric(args[2])
+outdir     			<- args[3]	
 
-
-
+load(data)
 
 probe <- as.character(sig$probename[iter])
 snp1 <- as.character(sig$snp1[iter])
@@ -48,8 +49,8 @@ perm_analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
 
 
-	out <- matrix(0, nrow=10000, ncol=5)
-	telliter <- 100
+	out <- matrix(0, nrow=10000000, ncol=5)
+	telliter <- 10000
 	for(k in 1:nrow(out)) {
 
 		g <- sample(geno_other)
@@ -60,7 +61,7 @@ perm_analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 		out[k,1] <- round(intmod$F[2],2)		# store F-statistics
 		out[k,2] <- intmod$Pr[2]				# store P-values
 
-		out[k,3] <- length(table(geno_fix + 3*g))   	# nclass size
+		out[k,3] <- length(table(geno_fix + 3*g))   # nclass size
 		out[k,4] <- min(table(geno_fix + 3*g))		# min class size
 
 		out[k,5] <- round(cor(geno_fix, g, use="pairwise.complete.obs"),2)^2		# LD / correlation between 2 snps 
@@ -80,7 +81,7 @@ perm_analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
 
 output <- analysis.fun(probe, snp1, snp2, bsgs, geno, bim)
-save(output, file=paste(outdir, probe, "_", snp1, "_", snp2, "_output.RData", sep=""))
+save(output, file=paste(outdir, probe, "_", snp1, "_", snp2, "_permutation_output.RData", sep=""))
 
 
 
