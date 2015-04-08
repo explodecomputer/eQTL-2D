@@ -80,7 +80,7 @@ perm_analysis.fun <- function(probe, snp1, snp2, bsgs, geno, bim) {
 
 
 
-output <- analysis.fun(probe, snp1, snp2, bsgs, geno, bim)
+output <- perm_analysis.fun(probe, snp1, snp2, bsgs, geno, bim)
 save(output, file=paste(outdir, probe, "_", snp1, "_", snp2, "_permutation_output.RData", sep=""))
 
 
