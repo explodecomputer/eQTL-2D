@@ -8,3 +8,25 @@ load('~/repo/eQTL-2D/investigation/data/sig_501_data.RData')
 
 
 
+
+# Analysis function
+analysis.fun <- function(dir, sig) {
+	# dir: the directory where the *RData files are located
+	# sig: data on the significant permutation results
+
+	lf <- list.files(dir)
+	out <- array(0, c(length(lf), ))
+
+
+
+	for(i in 1:length(lf)) {
+
+
+		
+
+		print(i)
+	}
+
+
+}
+
