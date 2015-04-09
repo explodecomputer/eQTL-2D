@@ -9,6 +9,7 @@ load('~/repo/eQTL-2D/investigation/data/sig_501_data.RData')
 
 
 
+
 # Analysis function
 analysis.fun <- function(dir, sig) {
 	# dir: the directory where the *RData files are located
@@ -23,7 +24,7 @@ analysis.fun <- function(dir, sig) {
 
 
 
-		
+
 
 		print(i)
 	}
