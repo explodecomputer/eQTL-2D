@@ -17,16 +17,30 @@ analysis.fun <- function(dir, sig) {
 
 	setwd(dir)
 	lf <- list.files(dir)
-	out <- array(0, c(length(lf), ))
-
-
+	out <- array(0, c(length(lf), 6))
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
 
+		probe <- substr(lf[i], 1, 12)
+		snp1 <- strsplit(lf[i], "_")[[1]][[3]]
+		snp2 <- strsplit(lf[i], "_")[[1]][[4]]
+
 		# Filter the output	
 		index <- which(output$nclass == 9 & output$minclass > 5 & output$LD < 0.01)
 		foo <- output[index, ]
+		foo <- foo[order(foo$P),]
+		foo$P <- -log10(foo$P)
+
+		pair <- which(sig$probename==probe & sig$snp1==snp1 & sig$snp2==snp2)
+		pemp <- which.min(abs(foo$P-sig$pnest[pair]))/10000000
+
+		out[i,1] <- sig$probename[pair]
+		out[i,2] <- sig$probegene[pair]
+		out[i,3] <- sig$snp1[pair]
+		out[i,4] <- sig$snp2[pair]
+		out[i,5] <- sig$pnest[pair]
+		out[i,6] <- pemp
 
 		print(i)
 	}
