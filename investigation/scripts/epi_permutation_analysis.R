@@ -49,3 +49,8 @@ analysis.fun <- function(dir, sig) {
 
 
 pemp_out <- analysis.fun("~/repo/eQTL-2D/investigation/data/output_permutation/", sig)
+write.table(pemp_out, "~/repo/eQTL-2D/investigation/data/pemp_out.txt", quote=F, row.names=F)
+
+
+
+
