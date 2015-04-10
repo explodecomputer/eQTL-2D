@@ -39,12 +39,16 @@ analysis.fun <- function(dir, sig) {
 		out[i,2] <- sig$probegene[pair]
 		out[i,3] <- sig$snp1[pair]
 		out[i,4] <- sig$snp2[pair]
-		out[i,5] <- sig$pnest[pair]
-		out[i,6] <- pemp
+		out[i,5] <- round(sig$pnest[pair], 3)
+		out[i,6] <- round(-log10(pemp), 3)
 
 		print(i)
 	}
 
-
+	out <- as.data.frame(out)
+	names(out) <- c("probename", "probegene", "snp1", "snp2", "pnest", "pemp")
+	return(out)
 }
 
+
+pemp_out <- analysis.fun("~/repo/eQTL-2D/investigation/data/output_permutation/", sig)
