@@ -24,7 +24,7 @@ analysis.fun <- function(dir, sig) {
 		snp2 <- strsplit(lf[i], "_")[[1]][[4]]
 
 		# Filter the output	
-		index <- which(output$nclass == 9 & output$minclass > 5 & output$LD < 0.01)
+		index <- which(output$nclass == 9 & output$minclass > 4 & output$LD < 0.01)
 		foo <- output[index, ]
 		foo <- foo[order(foo$P),]
 		foo$P <- -log10(foo$P)
