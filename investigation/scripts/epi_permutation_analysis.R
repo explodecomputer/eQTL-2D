@@ -15,16 +15,18 @@ analysis.fun <- function(dir, sig) {
 	# dir: the directory where the *RData files are located
 	# sig: data on the significant permutation results
 
+	setwd(dir)
 	lf <- list.files(dir)
 	out <- array(0, c(length(lf), ))
 
 
 
 	for(i in 1:length(lf)) {
+		load(lf[i])
 
-
-
-
+		# Filter the output	
+		index <- which(output$nclass == 9 & output$minclass > 5 & output$LD < 0.01)
+		foo <- output[index, ]
 
 		print(i)
 	}
