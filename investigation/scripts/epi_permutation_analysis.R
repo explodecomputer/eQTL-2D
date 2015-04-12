@@ -52,7 +52,7 @@ pemp_out <- analysis.fun("~/repo/eQTL-2D/investigation/data/output_permutation/"
 write.table(pemp_out, "~/repo/eQTL-2D/investigation/data/pemp_out.txt", quote=F, row.names=F)
 
 
-png(filename="~/repo/eQTL-2D/investigation/docs/figures/pemp.pdf", width=600, height=600)
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/pemp.png", width=600, height=600)
 hist(as.numeric(as.matrix(pemp_out$pemp)), breaks=25, 
 	xlab="permutation p - value",
 	main="501 Pairs 10,000,000")
