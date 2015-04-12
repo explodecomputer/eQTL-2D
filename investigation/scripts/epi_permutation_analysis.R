@@ -53,6 +53,8 @@ write.table(pemp_out, "~/repo/eQTL-2D/investigation/data/pemp_out.txt", quote=F,
 
 
 
-hist(pemp_out$pemp, breaks=25)
+hist(as.numeric(as.matrix(pemp_out$pemp)), breaks=25, 
+	xlab="permutation p - value",
+	main="501 Pairs 10,000,000 premutations")
 
 
