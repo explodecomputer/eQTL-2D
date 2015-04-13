@@ -14,9 +14,9 @@ analysis.fun <- function(dir, sig) {
 
 	setwd(dir)
 	lf <- list.files(dir)
-	out <- array(0, c(length(lf), 8))
+	out <- array(0, c(length(lf), 9))
 
-	for(i in 1:10){#length(lf)) {
+	for(i in 1:length(lf)) {
 		load(lf[i])
 
 		probe <- substr(lf[i], 1, 12)
@@ -36,16 +36,17 @@ analysis.fun <- function(dir, sig) {
 		out[i,2] <- sig$probegene[pair]
 		out[i,3] <- sig$snp1[pair]
 		out[i,4] <- sig$snp2[pair]
-		out[i,5] <- round(sig$pnest[pair], 3)
-		out[i,6] <- round(-log10(pemp), 3)
-		out[i,7] <- nrow(foo)
-		out[i,8] <- pemp
+		out[i,5] <- sig$filter[pair]
+		out[i,6] <- round(sig$pnest[pair], 3)
+		out[i,7] <- round(-log10(pemp), 3)
+		out[i,8] <- nrow(foo)
+		out[i,9] <- pemp
 
 		print(i)
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "probegene", "snp1", "snp2", "pnest", "neglog10pemp", "n", "pemp")
+	names(out) <- c("probename", "probegene", "snp1", "snp2", "filter", "pnest", "neglog10pemp", "n", "pemp")
 	return(out)
 }
 
