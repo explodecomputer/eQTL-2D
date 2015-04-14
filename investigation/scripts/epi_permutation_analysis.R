@@ -78,6 +78,10 @@ dev.off()
 
 
 
+f1 <- which(pemp_out$filter==1)
+f2 <- which(pemp_out$filter==2)
+mean(as.numeric(as.matrix()))
+
 
 
 
