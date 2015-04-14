@@ -4,11 +4,13 @@
 # joseph.powell@uq.edu.au
 
 
-
+##################################################################
+##################################################################
+##################################################################
 # provide summary formation for the output results
 summarize.fun <- function(lf) {
 
-	out <- matrix(0, nrow=length(lf), ncol=9)
+	out <- matrix(0, nrow=length(lf), ncol=11)
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
@@ -25,7 +27,7 @@ summarize.fun <- function(lf) {
 		Z <- qnorm(1-(foo$P/2))
 		out[i,5] <- round((median(na.omit(Z)))^2/0.456, 2)
 		out[i,6] <- length(which(foo$P < 4.48e-6))
-		out[i,7] <- length(which(foo$P < 0.05/nrow(foo)))
+		# out[i,7] <- length(which(foo$P < 0.05/nrow(foo)))
 
 		# Calculate N pairs with F_i > H0-F from 4.48x10-6
 		F_thres <- qf(1-(4.48e-6), df1=4, df2=846)
@@ -33,18 +35,37 @@ summarize.fun <- function(lf) {
 
 		if(Q==0) {
 
-			out[i,8] <- NA
-			out[i,9] <- NA
+			F_sort <- sort(foo$F, decreasing=T)
+			F_emp <- F_sort[1]
+			P_emp <- round(-log10(1-pf(F_emp, df1=4, df2=846)),2)
+			out[i,9] <- F_emp
+			out[i,10] <- P_emp
+
+			# Emp Type 1 error rate
+			F_empN <- qf(1-(0.05/nrow(foo)), df1=4, df2=846)
+			out[i,7] <- round(F_empN,2)
+			out[i,8] <- length(which(F_sort > F_empN))
+
 		}
 
 		else{
-			F_emp <- sort(foo$F, decreasing=T)[Q]
-			P_emp <- 1-pf(F_emp, df1=4, df2=842)
+			F_sort <- sort(foo$F, decreasing=T)
+			F_emp <- F_sort[Q]
+			P_emp <- round(-log10(1-pf(F_emp, df1=4, df2=842)),2)
 
-			out[i,8] <- F_emp
-			out[i,9] <- P_emp
+			out[i,9] <- F_emp
+			out[i,10] <- P_emp
+
+			# Emp Type1 error
+			F_empN <- qf(1-(0.05/nrow(foo)), df1=4, df2=846)
+			out[i,7] <- round(F_empN,2)
+			out[i,8] <- length(which(F_sort > F_empN))
 		}
 		
+		# calculate the type 1 error rate
+		F <- qf(1-(0.05), df1=4, df2=842) 
+		out[i,11] <- round(length(which(foo$F > F))/nrow(foo),3)
+
 			
 		rm(foo)
 		rm(output)
@@ -53,14 +74,16 @@ summarize.fun <- function(lf) {
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold", "nadjustedthreshold", "F_emp", "P_emp")	
+	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "nthreshold", "F_empNtests", "N_F_empNtests", "F_emp", "P_emp", "Type1")	
 	return(out)
 }
 
 
 
 
-
+##################################################################
+##################################################################
+##################################################################
 # Calculate the additive eQTL effects for each pair
 add_cal.fun <- function(sig, bsgs, geno, bim) {
 
@@ -99,7 +122,9 @@ add_cal.fun <- function(sig, bsgs, geno, bim) {
 }
 
 
-
+##################################################################
+##################################################################
+##################################################################
 # genome information summary
 genome_sum.fun <- function(lf) {
 	out <- matrix(0, nrow=length(lf), ncol=8)
@@ -131,7 +156,9 @@ genome_sum.fun <- function(lf) {
 }
 
 
-
+##################################################################
+##################################################################
+##################################################################
 # add information of the filter used and if it passed replication 
 filter_add.fun <- function(sig, gs) {
 
@@ -158,6 +185,62 @@ filter_add.fun <- function(sig, gs) {
 	return(out)
 
 }
+
+
+
+##################################################################
+##################################################################
+##################################################################
+# Calculate mean lambda for the multi-probe epi pairs
+
+multi_lambda.fun <- function(gs, n) {
+	# n = the number of epi pairs for a probe
+
+	mp <- which(table(gs$probename)>n)
+
+	out <- matrix(0, nrow=length(mp), ncol=5)
+	for(i in 1:length(mp)) {
+
+		foo <- gs[which(gs$probename==names(mp[i])),]
+		out[i,4] <- round(mean(as.numeric(as.matrix(foo$lambda))),2)
+		out[i,1:3] <- as.matrix(foo[1,1:3])
+		out[i,5] <- nrow(foo)
+
+	}
+
+	out <- as.data.frame(out)
+	names(out) <- c("probename", "snp1", "snp2", "meanlambda", "npairs")
+	return(out)
+
+}
+
+
+
+
+
+##################################################################
+##################################################################
+##################################################################
+# subset gs table to match the 30 paper significant pairs
+
+type1_30.fun <- function(gs, sig30) {
+
+	index <- rep(0, 30)
+	gene <- 
+	for(i in 1:nrow(sig30)) {
+		index[i] <- which(gs$probename==as.character(sig30$Probe[i]) & gs$snp1==as.character(sig30$SNP1[i]) & gs$snp2==as.character(sig30$SNP2[i]))	
+	}	
+
+	gs30 <- gs[index,]
+	gs30 <- cbind(sig30$GENE, gs30)
+	names(gs30)[1] <- "gene"
+	return(gs30)
+
+}
+
+
+
+
 
 
 

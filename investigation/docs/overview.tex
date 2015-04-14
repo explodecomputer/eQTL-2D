@@ -6,15 +6,15 @@
 %
 %%% Preamble
 
-\documentclass[paper=a4, fontsize=11pt]{scrartcl}					% Article class of KOMA-script with 11pt font and a4 format
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}         % Article class of KOMA-script with 11pt font and a4 format
 \usepackage[T1]{fontenc}
 \usepackage{fourier}
 \usepackage{float}
 \usepackage{placeins}
-\usepackage[english]{babel}											% English language/hyphenation
-\usepackage[protrusion=true,expansion=true]{microtype}				% Better typography
-\usepackage{amsmath,amsfonts,amsthm}								% Math packages
-\usepackage[pdftex]{graphicx}										% Enable pdflatex
+\usepackage[english]{babel}                     % English language/hyphenation
+\usepackage[protrusion=true,expansion=true]{microtype}        % Better typography
+\usepackage{amsmath,amsfonts,amsthm}                % Math packages
+\usepackage[pdftex]{graphicx}                   % Enable pdflatex
 \usepackage{url}
 \usepackage{multicol}
 \usepackage{lscape}
@@ -23,18 +23,18 @@
 
 
 %%% Custom sectioning (sectsty package)
-\usepackage{sectsty}												% Custom sectioning (see below)
-\allsectionsfont{\centering \normalfont\scshape}					% Change font of al section commands
+\usepackage{sectsty}                        % Custom sectioning (see below)
+\allsectionsfont{\centering \normalfont\scshape}          % Change font of al section commands
 
 %%% Custom headers/footers (fancyhdr package)
 \usepackage{fancyhdr}
 \pagestyle{fancyplain}
-\fancyhead{}														% No page header
-\fancyfoot[L]{}														% Empty 
-\fancyfoot[C]{}														% Empty
-\fancyfoot[R]{\thepage}												% Pagenumbering
-\renewcommand{\headrulewidth}{0pt}									% Remove header underlines
-\renewcommand{\footrulewidth}{0pt}									% Remove footer underlines
+\fancyhead{}                            % No page header
+\fancyfoot[L]{}                           % Empty 
+\fancyfoot[C]{}                           % Empty
+\fancyfoot[R]{\thepage}                       % Pagenumbering
+\renewcommand{\headrulewidth}{0pt}                  % Remove header underlines
+\renewcommand{\footrulewidth}{0pt}                  % Remove footer underlines
 \setlength{\headheight}{13.6pt}
 \setlength{\parindent}{0pt}
 
@@ -43,9 +43,9 @@
 \renewcommand\tabularxcolumn[1]{C{#1}}
 
 %%% Equation and float numbering
-\numberwithin{equation}{section}									% Equationnumbering: section.eq#
-\numberwithin{figure}{section}										% Figurenumbering: section.fig#
-\numberwithin{table}{section}										% Tablenumbering: section.tab#
+\numberwithin{equation}{section}                  % Equationnumbering: section.eq#
+\numberwithin{figure}{section}                    % Figurenumbering: section.fig#
+\numberwithin{table}{section}                   % Tablenumbering: section.tab#
 
 %%% Referencing
 \bibliographystyle{naturemag}
@@ -54,17 +54,17 @@
 \graphicspath{{/Users/jpowell/repo/eQTL-2D/investigation/docs/figures/}}
 
 %%% Maketitle metadata
-\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} 					% Horizontal rule
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}           % Horizontal rule
 
 \title{
-		%\vspace{-1in} 	
-		\usefont{OT1}{bch}{b}{n}
-		\normalfont \normalsize \textsc{University of Queensland} \\ [25pt]
-		\horrule{0.5pt} \\[0.4cm]
-		\huge Epistasis follow-up \\[0.3cm]
+    %\vspace{-1in}  
+    \usefont{OT1}{bch}{b}{n}
+    \normalfont \normalsize \textsc{University of Queensland} \\ [25pt]
+    \horrule{0.5pt} \\[0.4cm]
+    \huge Epistasis follow-up \\[0.3cm]
         \huge *** summary *** \\
-		\horrule{2pt} \\[0.5cm]
-		\date{}
+    \horrule{2pt} \\[0.5cm]
+    \date{}
 }
 
 \begin{document}
@@ -159,45 +159,175 @@ d.  Use the (filtered) interaction p-values to determine the empirical distribut
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{rllllllllrlll}
+\tiny
+\begin{tabular}{llllllllrrrlllllll}
   \hline
- & probename & snp1 & snp2 & nclass9 & minclass5 & LD01 & nsnpspass & nsnps & filter & lambda & nthres & nadjthres \\ 
+ probename & snp1 & snp2 & nclass9 & minclass5 & LD01 & npass & nsnps & filter & p\_egcut & p\_fehr & $\lambda$ & nthres & Fe & N\_Fe & F\_emp & P\_emp & type1 \\ 
   \hline
-1 & ILMN\_1651385 & rs7989895 & rs4846085 & 419387 & 285750 & 506818 & 269121 & 506818 & 1.00 & 1.61 & 4 & 0 \\ 
-  2 & ILMN\_1651705 & rs872311 & rs11032695 & 419021 & 278721 & 511121 & 260851 & 511121 & 1.00 & 1.12 & 1 & 0 \\ 
-  3 & ILMN\_1651886 & rs7108734 & rs12784396 & 427787 & 319167 & 501291 & 305496 & 501291 & 1.00 & 1.07 & 0 & 0 \\ 
-  4 & ILMN\_1652333 & rs898095 & rs9892064 & 442554 & 336649 & 515007 & 322786 & 515007 & 2.00 & 1.34 & 7 & 0 \\ 
-  5 & ILMN\_1653205 & rs12429804 & rs2896452 & 383323 & 213815 & 507099 & 183628 & 507099 & 1.00 & 1.78 & 24 & 4 \\ 
-  6 & ILMN\_1653205 & rs12454561 & rs2896452 & 386460 & 215536 & 511390 & 185098 & 511390 & 1.00 & 1.78 & 25 & 4 \\ 
-  ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ 
+ILMN\_1651385 & rs7989895 & rs4846085 & 419387 & 285750 & 506818 & 269121 & 506818 & 1.00 & 0.25 & 0.61 & 1.61 & 4 & 9.43 & 0 & 8.95 & 6.35 & 0.10 \\ 
+ILMN\_1651705 & rs872311 & rs11032695 & 419021 & 278721 & 511121 & 260851 & 511121 & 1.00 & 0.30 & 0.26 & 1.12 & 1 & 9.41 & 0 & 7.75 & 5.41 & 0.05 \\ 
+ILMN\_1651886 & rs7108734 & rs12784396 & 427787 & 319167 & 501291 & 305496 & 501291 & 1.00 & 0.01 & 0.21 & 1.07 & 0 & 9.5 & 0 & 7.4 & 5.13 & 0.05 \\ 
+ILMN\_1652333 & rs898095 & rs9892064 & 442554 & 336649 & 515007 & 322786 & 515007 & 2.00 & 29.39 & 28.24 & 1.34 & 7 & 9.53 & 0 & 9.48 & 6.77 & 0.07 \\ 
+ILMN\_1653205 & rs12429804 & rs2896452 & 383323 & 213815 & 507099 & 183628 & 507099 & 1.00 & 0.02 & 0.29 & 1.78 & 24 & 9.22 & 4 & 10.56 & 7.63 & 0.11 \\ 
+ILMN\_1653205 & rs12454561 & rs2896452 & 386460 & 215536 & 511390 & 185098 & 511390 & 1.00 &  & 0.31 & 1.78 & 25 & 9.22 & 4 & 10.56 & 7.63 & 0.11 \\ 
+ILMN\_1653205 & rs2896452 & rs1004564 & 373839 & 208706 & 494954 & 179170 & 494954 & 1.00 & 0.18 & 0.38 & 1.78 & 23 & 9.2 & 2 & 10.08 & 7.25 & 0.11 \\ 
+ILMN\_1653205 & rs7152284 & rs2896452 & 385471 & 215221 & 509793 & 184859 & 509793 & 1.00 & 0.07 & 2.18 & 1.78 & 23 & 9.22 & 3 & 10.56 & 7.63 & 0.11 \\ 
+ILMN\_1653205 & rs8051751 & rs2896452 & 386341 & 215644 & 511501 & 185188 & 511501 & 1.00 & 0.18 & 1.39 & 1.78 & 24 & 9.22 & 4 & 10.56 & 7.63 & 0.11 \\ 
+ILMN\_1654545 & rs4333645 & rs1455268 & 421112 & 307876 & 495374 & 294544 & 495374 & 2.00 & 0.01 & 0.10 & 1.45 & 4 & 9.48 & 0 & 9.14 & 6.5 & 0.08 \\ 
+ILMN\_1656378 & rs10906857 & rs12490878 & 418379 & 314668 & 489831 & 301252 & 489831 & 1.00 & 0.34 & 0.42 & 1.1 & 1 & 9.49 & 0 & 7.69 & 5.36 & 0.05 \\ 
+ILMN\_1658247 & rs11613438 & rs1047944 & 402228 & 251785 & 490871 & 234981 & 490871 & 2.00 & 1.55 & 1.27 & 1.53 & 21 & 9.35 & 1 & 9.73 & 6.97 & 0.09 \\ 
    \hline
 \end{tabular}
 \caption*{Header of summary output for 501 pairs}
 \end{table}
+
+
 \end{landscape}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=3.5in]{lambda_107.png}
-\caption*{Figure | p-value distribution - ok}
+\caption*{Figure | Example of p-value distribution - ok}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=3.5in]{lambda_305.png}
-\caption*{Figure | p-value distribution - bad}
+\caption*{Figure | Example of p-value distribution - bad}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+\newpage
 \begin{figure}[H]
 \centering
 \includegraphics[width=4in]{lambda.png}
 \caption*{Figure | Distribution of median lambda from the 501 fixed SNP analysis. Red denotes original pairs identified from filter 2 - i.e. no previous study-wide additive effects. Black denotes the original filter 1 pairs}
 \end{figure}
 
+\vspace{1cm}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlllll}
+  \hline
+probename & snp1 & snp2 & meanlambda & npairs \\ 
+  \hline
+ILMN\_1704730 & rs1884655 & rs10255470 & 2.88 & 10 \\ 
+ILMN\_1710752 & rs2123758 & rs2786014 & 2.15 & 8 \\ 
+ILMN\_1717234 & rs1157079 & rs7733671 & 4.31 & 17 \\ 
+ILMN\_1720059 & rs12435486 & rs7837237 & 2.29 & 7 \\ 
+ILMN\_1738784 & rs10930170 & rs12120009 & 2.24 & 6 \\ 
+ILMN\_1755589 & rs11080134 & rs11169322 & 1.16 & 6 \\ 
+ILMN\_1786426 & rs2839013 & rs8106959 & 5.65 & 20 \\ 
+ILMN\_1804396 & rs1293455 & rs2655991 & 1.38 & 7 \\ 
+ILMN\_2313158 & rs10869600 & rs13069559 & 3.15 & 15 \\ 
+ILMN\_2372639 & rs17159840 & rs10059004 & 4.17 & 17 \\ 
+ILMN\_3231952 & rs12947580 & rs8079215 & 2.16 & 6 \\ 
+   \hline
+\end{tabular}
+\caption*{Mean lambda per probe, when 5 or more interactions are identified amongst the 501 pairs}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{empF.png}
+\caption*{Figure | The F-statistic corresponding to $p=4.48^{-6}$ and df1=4, df2=842 from a $H_0$ table is 7.67. This figure shows the empirical (ranked) F-statistic corresponding to $n * 4.48^{-6}$. Where $n * 4.48^{-6} < 1$, the largest F-statistic taken. There are 96 pairs where the corresponding F statistic is less than 7.67}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{empPval.png}
+\caption*{Figure | The -log10 p-values corresponding to above F-statistics (df1=4, df2=842). The -log10 $p=4.48^{-6} = 5.35$}
+\end{figure}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{Npairs_above_empthres.png}
+\caption*{Figure | For each pair (n=501) the number of tests where the test statistic is greater than the 95th percentile of an F-dist}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{type1.png}
+\caption*{Figure | Distribution of the empirical type 1 error rate. Determined as the proportion of tests with $F > 2.38$ (95th percentile of F-dist with df1=4, df2=842)}
+\end{figure}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{llllll}
+  \hline
+gene & probename & snp1 & snp2 & $\lambda$ & Type1 \\ 
+  \hline
+ADK & ILMN\_2358626 & rs2395095 & rs10824092 & 1.15 & 0.06 \\ 
+ATP13A1 & ILMN\_2134224 & rs4284750 & rs873870 & 1.82 & 0.119 \\ 
+C21ORF57 & ILMN\_1795836 & rs9978658 & rs11701361 & 1.43 & 0.085 \\ 
+CSTB & ILMN\_1761797 & rs9979356 & rs3761385 & 1.05 & 0.053 \\ 
+CTSC & ILMN\_2242463 & rs7930237 & rs556895 & 1.12 & 0.054 \\ 
+FN3KRP & ILMN\_1652333 & rs898095 & rs9892064 & 1.34 & 0.075 \\ 
+GAA & ILMN\_2410783 & rs11150847 & rs12602462 & 1.38 & 0.081 \\ 
+HNRPH1 & ILMN\_2101920 & rs6894268 & rs4700810 & 1.47 & 0.091 \\ 
+LAX1 & ILMN\_1769782 & rs1891432 & rs10900520 & 1.22 & 0.066 \\ 
+MBLN1 & ILMN\_2313158 & rs11981513 & rs13069559 & 3.36 & 0.242 \\ 
+MBLN1 & ILMN\_2313158 & rs16864367 & rs13079208 & 2.28 & 0.161 \\ 
+MBLN1 & ILMN\_2313158 & rs2030926 & rs13069559 & 3.39 & 0.241 \\ 
+MBLN1 & ILMN\_2313158 & rs218671 & rs13069559 & 3.36 & 0.242 \\ 
+MBLN1 & ILMN\_2313158 & rs2614467 & rs13069559 & 3.37 & 0.242 \\ 
+MBLN1 & ILMN\_2313158 & rs7710738 & rs13069559 & 3.38 & 0.243 \\ 
+MBP & ILMN\_2398939 & rs8092433 & rs4890876 & 1.19 & 0.066 \\ 
+NAPRT1 & ILMN\_1710752 & rs2123758 & rs3889129 & 2.14 & 0.155 \\ 
+NCL & ILMN\_2121437 & rs7563453 & rs4973397 & 1.2 & 0.065 \\ 
+PRMT2 & ILMN\_1675038 & rs2839372 & rs11701058 & 2.77 & 0.199 \\ 
+SNORD14A & ILMN\_1799381 & rs2634462 & rs6486334 & 2.45 & 0.168 \\ 
+TMEM149 & ILMN\_1786426 & rs807491 & rs7254601 & 2.69 & 0.194 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs1843357 & 5.79 & 0.396 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs2351458 & 5.77 & 0.395 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs6718480 & 5.82 & 0.397 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs6926382 & 5.75 & 0.396 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs914940 & 5.76 & 0.395 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs9509428 & 5.82 & 0.398 \\ 
+VASP & ILMN\_1743646 & rs1264226 & rs2276470 & 1.37 & 0.08 \\ 
+RPL13 & ILMN\_2413278 & rs352935 & rs2965817 & 1.11 & 0.058 \\ 
+TRA2A & ILMN\_1731043 & rs7776572 & rs11770192 & 1.36 & 0.079 \\ 
+   \hline
+\end{tabular}
+\caption*{The $\lambda$ and type 1 error rates for the 30 (Bonferroni-correction) significant replicated pairs mentioned in Hemani \emph{et al}.}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 
 2. Identify the largest additive eQTL for the probe (irrespective of effect size). Regress out the effect of the additive loci and use the adjusted phenotype for 8df and 4df model analysis. Results reported are the 8df and 4df of original pair and the empirical p-values from genome-wide analysis fitting each of the two SNPs as fixed. As before these are determined by filtering out the SNPs on the same chromosome as the original fixed SNP and also within +/- 5MB of the second SNP. \\
@@ -245,6 +375,7 @@ a. Predict the phenotype in egcut data using a predictor with effects estimated 
 
 %%% End document
 \end{document}
+
 
 
 

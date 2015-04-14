@@ -3,6 +3,8 @@
 # analysis and interpretation of the output from epi_empirical.R
 # joseph.powell@uq.edu.au
 
+library(xtable)
+
 # read in the functions
 source("/Users/jpowell/repo/eQTL-2D/investigation/scripts/epi_empirical_analysis_fun.R")
 
@@ -11,6 +13,9 @@ load("/Users/jpowell/repo/eQTL-2D/investigation/data/investigation_data.RData")
 
 # set the data dir
 setwd("/Users/jpowell/repo/eQTL-2D/investigation/data/output/")
+
+# Read in 30 sig list
+sig30 <- read.csv("/Users/jpowell/repo/eQTL-2D/investigation/data/sig_list.csv", header=T)
 
 # list files
 lf <- list.files()
@@ -39,7 +44,7 @@ gs <- filter_add.fun(sig, gs)
 # Determine the summary of the output
 
 lambda <- summarize.fun(lf)
-gs <- cbind(gs, lambda[,5:9])
+gs <- cbind(gs, lambda[,5:11])
 
 
 ##################################################################
@@ -86,11 +91,50 @@ png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda_305.png")
 hist(foo$P, main="ILMN_1660549 - lambda = 3.05", xlab="p-value", col="lightgrey")
 dev.off()
 
-
-hist(-log10(as.numeric(as.matrix(gs$P_emp))), breaks=20,
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/empPval.png")
+hist(as.numeric(as.matrix(gs$P_emp)), breaks=20,
 	main="", xlab="-log10 p-values", col="lightgrey")
+dev.off()
+
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/empF.png")
+hist(as.numeric(as.matrix(gs$F_emp)), breaks=20,
+	main="", xlab="Empirical F-value", col="lightgrey")
+dev.off()
+
+
+# 1. For each probe-SNP pair (where SNP = fixed), calculate an empirical 5% type-I error rate, as you suggested yourself this morning. This will be useful to assess replication results. So count the number of observed test statistics greater than the 95th percentile of an F-distribution with [4,N-5] degrees of freedom. I'm not sure what the df in the denominator are, something like N-4 or N-5. 
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/Npairs_above_empthres.png")
+hist(as.numeric(as.matrix(gs$N_F_empNtests)), breaks=25, 
+	xlab="N pairs above emp 0.05 threshold", col="lightgrey", main="")
+dev.off()
+
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/type1.png")
+hist(as.numeric(as.matrix(gs$Type1)), breaks=35,
+	xlab="Empirical type 1 error rate", col="lightgrey", main="")
+dev.off()
+
+# 2. Given results from 1.
+# a) display the empirical type-I error rate for the probe-SNP-SNP trios that are in the Nature article table (the top 30).
+gs30 <- type1_30.fun(gs, sig30)
+xtable(gs30[,c(1:4,13,19)])
 
 
 
+# 3. For each probe-SNP pair, list 
+# a) the largest observed F-statistic from the empirical results
+# b) list the corresponding p-value (= 1/n I think, where n = number of SNPs that passed the filters)
+# c) and list the F-statistic(s) from the probe-SNP-SNP trios that were among the 501
+
+##################################################################
+##################################################################
+##################################################################
+# 4. Calculate a mean lambda per probe, for those probes that were in the 501 selected trios. I am guessing that the lambdas for probes MBLN1 and TMEM149 are large.
+
+multi_lambda <- multi_lambda.fun(gs,5)
+xtable(multi_lambda)
+
+
+
+# 5. For those probe-SNP-SNP trios that pass the empirical threshold (100 out of 400?), what proportion are cis and trans? I'm guessing that most will be cis.
 
 
