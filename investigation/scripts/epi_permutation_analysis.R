@@ -55,6 +55,7 @@ pemp_out <- analysis.fun("~/repo/eQTL-2D/investigation/data/output_permutation/"
 write.table(pemp_out, "~/repo/eQTL-2D/investigation/data/pemp_out.txt", quote=F, row.names=F)
 pemp_out <- read.table("~/repo/eQTL-2D/investigation/data/pemp_out.txt", header=T)
 
+rank <- as.numeric(as.matrix(pemp_out$pemp))*as.numeric(as.matrix(pemp_out$n))
 
 
 png(filename="~/repo/eQTL-2D/investigation/docs/figures/pemp.png", width=600, height=600)
@@ -63,7 +64,17 @@ hist(as.numeric(as.matrix(pemp_out$pemp)), breaks=25,
 	main="501 Pairs 10,000,000")
 dev.off()
 
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/rank1.png", width=600, height=600)
+hist(rank, breaks=25,
+	xlab="Rank of observed p-value",
+	main="")
+dev.off()
 
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/rank2.png", width=600, height=600)
+hist(rank[which(rank < 100)], breaks=50,
+	xlab="Rank of observed p-value",
+	main="Rank zoomed to those < 100")
+dev.off()
 
 
 
