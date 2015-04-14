@@ -76,8 +76,6 @@ hist(rank[which(rank < 100)], breaks=50,
 	main="Rank zoomed to those < 100")
 dev.off()
 
-
-
 f1 <- which(pemp_out$filter==1)
 f2 <- which(pemp_out$filter==2)
 mean(as.numeric(as.matrix()))
