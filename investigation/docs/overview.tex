@@ -120,17 +120,33 @@ We assumed a null model where there was one true additive effect and 7 other ter
 
 The following analyses have been conducted; \\
 
-1. Determining the empirical p-values for each of the 501 interactions \\
+\textbf{1. GWAS based determination of the empirical p-values for each of the 501 interactions} \\
 
 The initial analysis used F-tests and some simulation work to determine the expected Type 1 error rate in the 1st stage of the discovery process. The 1st stage was followed by a 2nd stage where the interaction model was fitted. Subsequent simulations and theoretical calculations have suggested that the Type 1 error rate of the 2nd stage is not correct when there is a large main effect and / or in the presence of LD.  \\
 
-a. Identify which of the two snps in the original epistasis pair has the largest additive effect. \\
+a. The SNP with largest additive effect was identified for each pair of the 501 original epistasis SNPs. \\
 
-b. Treat the largest additive SNP as a fixed SNP and perform a genome-wide analysis using the 8df and 4df epistasis model. \\
+b. The largest additive SNP was treated as a fixed SNP and a genome-wide analysis using the 8df and 4df epistasis model was performed. \\
 
-c. This generates $\approx 500,000$ interaction p-values. Apply the same snp-pair filtering as used in the manuscript. Namely, LD ($r^2$ < 0.1), nclass $=$ 9, and minclass $>$ 5. Any SNP with +/- 5MB of original epistasis SNP pairs were also removed. \\
+c. This generated $\approx 500,000$ interaction p-values. The sample snp-pair filtering as used in the manuscript was applied. Namely, LD ($r^2$ < 0.1), nclass $=$ 9, and minclass $>$ 5. Any SNP with +/- 5MB of original epistasis SNP pairs were also removed. \\
 
-d.  Use the (filtered) interaction p-values to determine the empirical distribution of null p-values. \\
+d.  The filtered interaction p-values were used to determine the empirical distribution of null p-values. \\
+
+e. Summary information such as median lambda were calculated from the filtered interaction p-values. \\
+
+\textbf{2. Permutation based determination of the empirical p-values for each of the 501 interactions} \\
+
+a. As before, the SNP with largest additive effect was identified for each pair of the 501 original epistasis SNPs. \\
+
+b. Genotypes at the corresponding epistatitic ''co-SNP'' were randomly shuffled (no replacement) amongst individuals. \\
+
+c. Interaction p-values and text statistics were calculated using the same methods. \\
+
+d. For each pair (\emph{n}=501) this analysis was performed 10,000,000 times. \\
+
+e. The same filtering was applied (although $r^2$ not required). \\
+
+f. The empirical \emph{p}-value determined based on rank of observed \emph{F}-Statistic 
 
 \newpage
 
@@ -183,23 +199,6 @@ ILMN\_1658247 & rs11613438 & rs1047944 & 402228 & 251785 & 490871 & 234981 & 490
 
 
 \end{landscape}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=3.5in]{lambda_107.png}
-\caption*{Figure | Example of p-value distribution - ok}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=3.5in]{lambda_305.png}
-\caption*{Figure | Example of p-value distribution - bad}
-\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
