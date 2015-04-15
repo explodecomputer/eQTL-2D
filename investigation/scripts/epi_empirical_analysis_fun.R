@@ -227,7 +227,6 @@ multi_lambda.fun <- function(gs, n) {
 type1_30.fun <- function(gs, sig30) {
 
 	index <- rep(0, 30)
-	gene <- 
 	for(i in 1:nrow(sig30)) {
 		index[i] <- which(gs$probename==as.character(sig30$Probe[i]) & gs$snp1==as.character(sig30$SNP1[i]) & gs$snp2==as.character(sig30$SNP2[i]))	
 	}	

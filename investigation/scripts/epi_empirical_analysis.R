@@ -162,14 +162,17 @@ l2 <- paste(gs$probename, gs$snp1, gs$snp2, sep="_")
 index <- which(l2 %in% l1)
 gs500 <- gs[index,]
 
-plot()
+# P1
+plot(as.numeric(as.matrix(pemp$neglog10pemp)), as.numeric(as.matrix(gs500$P_emp)))
 
 
+# P2
+length(which(as.numeric(as.matrix(pemp$neglog10pemp)) > 5.34))
 
 
-
-
-
+# P3
+pemp30 <- type1_30.fun(pemp, sig30)
+length(which(as.numeric(as.matrix(pemp30$neglog10pemp)) > 5.34))
 
 
 
