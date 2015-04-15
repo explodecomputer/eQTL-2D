@@ -156,10 +156,13 @@ xtable(multi_lambda)
 ##################################################################
 ##################################################################
 
+# Merge gs and pemp data
+l1 <- paste(pemp$probename, pemp$snp1, pemp$snp2, sep="_")
+l2 <- paste(gs$probename, gs$snp1, gs$snp2, sep="_")
+index <- which(l2 %in% l1)
+gs500 <- gs[index,]
 
-
-
-
+plot()
 
 
 
