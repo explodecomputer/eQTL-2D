@@ -70,12 +70,23 @@ dev.off()
 
 
 
-# Make figures for the different 
-png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda.png")
-hist(as.numeric(as.matrix(gs$lambda)), breaks=25, 
-	col=as.numeric(as.matrix(gs$filter)),
-	xlab="lambda", main="")
+# Make figures for the different filters
+f1 <- which(gs$filter==1)
+f2 <- which(gs$filter==2)
+
+# F1
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambdaF1.png")
+hist(as.numeric(as.matrix(gs$lambda[f1])), breaks=25, 
+	xlab="lambda", main="Filter 1", col="lightgrey")
 dev.off()
+
+
+# F2
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambdaF2.png")
+hist(as.numeric(as.matrix(gs$lambda[f2])), breaks=25, 
+	xlab="lambda", main="Filter 2", col="lightgrey")
+dev.off()
+
 
 
 load(lf[3])

@@ -163,7 +163,7 @@ genome_sum.fun <- function(lf) {
 filter_add.fun <- function(sig, gs) {
 
 
-	out <- matrix(0, nrow=nrow(gs), ncol=3)
+	out <- matrix(0, nrow=nrow(gs), ncol=4)
 	for(i in 1:nrow(gs)) {
 
 		index <- which(sig$probename==gs$probename[i] & sig$snp1==gs$snp1[i] & sig$snp2==gs$snp2[i])
@@ -176,11 +176,12 @@ filter_add.fun <- function(sig, gs) {
 		out[i,1] <- sig$filter[index]
 		out[i,2] <- sig$pnest_egcut[index]
 		out[i,3] <- sig$pnest_fehr[index]
+		out[i,4] <- sig$probegene[index]
 
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("filter", "pnest_egcut", "pnest_fehr")
+	names(out) <- c("filter", "pnest_egcut", "pnest_fehr", "gene")
 	out <- cbind(gs, out)
 	return(out)
 
@@ -198,18 +199,18 @@ multi_lambda.fun <- function(gs, n) {
 
 	mp <- which(table(gs$probename)>n)
 
-	out <- matrix(0, nrow=length(mp), ncol=5)
+	out <- matrix(0, nrow=length(mp), ncol=6)
 	for(i in 1:length(mp)) {
 
 		foo <- gs[which(gs$probename==names(mp[i])),]
-		out[i,4] <- round(mean(as.numeric(as.matrix(foo$lambda))),2)
-		out[i,1:3] <- as.matrix(foo[1,1:3])
-		out[i,5] <- nrow(foo)
+		out[i,5] <- round(mean(as.numeric(as.matrix(foo$lambda))),2)
+		out[i,1:4] <- as.matrix(foo[1,c(1:3, 12)])
+		out[i,6] <- nrow(foo)
 
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "snp1", "snp2", "meanlambda", "npairs")
+	names(out) <- c("probename", "snp1", "snp2", "gene", "meanlambda", "npairs")
 	return(out)
 
 }
