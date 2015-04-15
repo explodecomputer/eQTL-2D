@@ -174,6 +174,9 @@ length(which(as.numeric(as.matrix(pemp$neglog10pemp)) > 5.34))
 pemp30 <- type1_30.fun(pemp, sig30)
 length(which(as.numeric(as.matrix(pemp30$neglog10pemp)) > 5.34))
 
+#p4
+f2 <- which(pemp$filter==2)
+length(which(as.numeric(as.matrix(pemp30$neglog10pemp[f2])) > 5.34))
 
 
 
