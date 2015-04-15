@@ -69,6 +69,8 @@ plot(as.numeric(as.matrix(gs$lambda)), as.numeric(as.matrix(gs$nthreshold)),
 dev.off()
 
 
+
+# Make figures for the different 
 png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda.png")
 hist(as.numeric(as.matrix(gs$lambda)), breaks=25, 
 	col=as.numeric(as.matrix(gs$filter)),
