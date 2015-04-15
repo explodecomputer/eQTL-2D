@@ -20,6 +20,10 @@ sig30 <- read.csv("/Users/jpowell/repo/eQTL-2D/investigation/data/sig_list.csv",
 # list files
 lf <- list.files()
 
+# Read in the permutation results
+pemp <- read.table("/Users/jpowell/repo/eQTL-2D/investigation/data/pemp_out.txt", header=T)
+
+
 
 ##################################################################
 ##################################################################
@@ -132,7 +136,6 @@ gs30 <- type1_30.fun(gs, sig30)
 xtable(gs30[,c(1:4,13,19)])
 
 
-
 # 3. For each probe-SNP pair, list 
 # a) the largest observed F-statistic from the empirical results
 # b) list the corresponding p-value (= 1/n I think, where n = number of SNPs that passed the filters)
@@ -146,8 +149,31 @@ xtable(gs30[,c(1:4,13,19)])
 multi_lambda <- multi_lambda.fun(gs,5)
 xtable(multi_lambda)
 
-
-
 # 5. For those probe-SNP-SNP trios that pass the empirical threshold (100 out of 400?), what proportion are cis and trans? I'm guessing that most will be cis.
+
+
+##################################################################
+##################################################################
+##################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
