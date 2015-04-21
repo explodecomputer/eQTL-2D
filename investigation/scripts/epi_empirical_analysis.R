@@ -161,17 +161,33 @@ l1 <- paste(pemp$probename, pemp$snp1, pemp$snp2, sep="_")
 l2 <- paste(gs$probename, gs$snp1, gs$snp2, sep="_")
 index <- which(l2 %in% l1)
 gs500 <- gs[index,]
+n2 <- paste(gs500$probename, gs500$snp1, gs500$snp2, sep="_")
 
 # P1
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/perm_vs_gwas.png")
 plot(as.numeric(as.matrix(pemp$neglog10pemp)), as.numeric(as.matrix(gs500$P_emp)))
-
+dev.off()
 
 # P2
 length(which(as.numeric(as.matrix(pemp$neglog10pemp)) > 5.34))
+index <- which(as.numeric(as.matrix(pemp$neglog10pemp)) > 5.34)
+tmp <- gs500[which(n2 %in% l1[index]),]
+length(which(tmp$chr1!=tmp$chr2))
+
 
 
 # P3
 pemp30 <- type1_30.fun(pemp, sig30)
+n1 <- paste(pemp30$probegene, pemp30$snp1, pemp30$snp2, sep="_")
+n2 <- paste(gs500$gene, gs500$snp1, gs500$snp2, sep="_")
+
+index <- which(as.numeric(as.matrix(pemp30$neglog10pemp)) > 5.34)
+n3 <- n1[index]
+index <- which(n2 %in% n3)
+tmp <- gs500[index,]
+xtable(tmp[,c(1:3,12:14,17,22)])
+
+
 length(which(as.numeric(as.matrix(pemp30$neglog10pemp)) > 5.34))
 
 #p4

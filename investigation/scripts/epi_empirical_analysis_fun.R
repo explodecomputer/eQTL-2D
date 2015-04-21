@@ -163,7 +163,7 @@ genome_sum.fun <- function(lf) {
 filter_add.fun <- function(sig, gs) {
 
 
-	out <- matrix(0, nrow=nrow(gs), ncol=4)
+	out <- matrix(0, nrow=nrow(gs), ncol=8)
 	for(i in 1:nrow(gs)) {
 
 		index <- which(sig$probename==gs$probename[i] & sig$snp1==gs$snp1[i] & sig$snp2==gs$snp2[i])
@@ -177,11 +177,15 @@ filter_add.fun <- function(sig, gs) {
 		out[i,2] <- sig$pnest_egcut[index]
 		out[i,3] <- sig$pnest_fehr[index]
 		out[i,4] <- sig$probegene[index]
+		out[i,5] <- sig$chr1[index]
+		out[i,6] <- sig$chr2[index]
+		out[i,7] <- sig$pos1[index]
+		out[i,8] <- sig$pos2[index]
 
 	}
 
 	out <- as.data.frame(out)
-	names(out) <- c("filter", "pnest_egcut", "pnest_fehr", "gene")
+	names(out) <- c("filter", "pnest_egcut", "pnest_fehr", "gene", "chr1", "chr2", "pos1", "pos2")
 	out <- cbind(gs, out)
 	return(out)
 
