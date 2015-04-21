@@ -133,7 +133,7 @@ dev.off()
 # 2. Given results from 1.
 # a) display the empirical type-I error rate for the probe-SNP-SNP trios that are in the Nature article table (the top 30).
 gs30 <- type1_30.fun(gs, sig30)
-xtable(gs30[,c(1:4,13,19)])
+xtable(gs30[,c(1:4,10,13,19, 23)])
 
 
 # 3. For each probe-SNP pair, list 
@@ -151,6 +151,13 @@ xtable(multi_lambda)
 
 # 5. For those probe-SNP-SNP trios that pass the empirical threshold (100 out of 400?), what proportion are cis and trans? I'm guessing that most will be cis.
 
+##################################################################
+##################################################################
+##################################################################
+# make histogram of the empirical p-values from permuation
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/pemp_hist.png")
+hist(-log10(pemp$pemp), breaks=25, xlab="empirical (10,000,000) permutation p-value NegLog scale", main="", col="lightgray")
+dev.off()
 
 ##################################################################
 ##################################################################
@@ -165,7 +172,8 @@ n2 <- paste(gs500$probename, gs500$snp1, gs500$snp2, sep="_")
 
 # P1
 png(filename="~/repo/eQTL-2D/investigation/docs/figures/perm_vs_gwas.png")
-plot(as.numeric(as.matrix(pemp$neglog10pemp)), as.numeric(as.matrix(gs500$P_emp)))
+plot(as.numeric(as.matrix(pemp$neglog10pemp)), as.numeric(as.matrix(gs500$P_emp)),
+	xlab="permutation", ylab="GWAS", main="")
 dev.off()
 
 # P2

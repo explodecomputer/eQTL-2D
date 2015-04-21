@@ -138,7 +138,7 @@ e. Summary information such as median lambda were calculated from the filtered i
 
 a. As before, the SNP with largest additive effect was identified for each pair of the 501 original epistasis SNPs. \\
 
-b. Genotypes at the corresponding epistatitic ''co-SNP'' were randomly shuffled (no replacement) amongst individuals. \\
+b. Genotypes at the corresponding epistatic ''co-SNP'' were randomly shuffled (no replacement) amongst individuals. \\
 
 c. Interaction p-values and text statistics were calculated using the same methods. \\
 
@@ -250,7 +250,7 @@ ILMN\_3231952 & rs12947580 & rs8079215 & ARL17B & 2.16 & 6 \\
 \begin{figure}[H]
 \centering
 \includegraphics[height=3in]{empF.png}
-\caption*{Figure | The F-statistic corresponding to $p=4.48^{-6}$ and df1=4, df2=842 from a $H_0$ table is 7.67. This figure shows the empirical (ranked) F-statistic corresponding to $n * 4.48^{-6}$. Where $n * 4.48^{-6} < 1$, the largest F-statistic is taken. There are 96 pairs where the corresponding F statistic is less than 7.67}. None of these are amongst the 30 bonferroni correction significant pairs.
+\caption*{Figure | The F-statistic corresponding to $p=4.48^{-6}$ and df1=4, df2=842 from a $H_0$ table is 7.67. This figure shows the empirical (ranked) F-statistic corresponding to $n * 4.48^{-6}$. Where $n * 4.48^{-6} < 1$, the largest F-statistic is taken. There are 96 pairs where the corresponding F statistic is less than 7.67}. None of these are amongst the 30 Bonferroni correction significant pairs.
 \end{figure}
 
 
@@ -287,47 +287,60 @@ ILMN\_3231952 & rs12947580 & rs8079215 & ARL17B & 2.16 & 6 \\
 \newpage
 
 
-
 \begin{table}[ht]
 \centering
-\begin{tabular}{llllll}
+\begin{tabular}{llllllll}
   \hline
-gene & probename & snp1 & snp2 & $\lambda$ & Type1 \\ 
+ gene & probename & snp1 & snp2 & filter & gene.1 & nthreshold & P\_emp \\ 
   \hline
-ADK & ILMN\_2358626 & rs2395095 & rs10824092 & 1.15 & 0.06 \\ 
-ATP13A1 & ILMN\_2134224 & rs4284750 & rs873870 & 1.82 & 0.119 \\ 
-C21ORF57 & ILMN\_1795836 & rs9978658 & rs11701361 & 1.43 & 0.085 \\ 
-CSTB & ILMN\_1761797 & rs9979356 & rs3761385 & 1.05 & 0.053 \\ 
-CTSC & ILMN\_2242463 & rs7930237 & rs556895 & 1.12 & 0.054 \\ 
-FN3KRP & ILMN\_1652333 & rs898095 & rs9892064 & 1.34 & 0.075 \\ 
-GAA & ILMN\_2410783 & rs11150847 & rs12602462 & 1.38 & 0.081 \\ 
-HNRPH1 & ILMN\_2101920 & rs6894268 & rs4700810 & 1.47 & 0.091 \\ 
-LAX1 & ILMN\_1769782 & rs1891432 & rs10900520 & 1.22 & 0.066 \\ 
-MBLN1 & ILMN\_2313158 & rs11981513 & rs13069559 & 3.36 & 0.242 \\ 
-MBLN1 & ILMN\_2313158 & rs16864367 & rs13079208 & 2.28 & 0.161 \\ 
-MBLN1 & ILMN\_2313158 & rs2030926 & rs13069559 & 3.39 & 0.241 \\ 
-MBLN1 & ILMN\_2313158 & rs218671 & rs13069559 & 3.36 & 0.242 \\ 
-MBLN1 & ILMN\_2313158 & rs2614467 & rs13069559 & 3.37 & 0.242 \\ 
-MBLN1 & ILMN\_2313158 & rs7710738 & rs13069559 & 3.38 & 0.243 \\ 
-MBP & ILMN\_2398939 & rs8092433 & rs4890876 & 1.19 & 0.066 \\ 
-NAPRT1 & ILMN\_1710752 & rs2123758 & rs3889129 & 2.14 & 0.155 \\ 
-NCL & ILMN\_2121437 & rs7563453 & rs4973397 & 1.2 & 0.065 \\ 
-PRMT2 & ILMN\_1675038 & rs2839372 & rs11701058 & 2.77 & 0.199 \\ 
-SNORD14A & ILMN\_1799381 & rs2634462 & rs6486334 & 2.45 & 0.168 \\ 
-TMEM149 & ILMN\_1786426 & rs807491 & rs7254601 & 2.69 & 0.194 \\ 
-TMEM149 & ILMN\_1786426 & rs8106959 & rs1843357 & 5.79 & 0.396 \\ 
-TMEM149 & ILMN\_1786426 & rs8106959 & rs2351458 & 5.77 & 0.395 \\ 
-TMEM149 & ILMN\_1786426 & rs8106959 & rs6718480 & 5.82 & 0.397 \\ 
-TMEM149 & ILMN\_1786426 & rs8106959 & rs6926382 & 5.75 & 0.396 \\ 
-TMEM149 & ILMN\_1786426 & rs8106959 & rs914940 & 5.76 & 0.395 \\ 
-TMEM149 & ILMN\_1786426 & rs8106959 & rs9509428 & 5.82 & 0.398 \\ 
-VASP & ILMN\_1743646 & rs1264226 & rs2276470 & 1.37 & 0.08 \\ 
-RPL13 & ILMN\_2413278 & rs352935 & rs2965817 & 1.11 & 0.058 \\ 
-TRA2A & ILMN\_1731043 & rs7776572 & rs11770192 & 1.36 & 0.079 \\ 
+ADK & ILMN\_2358626 & rs2395095 & rs10824092 & 1 & ADK & 3 & 7.74 \\ 
+ATP13A1 & ILMN\_2134224 & rs4284750 & rs873870 & 2 & ATP13A1 & 23 & 7.08 \\ 
+C21ORF57 & ILMN\_1795836 & rs9978658 & rs11701361 & 2 & C21ORF57 & 6 & 5.65 \\ 
+CSTB & ILMN\_1761797 & rs9979356 & rs3761385 & 2 & CSTB & 4 & 7.51 \\ 
+CTSC & ILMN\_2242463 & rs7930237 & rs556895 & 1 & CTSC & 1 & 5.59 \\ 
+FN3KRP & ILMN\_1652333 & rs898095 & rs9892064 & 2 & FN3KRP & 7 & 6.77 \\ 
+GAA & ILMN\_2410783 & rs11150847 & rs12602462 & 2 & GAA & 9 & 6.91 \\ 
+HNRPH1 & ILMN\_2101920 & rs6894268 & rs4700810 & 2 & HNRPH1 & 13 & 7.14 \\ 
+LAX1 & ILMN\_1769782 & rs1891432 & rs10900520 & 2 & LAX1 & 5 & 6.64 \\ 
+MBLN1 & ILMN\_2313158 & rs11981513 & rs13069559 & 1 & MBNL1 & 86 & 9.06 \\ 
+MBLN1 & ILMN\_2313158 & rs16864367 & rs13079208 & 2 & MBNL1 & 79 & 7.22 \\ 
+MBLN1 & ILMN\_2313158 & rs2030926 & rs13069559 & 1 & MBNL1 & 91 & 9.06 \\ 
+MBLN1 & ILMN\_2313158 & rs218671 & rs13069559 & 1 & MBNL1 & 98 & 9.06 \\ 
+MBLN1 & ILMN\_2313158 & rs2614467 & rs13069559 & 1 & MBNL1 & 95 & 9.06 \\ 
+MBLN1 & ILMN\_2313158 & rs7710738 & rs13069559 & 1 & MBNL1 & 89 & 9.06 \\ 
+MBP & ILMN\_2398939 & rs8092433 & rs4890876 & 2 & MBP & 3 & 5.9 \\ 
+NAPRT1 & ILMN\_1710752 & rs2123758 & rs3889129 & 1 & NAPRT1 & 80 & 7.36 \\ 
+NCL & ILMN\_2121437 & rs7563453 & rs4973397 & 2 & NCL & 4 & 5.88 \\ 
+PRMT2 & ILMN\_1675038 & rs2839372 & rs11701058 & 2 & PRMT2 & 39 & 7.07 \\ 
+SNORD14A & ILMN\_1799381 & rs2634462 & rs6486334 & 2 & SNORD14A & 63 & 7.22 \\ 
+TMEM149 & ILMN\_1786426 & rs807491 & rs7254601 & 1 & TMEM149 & 74 & 7.4 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs1843357 & 1 & TMEM149 & 148 & 9.71 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs2351458 & 1 & TMEM149 & 154 & 9.71 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs6718480 & 1 & TMEM149 & 146 & 9.71 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs6926382 & 1 & TMEM149 & 157 & 9.71 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs914940 & 1 & TMEM149 & 156 & 9.71 \\ 
+TMEM149 & ILMN\_1786426 & rs8106959 & rs9509428 & 1 & TMEM149 & 160 & 9.71 \\ 
+VASP & ILMN\_1743646 & rs1264226 & rs2276470 & 2 & VASP & 10 & 6.81 \\ 
+RPL13 & ILMN\_2413278 & rs352935 & rs2965817 & 2 & RPL13 & 2 & 6.57 \\ 
+TRA2A & ILMN\_1731043 & rs7776572 & rs11770192 & 2 & TRA2A & 7 & 6.84 \\ 
    \hline
 \end{tabular}
-\caption*{The $\lambda$ and type 1 error rates for the 30 (Bonferroni-correction) significant replicated pairs mentioned in Hemani \emph{et al}.}
+\caption*{The $\lambda$ and type 1 error rates for the 30 (Bonferroni-correction) significant replicated pairs mentioned in Hemani \emph{et al}. P\_emp demotes the permutation empirical p-value}
 \end{table}
+
+
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{pemp_hist.png}
+\caption*{Figure | Distribution of the permutation empirical p-values}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{perm_vs_gwas.png}
+\caption*{Figure | the relationship between the empirical p-values from the permutation and GWAS-based methods. It is unclear why there is this relationship. I've checked the results and code several times and believe this is correct.}
+\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -400,12 +413,36 @@ $y_i=a1*xa1_i*xd1_i+a2*xa2_j+\left [ aa*xa1_i*x2a_i+...+dd*xd1_i*xd2_i \right ]+
 with xa and xd indicator variables (dummies). I think that the suggestion was to permute the entire term in square brackets (say, $R_i$) across individuals, holding $y$ and the first 4 terms (dummies for $a$ and $d$) constant. An alternative is to permute each of the 4 residual terms across $y$ and $a+d$ dummies.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+Response to specific email questions \\
+
+Q1. How many pairs from the permutation analysis passed the Bonferoni threshold?
+
+A1. Bonferoni threshold is $= 4.48^{e10-6}$. There are 305 / 501 pairs with empirical p-values from the permutation that are smaller  
+
+\vspace{1cm}
+
+Q2. How many pairs that ended up in Table 1 of Hemani passed the Bonferoni threshold?
+
+A2. 15
+
+\vspace{1cm}
 
 
+Q3. How many of the 95 pairs (filter 2) are above the B threshold and how many were in Table 1 of Hemani?
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+A3. 1
+
+\vspace{1cm}
+
+Q4. My guess (from your previous results) is that all cis-trans pairs are among the 30 that didn't pass the threshold - is that correct? Are there any cis-trans pairs among the 305 ones that survived the Bonferoni threshold with the new empirical p-value? 
+
+A4. Yes, that's correct. It's just cis-cis ones that pass the threshold. Although, of the 305 that do, 273 are cis-trans.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -423,6 +460,7 @@ with xa and xd indicator variables (dummies). I think that the suggestion was to
 
 %%% End document
 \end{document}
+
 
 
 
