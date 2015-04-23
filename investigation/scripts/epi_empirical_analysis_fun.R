@@ -146,7 +146,9 @@ gc_check.fun <- function(lf) {
 		Z <- qnorm(1-(foo$P/2))
 		lambda <- round((median(na.omit(Z)))^2/0.456, 2)
 
+		F_sort <- sort(foo$F, decreasing=T)
 
+		1-pchisq(qchisq(1-4.427994e-7, 1)/lambda, 1)
 
 
 }
