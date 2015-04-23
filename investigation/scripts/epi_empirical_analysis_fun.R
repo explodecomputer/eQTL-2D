@@ -148,8 +148,7 @@ gc_check.fun <- function(lf) {
 
 		F_sort <- sort(foo$F, decreasing=T)
 
-		1-pchisq(qchisq(1-4.427994e-7, 1)/lambda, 1)
-
+		1-pchisq(qchisq(pf(F_sort[1], df1=4, df2=842), 1)/lambda, 1)
 
 }
 
