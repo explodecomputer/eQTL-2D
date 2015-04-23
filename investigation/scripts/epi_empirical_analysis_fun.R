@@ -142,6 +142,9 @@ gc_check.fun <- function(lf) {
 
 		out[i,4] <- nrow(foo)
 
+		# Calculate lambda (median)
+		Z <- qnorm(1-(foo$P/2))
+		lambda <- round((median(na.omit(Z)))^2/0.456, 2)
 
 
 
