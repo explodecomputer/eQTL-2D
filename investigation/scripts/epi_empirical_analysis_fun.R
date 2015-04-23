@@ -127,7 +127,22 @@ summarize.fun <- function(lf) {
 ##################################################################
 # lambda GC check 
 
-gc_check.fun <- function() {
+gc_check.fun <- function(lf) {
+	
+	out <- matrix(0, nrow=length(lf), ncol=11)
+
+	for(i in 1:length(lf)) {
+		load(lf[i])
+		index <- which(output$nclass==9 & output$minclass > 5 & output$LD < 0.1)
+		foo <- output[index,]
+
+		out[i,1] <- substr(lf[i], 1, 12)
+		out[i,2] <- strsplit(lf[i], "_")[[1]][3]
+		out[i,3] <- strsplit(lf[i], "_")[[1]][4]	
+
+		out[i,4] <- nrow(foo)
+
+
 
 
 
