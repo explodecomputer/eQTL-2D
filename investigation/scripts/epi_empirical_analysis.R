@@ -60,6 +60,19 @@ plot(as.numeric(as.matrix(GC_out$lambdaC)), as.numeric(as.matrix(GC_out$lambdaF)
 	xlab="Lambda GC - chisq", ylab="Lambda F")
 dev.off()
 
+# Merge GC_out and pemp data
+l1 <- paste(pemp$probename, pemp$snp1, pemp$snp2, sep="_")
+l2 <- paste(test$probename, test$snp1, test$snp2, sep="_")
+index <- which(l2 %in% l1)
+GC_out500 <- GC_out[index,]
+
+# P1
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/perm_vs_lambdaC.png")
+plot(as.numeric(as.matrix(pemp$neglog10pemp)), -log10(as.numeric(as.matrix(GC_out500$PlamC))),
+	xlab="permutation", ylab="GWAS - lambda C", main="")
+dev.off()
+
+
 
 ##################################################################
 ##################################################################

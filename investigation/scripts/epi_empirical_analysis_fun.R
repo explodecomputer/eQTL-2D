@@ -130,7 +130,7 @@ summarize.fun <- function(lf) {
 
 gc_check.fun <- function(lf) {
 	
-	out <- matrix(0, nrow=length(lf), ncol=11)
+	out <- matrix(0, nrow=length(lf), ncol=8)
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
@@ -152,37 +152,16 @@ gc_check.fun <- function(lf) {
 		out[i,5] <- lambdaC
 		out[i,6] <- lambdaF
 
-		# Calculate N pairs with F_i > H0-F from 4.48x10-6
-		F_thres <- qf(1-(4.48e-6), df1=4, df2=846)
-		Q <- round(nrow(foo)*4.48e-6)
-
-		F_max <- sort(foo$F, decreasing=T)[1]
-		out[i,9] <- 1-pchisq(qchisq(pf(F_max, df1=4, df2=842), 1)/lambdaC, 1)			
-		out[i,10] <- 1-pchisq(qchisq(pf(F_max, df1=4, df2=842), 1)/lambdaF, 1)			
-
-		if(Q==0) {
-
-			F_sort <- sort(foo$F, decreasing=T)
-			F_bonf <- F_sort[1]
-			out[i,7] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaC, 1)			
-			out[i,8] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaF, 1)			
-			out[i,11] <- Q
-
-		}
-
-		else{
-			F_sort <- sort(foo$F, decreasing=T)
-			F_bonf <- F_sort[Q]
-			out[i,7] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaC, 1)			
-			out[i,8] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaF, 1)			
-			out[i,11] <- Q
-		}
+		F_sort <- sort(foo$F, decreasing=T)
+		F_bonf <- F_sort[1]
+		out[i,7] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaC, 1)			
+		out[i,8] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaF, 1)			
 
 		print(i)
 	}
 		
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambdaC", "lambdaF", "PlamC", "PlamF", "PmlamC", "PmlamF", "test")	
+	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambdaC", "lambdaF", "PlamC", "PlamF")	
 	return(out)
 
 }
