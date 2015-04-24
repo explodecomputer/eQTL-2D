@@ -130,7 +130,7 @@ summarize.fun <- function(lf) {
 
 gc_check.fun <- function(lf) {
 	
-	out <- matrix(0, nrow=length(lf), ncol=6)
+	out <- matrix(0, nrow=length(lf), ncol=7)
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
@@ -144,10 +144,13 @@ gc_check.fun <- function(lf) {
 		out[i,4] <- nrow(foo)
 
 		# Calculate lambda (median)
-		Z <- qnorm(1-(foo$P/2))
-		lambdaC <- round((median(na.omit(Z)))^2/0.456, 2)
-		lambdaF <- median(na.omit(Z))^2/)
-		out[i,5] <- lambda
+		Z1 <- qnorm(1-(foo$P/2))
+		F4 <- qf(1-foo$P, df1=4, df2=846)
+
+		lambdaC <- round((median(na.omit(Z1)))^2/0.456, 2)
+		lambdaF <- round((median(na.omit(F4)))/0.84, 2)
+		out[i,5] <- lambdaC
+		out[i,6] <- lambdaF
 
 		# Calculate N pairs with F_i > H0-F from 4.48x10-6
 		F_thres <- qf(1-(4.48e-6), df1=4, df2=846)
@@ -157,21 +160,22 @@ gc_check.fun <- function(lf) {
 
 			F_sort <- sort(foo$F, decreasing=T)
 			F_emp <- F_sort[1]
-			out[i,6] <- 1-pchisq(qchisq(pf(F_emp, df1=4, df2=842), 1)/lambda, 1)			
+			out[i,7] <- 1-pchisq(qchisq(pf(F_emp, df1=4, df2=842), 1)/lambdaC, 1)			
 
 		}
 
 		else{
 			F_sort <- sort(foo$F, decreasing=T)
 			F_emp <- F_sort[Q]
-			out[i,6] <- 1-pchisq(qchisq(pf(F_emp, df1=4, df2=842), 1)/lambda, 1)			
+			out[i,7] <- 1-pchisq(qchisq(pf(F_emp, df1=4, df2=842), 1)/lambdaC, 1)			
 
 		}
 
+		print(i)
 	}
 		
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambda", "PGC")	
+	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambdaC", "lambdaF", "PGC")	
 	return(out)
 
 }
