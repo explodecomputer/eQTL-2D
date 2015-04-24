@@ -130,7 +130,7 @@ summarize.fun <- function(lf) {
 
 gc_check.fun <- function(lf) {
 	
-	out <- matrix(0, nrow=length(lf), ncol=10)
+	out <- matrix(0, nrow=length(lf), ncol=11)
 
 	for(i in 1:length(lf)) {
 		load(lf[i])
@@ -166,6 +166,7 @@ gc_check.fun <- function(lf) {
 			F_bonf <- F_sort[1]
 			out[i,7] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaC, 1)			
 			out[i,8] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaF, 1)			
+			out[i,11] <- Q
 
 		}
 
@@ -174,14 +175,14 @@ gc_check.fun <- function(lf) {
 			F_bonf <- F_sort[Q]
 			out[i,7] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaC, 1)			
 			out[i,8] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaF, 1)			
-
+			out[i,11] <- Q
 		}
 
 		print(i)
 	}
 		
 	out <- as.data.frame(out)
-	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambdaC", "lambdaF", "PlamC", "PlamF", "PmlamC", "PmlamF")	
+	names(out) <- c("probename", "snp1", "snp2", "nsnps", "lambdaC", "lambdaF", "PlamC", "PlamF", "PmlamC", "PmlamF", "test")	
 	return(out)
 
 }

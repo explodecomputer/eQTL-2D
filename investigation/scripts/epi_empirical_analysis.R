@@ -52,6 +52,18 @@ gs <- cbind(gs, lambda[,5:11])
 ##################################################################
 ##################################################################
 ##################################################################
+# Genomic Control check
+GC_out <- gc_check.fun(lf)
+
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda.png")
+plot(as.numeric(as.matrix(GC_out$lambdaC)), as.numeric(as.matrix(GC_out$lambdaF)), pch=16,
+	xlab="Lambda GC - chisq", ylab="Lambda F")
+dev.off()
+
+
+##################################################################
+##################################################################
+##################################################################
 # Calculate the additive eQTL effects for each pair
 
 add_test <- add_cal.fun(sig, bsgs, geno, bim)
