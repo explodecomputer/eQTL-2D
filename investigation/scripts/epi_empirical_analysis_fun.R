@@ -154,7 +154,9 @@ gc_check.fun <- function(lf) {
 
 		F_sort <- sort(foo$F, decreasing=T)
 		F_bonf <- F_sort[1]
-		out[i,7] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaC, 1)			
+		out[i,7] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaC, 1)	
+
+		# calculate the P from the adjusted F lambda		
 		out[i,8] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaF, 1)			
 
 		print(i)
