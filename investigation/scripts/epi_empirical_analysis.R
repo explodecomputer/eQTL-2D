@@ -62,7 +62,7 @@ dev.off()
 
 # Merge GC_out and pemp data
 l1 <- paste(pemp$probename, pemp$snp1, pemp$snp2, sep="_")
-l2 <- paste(test$probename, test$snp1, test$snp2, sep="_")
+l2 <- paste(GC_out$probename, GC_out$snp1, GC_out$snp2, sep="_")
 index <- which(l2 %in% l1)
 GC_out500 <- GC_out[index,]
 
@@ -229,6 +229,19 @@ length(which(as.numeric(as.matrix(pemp30$neglog10pemp)) > 5.34))
 #p4
 f2 <- which(pemp$filter==2)
 length(which(as.numeric(as.matrix(pemp30$neglog10pemp[f2])) > 5.34))
+
+
+
+##################################################################
+##################################################################
+##################################################################
+# Tree of life
+# Get information for the pass / fail suggestion from PMV
+
+
+
+
+
 
 
 

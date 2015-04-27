@@ -128,11 +128,31 @@ summarize.fun <- function(lf) {
 ##################################################################
 # lambda GC check 
 
-gc_check.fun <- function(lf) {
+gc_check.fun <- function(lf, sig, bsgs, geno, bim) {
 	
 	out <- matrix(0, nrow=length(lf), ncol=8)
 
 	for(i in 1:length(lf)) {
+	
+
+		probe <- as.character(sig$probename[i])
+		snp1 <- as.character(sig$snp1[i])
+		snp2 <- as.character(sig$snp2[i])
+
+		pheno <- bsgs[,which(names(bsgs)==probe)]
+		geno1 <- geno[,which(names(geno)==snp1)]
+		geno2 <- geno[,which(names(geno)==snp2)]
+
+		# check everything is the correct length
+		if(length(geno1)!=846 | length(geno2)!=846 | length(pheno)!=846) {
+			stop(print(paste(probe, " incorrect data length")))
+		}
+
+
+		fullmod <- lm(pheno ~ as.factor(geno1) + as.factor(geno2) + as.factor(geno1):as.factor(geno2))
+		redmod <- lm(pheno ~ as.factor(geno1) + as.factor(geno2))
+		intmod <- anova(fullmod, redmod)
+
 		load(lf[i])
 		index <- which(output$nclass==9 & output$minclass > 5 & output$LD < 0.1)
 		foo <- output[index,]
@@ -152,12 +172,11 @@ gc_check.fun <- function(lf) {
 		out[i,5] <- lambdaC
 		out[i,6] <- lambdaF
 
-		F_sort <- sort(foo$F, decreasing=T)
-		F_bonf <- F_sort[1]
+		F_bonf <- intmod$F[2]
 		out[i,7] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaC, 1)	
 
 		# calculate the P from the adjusted F lambda		
-		out[i,8] <- 1-pchisq(qchisq(pf(F_bonf, df1=4, df2=842), 1)/lambdaF, 1)			
+		out[i,8] <- 1-pf(F_bonf/lambdaF, df1=4, df2=842)			
 
 		print(i)
 	}
@@ -167,6 +186,12 @@ gc_check.fun <- function(lf) {
 	return(out)
 
 }
+
+
+
+
+
+
 
 
 
