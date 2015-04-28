@@ -60,22 +60,20 @@ plot(as.numeric(as.matrix(GC_out$lambdaC)), as.numeric(as.matrix(GC_out$lambdaF)
 	xlab="Lambda GC - chisq", ylab="Lambda F")
 dev.off()
 
-# Merge GC_out and pemp data - edits 
-l1 <- paste(pemp$probename, pemp$snp1, pemp$snp2, sep="_")
-l2 <- paste(GC_out$probename, GC_out$snp1, GC_out$snp2, sep="_")
-index <- which(l2 %in% l1)
-GC_out500 <- GC_out[index,]
+
+table(GC_out$probename==pemp$probename)
+table(GC_out$probename==gs$probename)
+
 
 # Lambda Chi-sq
 png(filename="~/repo/eQTL-2D/investigation/docs/figures/perm_vs_lambdaC.png")
-plot(as.numeric(as.matrix(pemp$neglog10pemp)), -log10(as.numeric(as.matrix(GC_out500$PlamC))),
+plot(as.numeric(as.matrix(pemp$neglog10pemp)), -log10(as.numeric(as.matrix(GC_out$PlamC))),
 	xlab="permutation", ylab="GWAS - lambda Chisq", main="", pch=16)
 dev.off()
 
-
 # Lambda F4
 png(filename="~/repo/eQTL-2D/investigation/docs/figures/perm_vs_lambdaF.png")
-plot(as.numeric(as.matrix(pemp$neglog10pemp)), -log10(as.numeric(as.matrix(GC_out500$PlamF))),
+plot(as.numeric(as.matrix(pemp$neglog10pemp)), -log10(as.numeric(as.matrix(GC_out$PlamF))),
 	xlab="permutation", ylab="GWAS - lambda F (4df)", main="", pch=16)
 dev.off()
 
@@ -237,20 +235,49 @@ length(which(as.numeric(as.matrix(pemp30$neglog10pemp[f2])) > 5.34))
 ##################################################################
 # Tree of life
 # Get information for the pass / fail suggestion from PMV
-f1 <- which(sig$filter==1)
-f2 <- which(sig$filter==2)
-sigf1 <- sig[f1,]
-sigf2 <- sig[f2,]
+f1 <- which(gs$filter==1)
+f2 <- which(gs$filter==2)
 
-length(which(sigf1$chr1==sigf1$chr2))
-length(which(sigf2$chr1==sigf2$chr2))
+gsf1 <- gs[f1,]
+gsf2 <- gs[f2,]
+GC_outf1 <- GC_out[f1,]
+GC_outf2 <- GC_out[f2,]
+` <- pemp[f1,]
+pempf2 <- pemp[f2,]
 
-length(which(sigf1$chr1!=sigf1$probechr & sigf1$chr2!=sigf1$probechr))
-length(which(sigf2$chr1!=sigf2$probechr & sigf2$chr2!=sigf2$probechr))
+f1cc <- which(gsf1$chr1==gsf1$chr2)
+f2cc <- which(gsf2$chr1==gsf2$chr2)
 
+f1tt <- which(gsf1$chr1!=gsf1$probechr & gsf1$chr2!=gsf1$probechr)
+f2tt <- which(gsf2$chr1!=gsf2$probechr & gsf2$chr2!=gsf2$probechr)
 
+'%!in%' <- function(x,y)!('%in%'(x,y))
+f1ct <- which(f1 %!in% c(f1cc, f1tt)) 
+f2ct <- which(f2 %!in% c(f2cc, f2tt))
 
+length(which(pempf1$pemp[f1cc] < 4.48e-6))
+length(which(pempf1$pemp[f1ct] < 4.48e-6))
+length(which(pempf1$pemp[f1tt] < 4.48e-6))
 
+length(which(pempf2$pemp[f2cc] < 4.48e-6))
+length(which(pempf2$pemp[f2ct] < 4.48e-6))
+length(which(pempf2$pemp[f2tt] < 4.48e-6))
+
+length(which(as.numeric(as.matrix(GC_outf1$PlamF[f1cc])) < 4.48e-6))
+length(which(as.numeric(as.matrix(GC_outf1$PlamF[f1ct])) < 4.48e-6))
+length(which(as.numeric(as.matrix(GC_outf1$PlamF[f1tt])) < 4.48e-6))
+
+length(which(as.numeric(as.matrix(GC_outf2$PlamF[f2cc])) < 4.48e-6))
+length(which(as.numeric(as.matrix(GC_outf2$PlamF[f2ct])) < 4.48e-6))
+length(which(as.numeric(as.matrix(GC_outf2$PlamF[f2tt])) < 4.48e-6))
+
+length(which(as.numeric(as.matrix(GC_outf1$PlamC[f1cc])) < 4.48e-6))
+length(which(as.numeric(as.matrix(GC_outf1$PlamC[f1ct])) < 4.48e-6))
+length(which(as.numeric(as.matrix(GC_outf1$PlamC[f1tt])) < 4.48e-6))
+
+length(which(as.numeric(as.matrix(GC_outf2$PlamC[f2cc])) < 4.48e-6))
+length(which(as.numeric(as.matrix(GC_outf2$PlamC[f2ct])) < 4.48e-6))
+length(which(as.numeric(as.matrix(GC_outf2$PlamC[f2tt])) < 4.48e-6))
 
 
 
