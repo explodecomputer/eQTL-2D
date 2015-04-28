@@ -415,29 +415,138 @@ plink_to_012.fun <- function(
 
 
 
-TableOfTruth.fun <- function(gs, GC_out, pemp, sig) {
-
-	f1 <- which(gs$filter==1)
-	f2 <- which(gs$filter==2)
-
-	gsf1 <- gs[f1,]
-	gsf2 <- gs[f2,]
-	GC_outf1 <- GC_out[f1,]
-	GC_outf2 <- GC_out[f2,]
-	pempf1 <- pemp[f1,]
-	pempf2 <- pemp[f2,]
-
-	# make a list of the f1 and f2 sig pairs
-	f1sig <- which(as.numeric(as.matrix(GC_outf1$PlamF[f1])) < 4.48e-6 & pempf1$pemp[f1] < 4.48e-6)
+TableOfTruth.fun <- function(data, sig30) {
 
 
+	datasig <- data[which(as.numeric(as.matrix(data$PlamF)) < 4.48e-6 & data$pemp < 4.48e-6),]
+
+	# convert the p's to non -log 10 scale
+	datasig$pnest_egcut <- 10^-as.numeric(as.matrix(datasig$pnest_egcut))
+	datasig$pnest_fehr <- 10^-as.numeric(as.matrix(datasig$pnest_fehr))
+	
+	# Calculate F's
+	datasig$egcutF <- qf(1-datasig$pnest_egcut, df1=4, df2=891)
+	datasig$fehrF <- qf(1-datasig$pnest_fehr, df1=4, df2=1240)
+	
+	# Calculate F adj for lambdaFgc
+	datasig$egcutFgc <- datasig$egcutF/as.numeric(as.matrix(datasig$lambdaF))
+	datasig$fehrFgc <- datasig$fehrF/as.numeric(as.matrix(datasig$lambdaF))
+	
+	# Calculate adjusted p's
+	datasig$pFgc_egcut <- 1-pf(datasig$egcutFgc, df1=4, df2=891)
+	datasig$pFgc_fehr <- 1-pf(datasig$fehrFgc, df1=4, df2=1240)
+
+	# set any 0's to 10e-20
+	datasig$pFgc_fehr[which(datasig$pFgc_fehr==0)] <- 1.0e-25
+	datasig$pFgc_egcut[which(datasig$pFgc_egcut==0)] <- 1.0e-25
 
 
+	# Calculate the fisher meta-pvalue
+    fit <- fisher.comb.fun(datasig[,37:38])
+	datasig$combPFgc <- round(-log10(1-pchisq(fit$S, 2)), 1)
 
+	# add cis-trans etc
+	datasig$cis_trans <- "cis_trans"
+	cc <- which(datasig$chr1==datasig$chr2)
+	datasig$cis_trans[cc] <- "cis_cis"
+	tt <- which(datasig$chr1!=datasig$probechr & datasig$chr2!=datasig$probechr)
+	datasig$cis_trans[tt] <- "trans_trans"
+
+	# Add Y/N for table 1 of hemani
+	datasig$table1 <- "No"
+	for(i in 1:nrow(sig30)) {
+		index <- which(as.character(datasig$probename)==as.character(sig30$Probe[i]) & as.character(datasig$snp1)==as.character(sig30$SNP1[i]) & as.character(datasig$snp2)==as.character(sig30$SNP2[i]))
+		if(length(index)==1) {
+
+			datasig$table1[index] <- "Yes"
+		}
+	}	
+
+	# sort by replication p-value
+	datasig <- datasig[ order(datasig$combPFgc, decreasing=T),]
+	return(datasig)	
 
 }
 
 
+
+#####################
+#
+# Fisher 1948 combined test of significance for independent tests
+# Mosteller F, Fisher RA. Combining independent tests of significance.
+# The American Statistician, Vol. 2, No. 5 (Oct., 1948), pp. 30-31.
+#
+# 'aka' the standard fisher combined method
+#
+#####################
+fisher.comb.fun <- function (pvals, method = c("fisher"), p.corr = c("bonferroni", 
+    "BH", "none"), zero.sub = 1e-05, na.rm = FALSE, mc.cores = NULL) 
+{
+    stopifnot(method %in% c("fisher"))
+    stopifnot(p.corr %in% c("none", "bonferroni", "BH"))
+    stopifnot(all(pvals >= 0, na.rm = TRUE) & all(pvals <= 1, 
+        na.rm = TRUE))
+    stopifnot(zero.sub >= 0 & zero.sub <= 1 || length(zero.sub) != 
+        1)
+    if (is.null(dim(pvals))) 
+        stop("pvals must have a dim attribute")
+    p.corr <- ifelse(length(p.corr) != 1, "BH", p.corr)
+    pvals[pvals == 0] <- zero.sub
+    if (is.null(mc.cores)) {
+        fisher.sums <- data.frame(do.call(rbind, apply(pvals, 
+            1, f.sum.fun, zero.sub = zero.sub, na.rm = na.rm)))
+    }
+    else {
+        fisher.sums <- mclapply(1:nrow(pvals), function(i) {
+            f.sum.fun(pvals[i, ], zero.sub = zero.sub, na.rm = na.rm)
+        }, mc.cores = mc.cores)
+        fisher.sums <- data.frame(do.call(rbind, fisher.sums))
+    }
+    rownames(fisher.sums) <- rownames(pvals)
+    fisher.sums$p.value <- 1 - pchisq(fisher.sums$S, df = 2 * 
+        fisher.sums$num.p)
+    fisher.sums$p.adj <- switch(p.corr, bonferroni = p.adjust(fisher.sums$p.value, 
+        "bonferroni"), BH = p.adjust(fisher.sums$p.value, "BH"), 
+        none = fisher.sums$p.value)
+    return(fisher.sums)
+}
+
+
+# sum the fisher test statistic
+f.sum.fun <- function (p, zero.sub = 1e-05, na.rm = FALSE) 
+{
+    if (any(p > 1, na.rm = TRUE) || any(p < 0, na.rm = TRUE)) 
+        stop("You provided bad p-values")
+    stopifnot(zero.sub >= 0 & zero.sub <= 1 || length(zero.sub) != 
+        1)
+    p[p == 0] <- zero.sub
+    if (na.rm) 
+    p <- p[!is.na(p)]
+
+    S = -2 * sum(log(p))
+    res <- data.frame(S = S, num.p = length(p))
+    return(res)
+}
+
+
+# Function to perform the standard fisher analysis on k pvalues, looped over n 'genes'
+fisher_combine_analysis.fun <- function(pval) {
+
+    out <- array(0, c(nrow(pval), 2))
+
+    for(i in 1:nrow(out)) {
+
+        fit <- fisher.comb.fun(as.matrix(pval[i,]))
+        fit2 <- f.sum.fun(fit$p.adj)    
+        out[i,1] <- round(fit2$S, 3)
+        out[i,2] <- round(-log10(1-pchisq(fit2$S, ncol(pval))), 3)
+    }
+
+
+    out <- as.data.frame(out)
+    names(out) <- c("Combined_stat", "Combined_-log10pval")
+    return(out)
+}
 
 
 

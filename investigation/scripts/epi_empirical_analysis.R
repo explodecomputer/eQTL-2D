@@ -237,6 +237,8 @@ length(which(as.numeric(as.matrix(pemp30$neglog10pemp[f2])) > 5.34))
 # Get information for the pass / fail suggestion from PMV
 data <- cbind(gs,pemp[,c(6:9)],GC_out[,c(5:8)])
 #write.table(data, "~/repo/eQTL-2D/investigation/data/total_analysis_data.txt", quote=F, row.names=F)
+data <- read.table("~/repo/eQTL-2D/investigation/data/total_analysis_data.txt", header=T)
+
 
 f1 <- which(data$filter==1)
 f2 <- which(data$filter==2)
@@ -288,9 +290,14 @@ length(which(as.numeric(as.matrix(dataf2ct$PlamC)) < 4.48e-6))
 ##################################################################
 # Table of truth
 
-datasig <- data[which(as.numeric(as.matrix(data$PlamF)) < 4.48e-6 & data$pemp < 4.48e-6),]
-datasig$pnest_egcut <- 10^-as.numeric(as.matrix(datasig$pnest_egcut))
-datasig$pnest_fehr <- 10^-as.numeric(as.matrix(datasig$pnest_fehr))
-datasig$egcutF <- 
+datasig <- TableOfTruth.fun(data, sig30)
+write.csv(datasig, "~/repo/eQTL-2D/investigation/data/datasig.csv", quote=F, row.names=F)
 
-qf(1-datasig$pnest_egcut, df1=4, df2=1240)/as.numeric(as.matrix(datasig$lambdaF))
+
+
+
+
+
+
+
+
