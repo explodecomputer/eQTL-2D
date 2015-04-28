@@ -235,49 +235,61 @@ length(which(as.numeric(as.matrix(pemp30$neglog10pemp[f2])) > 5.34))
 ##################################################################
 # Tree of life
 # Get information for the pass / fail suggestion from PMV
-f1 <- which(gs$filter==1)
-f2 <- which(gs$filter==2)
+data <- cbind(gs,pemp[,c(6:9)],GC_out[,c(5:8)])
+#write.table(data, "~/repo/eQTL-2D/investigation/data/total_analysis_data.txt", quote=F, row.names=F)
 
-gsf1 <- gs[f1,]
-gsf2 <- gs[f2,]
-GC_outf1 <- GC_out[f1,]
-GC_outf2 <- GC_out[f2,]
-` <- pemp[f1,]
-pempf2 <- pemp[f2,]
+f1 <- which(data$filter==1)
+f2 <- which(data$filter==2)
 
-f1cc <- which(gsf1$chr1==gsf1$chr2)
-f2cc <- which(gsf2$chr1==gsf2$chr2)
+dataf1 <- data[f1,]
+dataf2 <- data[f2,]
 
-f1tt <- which(gsf1$chr1!=gsf1$probechr & gsf1$chr2!=gsf1$probechr)
-f2tt <- which(gsf2$chr1!=gsf2$probechr & gsf2$chr2!=gsf2$probechr)
+f1cc <- which(dataf1$chr1==dataf1$chr2)
+f2cc <- which(dataf2$chr1==dataf2$chr2)
 
-'%!in%' <- function(x,y)!('%in%'(x,y))
-f1ct <- which(f1 %!in% c(f1cc, f1tt)) 
-f2ct <- which(f2 %!in% c(f2cc, f2tt))
+f1tt <- which(dataf1$chr1!=dataf1$probechr & dataf1$chr2!=dataf1$probechr)
+f2tt <- which(dataf2$chr1!=dataf2$probechr & dataf2$chr2!=dataf2$probechr)
 
-length(which(pempf1$pemp[f1cc] < 4.48e-6))
-length(which(pempf1$pemp[f1ct] < 4.48e-6))
-length(which(pempf1$pemp[f1tt] < 4.48e-6))
+dataf1ct <- dataf1[-c(f1cc, f1tt),]
+dataf2ct <- dataf2[-c(f2cc, f2tt),]
 
-length(which(pempf2$pemp[f2cc] < 4.48e-6))
-length(which(pempf2$pemp[f2ct] < 4.48e-6))
-length(which(pempf2$pemp[f2tt] < 4.48e-6))
 
-length(which(as.numeric(as.matrix(GC_outf1$PlamF[f1cc])) < 4.48e-6))
-length(which(as.numeric(as.matrix(GC_outf1$PlamF[f1ct])) < 4.48e-6))
-length(which(as.numeric(as.matrix(GC_outf1$PlamF[f1tt])) < 4.48e-6))
+# Permutation
+length(which(dataf1$pemp[f1cc] < 4.48e-6))
+length(which(dataf1$pemp[f1tt] < 4.48e-6))
+length(which(dataf1ct$pemp < 4.48e-6))
 
-length(which(as.numeric(as.matrix(GC_outf2$PlamF[f2cc])) < 4.48e-6))
-length(which(as.numeric(as.matrix(GC_outf2$PlamF[f2ct])) < 4.48e-6))
-length(which(as.numeric(as.matrix(GC_outf2$PlamF[f2tt])) < 4.48e-6))
+length(which(dataf2$pemp[f2cc] < 4.48e-6))
+length(which(dataf2$pemp[f2tt] < 4.48e-6))
+length(which(dataf2ct$pemp < 4.48e-6))
 
-length(which(as.numeric(as.matrix(GC_outf1$PlamC[f1cc])) < 4.48e-6))
-length(which(as.numeric(as.matrix(GC_outf1$PlamC[f1ct])) < 4.48e-6))
-length(which(as.numeric(as.matrix(GC_outf1$PlamC[f1tt])) < 4.48e-6))
+# LambdaF
+length(which(as.numeric(as.matrix(dataf1$PlamF[f1cc])) < 4.48e-6))
+length(which(as.numeric(as.matrix(dataf1$PlamF[f1tt])) < 4.48e-6))
+length(which(as.numeric(as.matrix(dataf1ct$PlamF)) < 4.48e-6))
 
-length(which(as.numeric(as.matrix(GC_outf2$PlamC[f2cc])) < 4.48e-6))
-length(which(as.numeric(as.matrix(GC_outf2$PlamC[f2ct])) < 4.48e-6))
-length(which(as.numeric(as.matrix(GC_outf2$PlamC[f2tt])) < 4.48e-6))
+length(which(as.numeric(as.matrix(dataf2$PlamF[f2cc])) < 4.48e-6))
+length(which(as.numeric(as.matrix(dataf2$PlamF[f2tt])) < 4.48e-6))
+length(which(as.numeric(as.matrix(dataf2ct$PlamF)) < 4.48e-6))
+
+
+# Lambda C
+length(which(as.numeric(as.matrix(dataf1$PlamC[f1cc])) < 4.48e-6))
+length(which(as.numeric(as.matrix(dataf1$PlamC[f1tt])) < 4.48e-6))
+length(which(as.numeric(as.matrix(dataf1ct$PlamC)) < 4.48e-6))
+
+length(which(as.numeric(as.matrix(dataf2$PlamC[f2cc])) < 4.48e-6))
+length(which(as.numeric(as.matrix(dataf2$PlamC[f2tt])) < 4.48e-6))
+length(which(as.numeric(as.matrix(dataf2ct$PlamC)) < 4.48e-6))
+
+
+##################################################################
+##################################################################
+##################################################################
+# Table of truth
+
+data[which(as.numeric(as.matrix(data$PlamF)) < 4.48e-6 & data$pemp < 4.48e-6),]
+
 
 
 

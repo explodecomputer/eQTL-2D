@@ -412,3 +412,32 @@ plink_to_012.fun <- function(
 	return(geno)
 }
 
+
+
+
+TableOfTruth.fun <- function(gs, GC_out, pemp, sig) {
+
+	f1 <- which(gs$filter==1)
+	f2 <- which(gs$filter==2)
+
+	gsf1 <- gs[f1,]
+	gsf2 <- gs[f2,]
+	GC_outf1 <- GC_out[f1,]
+	GC_outf2 <- GC_out[f2,]
+	pempf1 <- pemp[f1,]
+	pempf2 <- pemp[f2,]
+
+	# make a list of the f1 and f2 sig pairs
+	
+
+
+
+
+
+}
+
+
+
+
+
+
