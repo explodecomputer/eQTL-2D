@@ -288,9 +288,9 @@ length(which(as.numeric(as.matrix(dataf2ct$PlamC)) < 4.48e-6))
 ##################################################################
 # Table of truth
 
-data[which(as.numeric(as.matrix(data$PlamF)) < 4.48e-6 & data$pemp < 4.48e-6),]
+datasig <- data[which(as.numeric(as.matrix(data$PlamF)) < 4.48e-6 & data$pemp < 4.48e-6),]
+datasig$pnest_egcut <- 10^-as.numeric(as.matrix(datasig$pnest_egcut))
+datasig$pnest_fehr <- 10^-as.numeric(as.matrix(datasig$pnest_fehr))
+datasig$egcutF <- 
 
-
-
-
-
+qf(1-datasig$pnest_egcut, df1=4, df2=1240)/as.numeric(as.matrix(datasig$lambdaF))

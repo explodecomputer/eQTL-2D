@@ -428,7 +428,8 @@ TableOfTruth.fun <- function(gs, GC_out, pemp, sig) {
 	pempf2 <- pemp[f2,]
 
 	# make a list of the f1 and f2 sig pairs
-	
+	f1sig <- which(as.numeric(as.matrix(GC_outf1$PlamF[f1])) < 4.48e-6 & pempf1$pemp[f1] < 4.48e-6)
+
 
 
 
