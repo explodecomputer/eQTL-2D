@@ -53,14 +53,14 @@ gs <- cbind(gs, lambda[,5:11])
 ##################################################################
 ##################################################################
 # Genomic Control check
-GC_out <- gc_check.fun(lf)
+GC_out <- gc_check.fun(lf, sig, bsgs, geno, bim)
 
 png(filename="~/repo/eQTL-2D/investigation/docs/figures/lambda.png")
 plot(as.numeric(as.matrix(GC_out$lambdaC)), as.numeric(as.matrix(GC_out$lambdaF)), pch=16,
 	xlab="Lambda GC - chisq", ylab="Lambda F")
 dev.off()
 
-# Merge GC_out and pemp data
+# Merge GC_out and pemp data - edits 
 l1 <- paste(pemp$probename, pemp$snp1, pemp$snp2, sep="_")
 l2 <- paste(GC_out$probename, GC_out$snp1, GC_out$snp2, sep="_")
 index <- which(l2 %in% l1)
@@ -237,12 +237,16 @@ length(which(as.numeric(as.matrix(pemp30$neglog10pemp[f2])) > 5.34))
 ##################################################################
 # Tree of life
 # Get information for the pass / fail suggestion from PMV
+f1 <- which(sig$filter==1)
+f2 <- which(sig$filter==2)
+sigf1 <- sig[f1,]
+sigf2 <- sig[f2,]
 
+length(which(sigf1$chr1==sigf1$chr2))
+length(which(sigf2$chr1==sigf2$chr2))
 
-
-
-
-
+length(which(sigf1$chr1!=sigf1$probechr & sigf1$chr2!=sigf1$probechr))
+length(which(sigf2$chr1!=sigf2$probechr & sigf2$chr2!=sigf2$probechr))
 
 
 
