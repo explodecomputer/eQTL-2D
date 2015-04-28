@@ -292,7 +292,9 @@ length(which(as.numeric(as.matrix(dataf2ct$PlamC)) < 4.48e-6))
 
 datasig <- TableOfTruth.fun(data, sig30)
 write.csv(datasig, "~/repo/eQTL-2D/investigation/data/datasig.csv", quote=F, row.names=F)
+write.csv(datasig[,c(1:3,9,12,30,35:36, 39:41)], "~/repo/eQTL-2D/investigation/data/datasig_lite.csv", quote=F, row.names=F)
 
+xtable(datasig[,c(1:3,9,12,30,35:36, 39:41)])
 
 
 

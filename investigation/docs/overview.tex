@@ -19,6 +19,7 @@
 \usepackage{multicol}
 \usepackage{lscape}
 \usepackage{parskip}
+\usepackage{longtable}
 
 
 
@@ -336,11 +337,36 @@ TRA2A & ILMN\_1731043 & rs7776572 & rs11770192 & 2 & TRA2A & 7 & 6.84 \\
 \caption*{Figure | Distribution of the permutation empirical p-values}
 \end{figure}
 
+\newpage
+
 \begin{figure}[H]
 \centering
-\includegraphics[height=3in]{perm_vs_gwas.png}
-\caption*{Figure | the relationship between the empirical p-values from the permutation and GWAS-based methods. It is unclear why there is this relationship. I've checked the results and code several times and believe this is correct.}
+\includegraphics[height=3in]{perm_vs_lambdaF.png}
+\caption*{Figure | the relationship between the observed p values corrected for lambdaF, which was calculated from the GWAS-based analysis and the permutation empitical p-values}
 \end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{perm_vs_lambdaC.png}
+\caption*{Figure | the relationship between the observed p values corrected for lambdaChisq, which was calculated from the GWAS-based analysis and the permutation empitical p-values}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=3in]{lambda.png}
+\caption*{Figure | the relationship between the lambdaChisq and lambdaF from the GWAS-based analysis}
+\end{figure}
+
+\begin{landscape}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=4in]{TreeOfLife.png}
+\caption*{Figure | This figure denotes the numbers of Probe by SNP pairs that pass verious thresholds and split on original filtering and relative positional information. All pairs that pass both the permutation empirical p value threshold of $4.48e-6$ and the $\lambda_F$ corrected threshold of $4.48e-6$ are summerized in the table \emph{datasig.csv} and \emph{datasig\_lite.csv}. The total number of paris in this table is 155}
+\end{figure}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -348,7 +374,6 @@ TRA2A & ILMN\_1731043 & rs7776572 & rs11770192 & 2 & TRA2A & 7 & 6.84 \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 
-\begin{landscape}
 
 \begin{table}[ht]
 \centering
@@ -377,7 +402,6 @@ ILMN\_1710752 & rs2123758 & rs3889129 & NAPRT1 & 8 & 8 & 2.14 & 7.36 & 7.42 & 6.
 
 \end{table}
 \end{landscape}
-
 
 
 
