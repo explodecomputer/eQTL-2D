@@ -294,8 +294,21 @@ datasig <- TableOfTruth.fun(data, sig30)
 write.csv(datasig, "~/repo/eQTL-2D/investigation/data/datasig.csv", quote=F, row.names=F)
 write.csv(datasig[,c(1:3,9,12,30,35:36, 39:41)], "~/repo/eQTL-2D/investigation/data/datasig_lite.csv", quote=F, row.names=F)
 
-xtable(datasig[,c(1:3,9,12,30,35:36, 39:41)])
 
+
+
+# Lambda Chi-sq
+col_index <- as.numeric(data$chr1==data$chr2)+1
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/perm_vs_lambdaC.png")
+plot(as.numeric(as.matrix(data$neglog10pemp)), -log10(as.numeric(as.matrix(data$PlamC))),
+	xlab="permutation", ylab="GWAS - lambda Chisq", main="", pch=16, col=col_index)
+dev.off()
+
+# Lambda F4
+png(filename="~/repo/eQTL-2D/investigation/docs/figures/perm_vs_lambdaF.png")
+plot(as.numeric(as.matrix(data$neglog10pemp)), -log10(as.numeric(as.matrix(data$PlamF))),
+	xlab="permutation", ylab="GWAS - lambda F (4df)", main="", pch=16, col=col_index)
+dev.off()
 
 
 
