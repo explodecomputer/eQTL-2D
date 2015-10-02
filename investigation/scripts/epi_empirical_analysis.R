@@ -117,6 +117,12 @@ hist(as.numeric(as.matrix(gs$lambda[f2])), breaks=25,
 	xlab="lambda", main="Filter 2", col="lightgrey")
 dev.off()
 
+# Both
+png(filename="~/Documents/repo/eQTL-2D/investigation/docs/figures/lambda_all.png")
+hist(as.numeric(as.matrix(gs$lambda)), breaks=50, 
+	xlab="lambda", main="", col="lightgrey")
+dev.off()
+
 
 
 load(lf[3])
