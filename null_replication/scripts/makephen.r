@@ -1,5 +1,6 @@
 library(simulateGP)
 library(dplyr)
+library(data.table)
 
 args <- commandArgs(T)
 
@@ -11,7 +12,7 @@ print(rawfile)
 print(famfile)
 print(varexp)
 
-gen <- read_delim(rawfile, " ", col_names=TRUE)
+gen <- fread(rawfile) %>% as_tibble()
 names(gen)[ncol(gen)] <- "geno"
 
 gen$PHENOTYPE <- make_phen(sqrt(varexp), gen$geno)

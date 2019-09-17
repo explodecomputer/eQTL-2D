@@ -50,16 +50,18 @@ do
 
 
 	# Perform scan
-	episcan -A ${sd}/${cissnp}_merge_disc.egu ${sd}/${cissnp}_disc_out -t i -F 0.00000001 -I 0.0000001 -1 1 -2 2 -f ${sd}/${i}_${sim}_disc.fam -T 4
-	episcan -A ${sd}/${cissnp}_merge_rep.egu ${sd}/${cissnp}_rep_out -t i -F 0.00000001 -I 0.0000001 -1 1 -2 2 -f ${sd}/${i}_${sim}_rep.fam -T 4
+	episcan -A ${sd}/${cissnp}_merge_disc.egu ${sd}/${i}_${sim}_disc_out -t i -F 0.00000001 -I 0.0000001 -1 1 -2 2 -f ${sd}/${i}_${sim}_disc.fam -T 1
+	episcan -A ${sd}/${cissnp}_merge_rep.egu ${sd}/${i}_${sim}_rep_out -t i -F 0.00000001 -I 0.0000001 -1 1 -2 2 -f ${sd}/${i}_${sim}_rep.fam -T 1
 
-	cat ${sd}/${cissnp}_disc_out[0-9]* > ${sd}/${cissnp}_disc_out
-	rm ${sd}/${cissnp}_disc_out[0-9]*
+	cat ${sd}/${i}_${sim}_disc_out[0-9]* > ${sd}/${i}_${sim}_disc_out
+	rm ${sd}/${i}_${sim}_disc_out[0-9]*
 
-	cat ${sd}/${cissnp}_rep_out[0-9]* > ${sd}/${cissnp}_rep_out
-	rm ${sd}/${cissnp}_rep_out[0-9]*
+	cat ${sd}/${i}_${sim}_rep_out[0-9]* > ${sd}/${i}_${sim}_rep_out
+	rm ${sd}/${i}_${sim}_rep_out[0-9]*
 
-	Rscript formatres.r ${sd}/${cissnp}_disc_out ${sd}/${cissnp}_rep_out ${varexp} ${i} ${sim} ${cissnp} ${sensnp} ${sd}/${i}_${sim}.rdata ${sd}/${cissnp}_exclude_disc.bim.orig
+	Rscript formatres.r ${sd}/${i}_${sim}_disc_out ${sd}/${i}_${sim}_rep_out ${varexp} ${i} ${sim} ${cissnp} ${sensnp} ${sd}/${i}_${sim}.rdata ${sd}/${cissnp}_exclude_disc.bim.orig
+
+	# rm ${sd}/${i}_${sim}_*
 
 done
 
