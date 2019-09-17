@@ -7,7 +7,7 @@
 datafile="../data/combined"
 sensnp="rs67903230"
 cissnp="rs13069559"
-nsim=100
+nsim=1000
 minvar=0
 maxvar=0.5
 
@@ -53,37 +53,11 @@ rm ${sd}/${cissnp}_merge_rep.ped ${sd}/${cissnp}_merge_rep.map
 
 
 
-for (( i = 1; i <= $nsim; i++ ))
-do
-	echo ${i}
+plink --bfile ${datafile} --snps ${sensnp} --keep ${disc}list.txt --make-bed --out ${sd}/${sensnp}_disc
+plink --bfile ${datafile} --snps ${sensnp} --keep ${rep}list.txt --make-bed --out ${sd}/${sensnp}_rep
+plink --bfile ${sd}/${sensnp}_disc --recode A --out ${sd}/${sensnp}_disc
+plink --bfile ${sd}/${sensnp}_rep --recode A --out ${sd}/${sensnp}_rep
 
-	varexp=`Rscript -e "cat(runif(1, $minvar, $maxvar))"`
-	echo $varexp
-
-	# Create phenotypes using sentinel SNP
-	plink --bfile ${datafile} --snps ${sensnp} --keep ${disc}list.txt --make-bed --out ${sd}/${sensnp}_disc
-	plink --bfile ${datafile} --snps ${sensnp} --keep ${rep}list.txt --make-bed --out ${sd}/${sensnp}_rep
-
-	plink --bfile ${sd}/${sensnp}_disc --recode A --out ${sd}/${sensnp}_disc
-	Rscript makephen.r ${sd}/${sensnp}_disc.raw ${sd}/${sensnp}_disc.fam ${varexp}
-
-	plink --bfile ${sd}/${sensnp}_rep --recode A --out ${sd}/${sensnp}_rep
-	Rscript makephen.r ${sd}/${sensnp}_rep.raw ${sd}/${sensnp}_rep.fam ${varexp}
-
-
-	# Perform scan
-	episcan -A ${sd}/${cissnp}_merge_disc.egu ${sd}/${cissnp}_disc_out -t i -F 0.00000001 -I 0.0000001 -1 1 -2 2 -f ${sd}/${sensnp}_disc.fam -T 4
-	episcan -A ${sd}/${cissnp}_merge_rep.egu ${sd}/${cissnp}_rep_out -t i -F 0.00000001 -I 0.0000001 -1 1 -2 2 -f ${sd}/${sensnp}_rep.fam -T 4
-
-	cat ${sd}/${cissnp}_disc_out[0-9]* > ${sd}/${cissnp}_disc_out
-	rm ${sd}/${cissnp}_disc_out[0-9]*
-
-	cat ${sd}/${cissnp}_rep_out[0-9]* > ${sd}/${cissnp}_rep_out
-	rm ${sd}/${cissnp}_rep_out[0-9]*
-
-	Rscript formatres.r ${sd}/${cissnp}_disc_out ${sd}/${cissnp}_rep_out ${varexp} ${i} ${cissnp} ${sensnp} ${sd}/${i}.rdata
-
-done
 
 
 
