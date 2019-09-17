@@ -3,11 +3,13 @@ library(dplyr)
 
 args <- commandArgs(T)
 
-rawfile <- "../data/discsen.raw"
-famfile <- "../data/disc.fam2"
 rawfile <- args[1]
 famfile <- args[2]
 varexp <- as.numeric(args[3])
+
+print(rawfile)
+print(famfile)
+print(varexp)
 
 gen <- read_delim(rawfile, " ", col_names=TRUE)
 names(gen)[ncol(gen)] <- "geno"
