@@ -61,7 +61,7 @@ do
 
 	Rscript formatres.r ${sd}/${i}_${sim}_disc_out ${sd}/${i}_${sim}_rep_out ${varexp} ${i} ${sim} ${cissnp} ${sensnp} ${sd}/${i}_${sim}.rdata ${sd}/${cissnp}_exclude_disc.bim.orig
 
-	# rm ${sd}/${i}_${sim}_*
+	rm ${sd}/${i}_${sim}_*
 
 done
 
