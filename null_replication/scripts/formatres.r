@@ -62,12 +62,22 @@ arrange(p4) %>%
 filter(!duplicated(chr))
 res$nsig_disc_bonf <- nrow(disc_bonf)
 
+disc_bonf2 <- subset(disc, V3 == 8 & p4 < 1e-16) %>%
+arrange(p4) %>% 
+filter(!duplicated(chr))
+res$nsig_disc_bonf2 <- nrow(disc_bonf2)
+
 disc_fdr <- subset(disc, V3 == 8 & fdr < 0.05) %>%
 arrange(fdr) %>% 
 filter(!duplicated(chr))
 res$nsig_disc_fdr <- nrow(disc_fdr)
 
 repl_bonf <- subset(repl, V3 == 8 & p4 < (0.05/nrow(repl))) %>%
+arrange(p4) %>% 
+filter(!duplicated(chr))
+res$nsig_repl_bonf <- nrow(repl_bonf)
+
+repl_bonf2 <- subset(repl, V3 == 8 & p4 < 1e-16) %>%
 arrange(p4) %>% 
 filter(!duplicated(chr))
 res$nsig_repl_bonf <- nrow(repl_bonf)
@@ -83,6 +93,13 @@ cond_bonf$fdr <- p.adjust(cond_bonf$p4.y, "fdr")
 
 res$cond_bonf_bonf <- sum(cond_bonf$p4.y < 0.05 / nrow(cond_bonf), na.rm=TRUE)
 res$cond_bonf_fdr <- sum(cond_bonf$fdr < 0.05, na.rm=TRUE)
+
+cond_bonf2 <- subset(mer, V2 %in% disc_bonf2$V2)
+cond_bonf2$fdr <- p.adjust(cond_bonf2$p4.y, "fdr")
+
+res$cond_bonf2_bonf <- sum(cond_bonf2$p4.y < 0.05 / nrow(cond_bonf2), na.rm=TRUE)
+res$cond_bonf2_fdr <- sum(cond_bonf2$fdr < 0.05, na.rm=TRUE)
+
 
 cond_fdr <- subset(mer, V2 %in% disc_fdr$V2)
 cond_fdr$fdr <- p.adjust(cond_fdr$p4.y, "fdr")
