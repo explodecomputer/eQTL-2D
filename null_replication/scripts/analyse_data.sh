@@ -43,10 +43,24 @@ do
 	varexp=`Rscript -e "cat(runif(1, $minvar, $maxvar))"`
 	echo $varexp
 
-	# Create phenotypes using sentinel SNP
+	# Create phenotypes using sentinel SNP and polygenic score
 
-	Rscript makephen.r ${sd}/${sensnp}_rep.raw ${sd}/${i}_${sim}_rep.fam ${varexp}
-	Rscript makephen.r ${sd}/${sensnp}_disc.raw ${sd}/${i}_${sim}_disc.fam ${varexp}
+	# Create polygenic score
+	awk '{print $1,$2,rand()}' ${sd}/polygenic.txt > ${sd}/${i}_${sim}_score.txt
+	plink --bfile ${sd}/polygenic --keep ${disc}list.txt --score ${sd}/${i}_${sim}_score.txt --out ${sd}/${i}_${sim}_disc_score.txt
+	plink --bfile ${sd}/polygenic --keep ${rep}list.txt --score ${sd}/${i}_${sim}_score.txt --out ${sd}/${i}_${sim}_rep_score.txt
+
+
+	if (( RANDOM % 2 ));
+	then
+		polyvar=0.3
+	else
+		polyvar=0
+	fi
+	echo "$polyvar"
+
+	Rscript makephen.r ${sd}/${sensnp}_rep.raw ${sd}/${i}_${sim}_rep.fam ${varexp} ${sd}/${i}_${sim}_rep_score.txt.profile ${polyvar}
+	Rscript makephen.r ${sd}/${sensnp}_disc.raw ${sd}/${i}_${sim}_disc.fam ${varexp} ${sd}/${i}_${sim}_disc_score.txt.profile ${polyvar}
 
 
 	# Perform scan
@@ -59,7 +73,9 @@ do
 	cat ${sd}/${i}_${sim}_rep_out[0-9]* > ${sd}/${i}_${sim}_rep_out
 	rm ${sd}/${i}_${sim}_rep_out[0-9]*
 
+	echo "analysing"
 	Rscript formatres.r ${sd}/${i}_${sim}_disc_out ${sd}/${i}_${sim}_rep_out ${varexp} ${i} ${sim} ${cissnp} ${sensnp} ${sd}/${i}_${sim}.rdata ${sd}/${cissnp}_exclude_disc.bim.orig
+	echo "done analysing"
 
 	rm ${sd}/${i}_${sim}_*
 

@@ -59,10 +59,13 @@ plink --bfile ${sd}/${sensnp}_disc --recode A --out ${sd}/${sensnp}_disc
 plink --bfile ${sd}/${sensnp}_rep --recode A --out ${sd}/${sensnp}_rep
 
 
+# Polygenic snps
 
+shuf ${datafile}.bim | head -n 1000 | awk '{print $2,$5,rand()}' > ${sd}/polygenic.txt
+cat ${rep}list.txt ${disc}list.txt > temp.txt
 
-
-
+plink --bfile ${datafile} --keep temp.txt --extract ${sd}/polygenic.txt --make-bed --out ${sd}/polygenic
+rm temp.txt
 
 
 
