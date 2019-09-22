@@ -91,20 +91,23 @@ res$nsig_repl_fdr <- nrow(repl_fdr)
 cond_bonf <- subset(mer, V2 %in% disc_bonf$V2)
 cond_bonf$fdr <- p.adjust(cond_bonf$p4.y, "fdr")
 
-res$cond_bonf_bonf <- sum(cond_bonf$p4.y < 0.05 / nrow(cond_bonf), na.rm=TRUE)
+res$cond_bonf_bonf <- sum(cond_bonf$p4.y < (0.05 / nrow(cond_bonf)), na.rm=TRUE)
+res$cond_bonf_bonf2 <- sum(cond_bonf$p4.y < (0.05 / 501), na.rm=TRUE)
 res$cond_bonf_fdr <- sum(cond_bonf$fdr < 0.05, na.rm=TRUE)
 
 cond_bonf2 <- subset(mer, V2 %in% disc_bonf2$V2)
 cond_bonf2$fdr <- p.adjust(cond_bonf2$p4.y, "fdr")
 
-res$cond_bonf2_bonf <- sum(cond_bonf2$p4.y < 0.05 / nrow(cond_bonf2), na.rm=TRUE)
+res$cond_bonf2_bonf <- sum(cond_bonf2$p4.y < (0.05 / nrow(cond_bonf2)), na.rm=TRUE)
+res$cond_bonf2_bonf2 <- sum(cond_bonf2$p4.y < (0.05 / 501), na.rm=TRUE)
 res$cond_bonf2_fdr <- sum(cond_bonf2$fdr < 0.05, na.rm=TRUE)
 
 
 cond_fdr <- subset(mer, V2 %in% disc_fdr$V2)
 cond_fdr$fdr <- p.adjust(cond_fdr$p4.y, "fdr")
 
-res$cond_fdr_bonf <- sum(cond_fdr$p4.y < 0.05 / nrow(cond_fdr), na.rm=TRUE)
+res$cond_fdr_bonf <- sum(cond_fdr$p4.y < (0.05 / nrow(cond_fdr)), na.rm=TRUE)
+res$cond_fdr_bonf2 <- sum(cond_fdr$p4.y < (0.05 / 501), na.rm=TRUE)
 res$cond_fdr_fdr <- sum(cond_fdr$fdr < 0.05, na.rm=TRUE)
 
 res$fstat_cor <- cor(mer$V6.x, mer$V6.y, use="pair")
