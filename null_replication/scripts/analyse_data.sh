@@ -51,7 +51,7 @@ do
 	plink --bfile ${sd}/polygenic --keep ${rep}list.txt --score ${sd}/${i}_${sim}_score.txt --out ${sd}/${i}_${sim}_rep_score.txt
 
 
-	if (( RANDOM % 2 ));
+	if (( sim % 2 ));
 	then
 		polyvar=0.3
 	else
