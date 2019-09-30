@@ -8,7 +8,7 @@ author: Gibran Hemani
 These simulations suggest
 
 - that discovering associations at experiment wide thresholds (e.g. 1e-16) is unlikely even when the lambda is very high
-- the replication rate could be quite high using FDR
+- the replication rate could be quite high using FDR, even if the lambda is very low
 - the replication rate is very low at experiment wide thresholds
 - we might get higher experiment wide replication rates if we found a way that the discovery effects surpassed the experiment wide threshold
 

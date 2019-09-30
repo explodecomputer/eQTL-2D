@@ -1,0 +1,66 @@
+---
+title: All probe lambda values
+---
+
+
+Read in data and get FDR values for replication
+
+```{r}
+a <- read.csv("total_analysis_data.csv")
+a$pnest_egcut <- 10^-a$pnest_egcut
+a$pnest_fehr <- 10^-a$pnest_fehr
+a$fdr_egcut <- p.adjust(a$pnest_egcut, "fdr")
+a$fdr_fehr <- p.adjust(a$pnest_fehr, "fdr")
+a$pnest_both <- NA
+for(i in 1:nrow(a))
+{
+	a$pnest_both[i] <- pchisq(-2 * sum(log(c(a$pnest_fehr[i], a$pnest_egcut[i]))), df=4, low=FALSE)
+}
+a$fdr_both <- p.adjust(a$pnest_both, "fdr")
+```
+
+Remove cis-cis effects, how many remain?
+
+```{r}
+a <- subset(a, chr1 != chr2)
+nrow(a)
+```
+
+How many replicate in both at FDR < 0.05
+
+```{r}
+b1 <- subset(a, (fdr_both < 0.05))
+nrow(b1)
+```
+
+What are the lambda values of these probes
+
+```{r}
+plot(b1$lambda)
+```
+
+How many replicate in both at p < 0.05
+
+```{r}
+b2 <- subset(a, pnest_both < 0.05)
+nrow(b2)
+```
+
+What are the lambda values of these probes
+
+```{r}
+plot(b2$lambda)
+```
+
+Do again but with no duplicate probes
+
+```{r}
+plot(subset(b2, !duplicated(gene))$lambda)
+```
+
+It looks like at replication significance threshold of FDR < 0.05 there is one cis-trans interaction that replicates that has lambda value close to 1, and at nominal p < 0.05 threshold there are 15.
+
+
+Questions
+
+1. What is the standard error around these lambda values?
