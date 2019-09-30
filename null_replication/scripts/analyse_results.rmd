@@ -3,6 +3,16 @@ title: Analysis of epistatic inflation under large single additive effects, with
 author: Gibran Hemani
 ---
 
+## Summary
+
+These simulations suggest
+
+- that discovering associations at experiment wide thresholds (e.g. 1e-16) is unlikely even when the lambda is very high
+- the replication rate could be quite high using FDR
+- the replication rate is very low at experiment wide thresholds
+- we might get higher experiment wide replication rates if we found a way that the discovery effects surpassed the experiment wide threshold
+
+
 ## Background
 
 A 4 d.f. test for epistatic interactions is intended to be orthogonal from additive effects. However we are now seeing that a variant which is in LD with a large causal variant will be susceptible to large 4df test statistics across the genome. This can lead to a high false discovery rate at stringent significance thresholds. If the causal variant is available with low measurement error, fitting it as a covariate is sufficient to eliminate these false positives.
@@ -26,9 +36,12 @@ So what we did here was:
 
 As in the original paper, only interactions between SNP pairs that had all 9 genotype classes were retained, and only one trans variant per chromosome was retained for replication. All SNPs from the cis chromosome except the cis-proxy SNP were excluded, so we're only looking for cis-trans effects here.
 
+We also added an extra variable to test. Most expression traits have a large cis effect and a complex, polygenic trans component. For half of the simulations we also created a polygenic component that explained 30% of the variance, which was composed of 1000 SNPs which each had an effect sampled from a normal distribution.
+
 ```{r}
 library(tidyverse)
 load("../data/rs67903230.rdata")
+res$polygenic <- res$i %% 2 == 0
 ```
 
 We performed `r nrow(res)` simulations, where the variance explained by the causal variant was sampled uniformly between 0% and 50%
@@ -47,14 +60,17 @@ plot(lambda_disc ~ lambda_repl, res)
 And the lambdaGC value was strongly related to the variance explained by the causal variant
 
 ```{r}
-plot(lambda_disc ~ varexp, res)
+ggplot(res, aes(x=varexp, y=lambda_disc)) +
+geom_point(aes(colour=polygenic)) +
+geom_smooth(aes(colour=polygenic))
 ```
 
 The number of significant hits at a Bonferroni threshold (p < 0.05 / 500k):
 
 
 ```{r}
-hist(res$nsig_disc_bonf)
+ggplot(res, aes(x=nsig_disc_bonf)) +
+geom_histogram(aes(fill=polygenic), position="dodge")
 ```
 
 And the number significant at the threshold used in the paper pf p < 1e-16:
@@ -65,11 +81,13 @@ hist(res$nsig_disc_bonf2, xlim=c(0,max(res$nsig_disc_bonf)))
 
 Note that we found no significant hits at an experiment wide threshold, this is following `r nrow(res) * 500000` multiple tests. In the original paper we found 501 hits after performing over `r 1e15` tests, however in these simulations we have looked specifically at interactions between only cis-proxy variants which are in principle vulnerable to cis-trans false positives. The number of tests that we did using cis-proxy variants is likely similar in volume to the number performed empirically (as a small fraction of all SNPs are cis-proxy variants).
 
+There looks to be no affect of having a polygenic trans component, so from now on we will not stratify the results on that basis.
 
 The number of independent discovery associations per simulation was higher with larger causal variant effects (p = `r summary(lm(nsig_disc_bonf ~ varexp, res))$coefficients[2,4]`)
 
 ```{r}
-plot(nsig_disc_bonf ~ varexp, res)
+ggplot(res, aes(x=varexp, y=nsig_disc_bonf)) +
+geom_point()
 ```
 
 The average correlation of F statistics from the discovery and replication analyses (without thresholding) was `r mean(res$fstat_cor, na.rm=TRUE)`
@@ -84,49 +102,46 @@ The larger the causal variant effect, the larger the F statistic correlation
 plot(fstat_cor ~ varexp, res)
 ```
 
+Here's a look at the average number of discovery hits per simulation, binned by levels of genome wide lambda
+
+```{r}
+res$lambda_disc_bin <- Hmisc::cut2(res$lambda_disc, g=30)
+group_by(res, lambda_disc_bin) %>% summarise(n=mean(nsig_disc_bonf, na.rm=T)) %>% 
+ggplot(aes(x=lambda_disc_bin, y=n)) +
+geom_point() +
+theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
+labs(x="Simulation's lambda", y="Mean number of discovery hits")
+```
+
+
 ## Is the replication rate high under the null simulations?
 
 If the false positive rate is such that we obtain at least one false positive cis-trans association in the discovery, what is the chance of it replicating in an independent dataset?
 
-We can attempt to replicate at a Bonferroni threshold (within one simulation, how many associations were attempted to replicate at corrected p < 0.05) or FDR (within one simulation, how many associations repliace at FDR < 0.05).
+We can attempt to replicate at
 
-Note that these are much more relaxed thresholds than what we used in the original paper - which was 0.05 / 501.
+* Bonferroni threshold (within one simulation, how many discovery associations were replicated at Bonferroni corrected p < 0.05)
+* FDR (within one simulation, how many discovery associations replicate at FDR < 0.05).
+* experiment threshold (within one simulation, how many discovery associations replicated at p < 0.05/501, the threshold used in the paper)
 
 
 ```{r}
-
-res$lambda_disc_bin <- cut(res$lambda_disc, 5)
-temp <- res %>%
-	group_by(lambda_disc_bin, nsig_disc_bonf) %>%
-	summarise(count=n(), rate=n()/sum(res$lambda_disc_bin == .$lambda_disc_bin[1]))
-
-ggplot(temp %>% filter(nsig_disc_bonf > 0), aes(x=lambda_disc_bin, y=count)) +
-geom_bar(stat="identity", aes(fill=nsig_disc_bonf))
-
-table(res$lambda_disc_bin)
-hist(res$lambda_disc)
-
-plot(cond_bonf_bonf2 ~ varexp, res)
-
-plot(I(cond_bonf_bonf2/nsig_disc_bonf) ~ varexp, res)
-
-mean(res$cond_bonf_bonf / res$nsig_disc_bonf, na.rm=T)
-mean(res$cond_bonf_bonf2 / res$nsig_disc_bonf, na.rm=T)
-
 res$bonf_bonf_rr <- res$cond_bonf_bonf / res$nsig_disc_bonf
 res$bonf_fdr_rr <- res$cond_bonf_fdr / res$nsig_disc_bonf
 res$bonf_bonf2_rr <- res$cond_bonf_bonf2 / res$nsig_disc_bonf
 
-
-
-mean(res$bonf_bonf_rr, na.rm=TRUE)
-mean(res$bonf_bonf2_rr, na.rm=TRUE)
-tapply(res$bonf_bonf_rr, res$lambda_disc_bin, function(x) mean(x, na.rm=T))
-tapply(res$bonf_fdr_rr, res$lambda_disc_bin, function(x) mean(x, na.rm=T))
-
-tapply(res$bonf_bonf_rr, res$nsig_disc_bonf, function(x) mean(x, na.rm=T))
-tapply(res$bonf_fdr_rr, res$nsig_disc_bonf, function(x) mean(x, na.rm=T))
-
-
-
+repl_rate <- bind_rows(
+	group_by(res, lambda_disc_bin) %>% summarise(m=mean(bonf_bonf_rr, na.rm=T)) %>% mutate(threshold="Bonferroni"),
+	group_by(res, lambda_disc_bin) %>% summarise(m=mean(bonf_fdr_rr, na.rm=T)) %>% mutate(threshold="FDR"),
+	group_by(res, lambda_disc_bin) %>% summarise(m=mean(bonf_bonf2_rr, na.rm=T)) %>% mutate(threshold="Experiment")
+)
+repl_rate %>% ggplot(aes(x=lambda_disc_bin, y=m, group=threshold)) +
+geom_line(aes(colour=threshold)) +
+scale_colour_brewer(type="qual") +
+theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
+labs(x="Simulation's lambda", y="Replication rate")
 ```
+
+Overall, using FDR there is a reasonably high replication rate which doesn't correspond to discovery lambda. But the experiment wide threshold can only be met when the discovery lambda is very high, but even then the replication rate is extremely low.
+
+
