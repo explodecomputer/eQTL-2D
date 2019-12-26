@@ -3,6 +3,14 @@ title: Analysis of epistatic inflation under large single additive effects, with
 author: Gibran Hemani
 ---
 
+```{r}
+suppressWarnings(suppressPackageStartupMessages({
+	library(knitr)
+	library(tidyverse)
+}))
+opts_chunk$set(cache=TRUE)
+```
+
 ## Summary
 
 These simulations suggest
@@ -39,7 +47,6 @@ As in the original paper, only interactions between SNP pairs that had all 9 gen
 We also added an extra variable to test. Most expression traits have a large cis effect and a complex, polygenic trans component. For half of the simulations we also created a polygenic component that explained 30% of the variance, which was composed of 1000 SNPs which each had an effect sampled from a normal distribution.
 
 ```{r}
-library(tidyverse)
 load("../data/rs67903230.rdata")
 res$polygenic <- res$i %% 2 == 0
 ```
@@ -54,7 +61,9 @@ The lambdaGC value for the genome wide interaction effects were recorded for eac
 
 
 ```{r}
-plot(lambda_disc ~ lambda_repl, res)
+ggplot(res, aes(y=lambda_repl, x=lambda_disc)) +
+geom_point() +
+labs(x = "Genomic inflation (discovery)", y = "Genomic inflation (replication)")
 ```
 
 And the lambdaGC value was strongly related to the variance explained by the causal variant
@@ -64,6 +73,13 @@ ggplot(res, aes(x=varexp, y=lambda_disc)) +
 geom_point(aes(colour=polygenic)) +
 geom_smooth(aes(colour=polygenic))
 ```
+
+```{r}
+ggplot(res, aes(x=varexp, y=lambda_disc)) +
+geom_point() +
+labs(x="Additive variance explained", y="Genomic inflation")
+```
+
 
 The number of significant hits at a Bonferroni threshold (p < 0.05 / 500k):
 
@@ -86,14 +102,24 @@ There looks to be no affect of having a polygenic trans component, so from now o
 The number of independent discovery associations per simulation was higher with larger causal variant effects (p = `r summary(lm(nsig_disc_bonf ~ varexp, res))$coefficients[2,4]`)
 
 ```{r}
-ggplot(res, aes(x=varexp, y=nsig_disc_bonf)) +
-geom_point()
+res$varexp_bin <- Hmisc::cut2(res$varexp, g=30)
+ggplot(res, aes(x=varexp_bin, y=nsig_disc_bonf)) +
+geom_boxplot() +
+theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
+labs(x="Additive variance explained", y="Mean number of discovery hits")
 ```
 
 The average correlation of F statistics from the discovery and replication analyses (without thresholding) was `r mean(res$fstat_cor, na.rm=TRUE)`
 
 ```{r}
 hist(res$fstat_cor)
+```
+
+```{r}
+ggplot(res, aes(x=fstat_cor)) +
+geom_histogram(fill="white", colour="black") +
+labs(x="Correlation of F statistics between discovery and replication")
+
 ```
 
 The larger the causal variant effect, the larger the F statistic correlation
@@ -106,11 +132,11 @@ Here's a look at the average number of discovery hits per simulation, binned by 
 
 ```{r}
 res$lambda_disc_bin <- Hmisc::cut2(res$lambda_disc, g=30)
-group_by(res, lambda_disc_bin) %>% summarise(n=mean(nsig_disc_bonf, na.rm=T)) %>% 
-ggplot(aes(x=lambda_disc_bin, y=n)) +
-geom_point() +
+res %>% 
+ggplot(aes(x=lambda_disc_bin, y=nsig_disc_bonf)) +
+geom_boxplot() +
 theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
-labs(x="Simulation's lambda", y="Mean number of discovery hits")
+labs(x="Genomic inflation of simulation", y="Mean number of discovery hits")
 ```
 
 
@@ -139,7 +165,7 @@ repl_rate %>% ggplot(aes(x=lambda_disc_bin, y=m, group=threshold)) +
 geom_line(aes(colour=threshold)) +
 scale_colour_brewer(type="qual") +
 theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
-labs(x="Simulation's lambda", y="Replication rate")
+labs(x="Genomic inflation factor", y="Replication rate")
 ```
 
 Overall, using FDR there is a reasonably high replication rate which doesn't correspond to discovery lambda. But the experiment wide threshold can only be met when the discovery lambda is very high, but even then the replication rate is extremely low.

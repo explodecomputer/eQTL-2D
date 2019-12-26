@@ -1,0 +1,520 @@
+---
+title: F test theory
+---
+
+
+```{r}
+suppressWarnings(suppressPackageStartupMessages({
+	library(dplyr)
+	library(knitr)
+	library(simulateGP)
+}))
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, cache=TRUE, echo=TRUE, error=FALSE)
+```
+
+Simulate a simple 3 locus haplotype system with two loci in LD of 0.5, and each with MAF = 0.1
+
+$$
+\begin{aligned}
+y_1 &\sim y_2 + y_3 + e_1 \\
+y_1 &\sim y_2 + y_3 + y_{2}y_{3} + e_2
+\end{aligned}
+$$
+
+
+Method to create y1, y2, y3:
+
+```{r}
+gendat <- function(n)
+{
+	y1 <- rep(0, n)
+	y2 <- rep(0, n)
+	y1[856:900] <- 1
+	y2[901:945] <- 1
+	y1[946:1000] <- 1
+	y2[946:1000] <- 1
+	y3 <- rbinom(n, 1, 0.5)
+	return(tibble(y1,y2,y3))
+}
+```
+
+Method to run the simulation:
+
+```{r}
+run_sim <- function(i, n=1000)
+{
+	set.seed(i)
+	dat <- gendat(n)
+	mod1 <- lm(y1 ~ y2 + y3, dat)
+	mod2 <- lm(y1 ~ y2 + y3 + y2*y3, dat)
+	amod <- anova(mod1, mod2)
+	vare2 <- var(residuals(mod2))
+	sse1 <- sum(residuals(mod1)^2)
+	sse2 <- sum(residuals(mod2)^2)
+	return(list(amod=amod, vare2=vare2, sse1=sse1, sse2=sse2))
+}
+```
+
+Run
+
+```{r}
+l <- lapply(1:1000, function(x) run_sim(x))
+```
+
+
+Get the mean and variance of the F values
+
+
+```{r}
+sapply(l, function(x) x$amod$F[2]) %>% mean
+sapply(l, function(x) x$amod$F[2]) %>% var
+```
+
+What about two trans effects? Expect the mean and variance of the F value to be 1 and 2, respectively.
+
+
+```{r}
+run_sim2 <- function(i, n=1000)
+{
+	set.seed(i)
+	dat <- tibble(
+		y1=rbinom(n, 1, 0.5),
+		y2=rbinom(n, 1, 0.5),
+		y3=rbinom(n, 1, 0.5)
+	)
+	mod1 <- lm(y1 ~ y2 + y3, dat)
+	mod2 <- lm(y1 ~ y2 + y3 + y2*y3, dat)
+	amod <- anova(mod1, mod2)
+	vare2 <- var(residuals(mod2))
+	sse1 <- sum(residuals(mod1)^2)
+	sse2 <- sum(residuals(mod2)^2)
+	return(list(amod=amod, vare2=vare2, sse1=sse1, sse2=sse2))
+}
+l2 <- lapply(1:1000, function(x) run_sim2(x))
+sapply(l2, function(x) x$amod$F[2]) %>% mean
+sapply(l2, function(x) x$amod$F[2]) %>% var
+```
+
+
+Peter wrote that 
+
+$$
+\begin{aligned}
+F &= \frac{SSE_1 - SSE_2}{SSE_2 / (n-4)} \\
+  &= \frac{Q}{var(e_2)} 
+\end{aligned}
+$$
+
+where in the case of no interaction we expect
+
+$$
+\begin{aligned}
+SSE_2 / (n-4) \approx var(e1) = var(e2) &= var(y_1)(1 - r^2) \\
+&= p_1(1-p_1)(1 - r^2)
+\end{aligned}
+$$
+
+and $Q = SSE_1 - SSE_2$. Test this:
+
+
+```{r}
+dat <- tibble(
+	sim = 1:1000,
+	F = sapply(l, function(x) x$amod$F[2]),
+	vare2 = sapply(l, function(x) x$vare2),
+	sse1 = sapply(l, function(x) x$sse1),
+	sse2 = sapply(l, function(x) x$sse2)
+)
+dat2 <- tibble(
+	sim = 1:1000,
+	F = sapply(l2, function(x) x$amod$F[2]),
+	vare2 = sapply(l2, function(x) x$vare2),
+	sse1 = sapply(l2, function(x) x$sse1),
+	sse2 = sapply(l2, function(x) x$sse2)
+)
+```
+
+For the cis-trans association:
+
+```{r}
+plot(sse2 ~ sse1, dat)
+```
+
+For the trans-trans association:
+
+```{r}
+plot(sse2 ~ sse1, dat2)
+```
+
+Checking the equation
+
+```{r}
+plot((dat$sse1-dat$sse2)/dat$vare2, dat$F)
+```
+
+This works great but note that in the original document it was $SSE_2 - SSE_1$ which should be switched.
+
+## Interaction test
+
+Let the genotypic value of $y_{1.ij} = (y_1 = 1 | y_2 = i, y_3 = j)$ where $i,j \in \{0,1\}$, and the counts for each value be
+
+$$
+n_{ij} = n ( 1- p_2 + i(2p_2) - 1))(1 - p_3 + i(2p_3-1))
+$$
+
+We can therefore calculate the numbers in the 2 x 2 combinations of $y_2$ and $y_3$:
+
+$$
+\begin{aligned}
+y_2\; & y_3 & n_{ij}/n \\
+0\; & 0 & (1 - p_2)(1 - p_3) \\
+0\; & 1 & p_2(1 - p_3) \\
+1\; & 0 & (1 - p_2)p_3 \\
+1\; & 1 & p_2p_3 \\
+\end{aligned}
+$$
+
+A test for interaction can be defined as
+
+$$
+\delta = mean(y_{1.11}) + mean(y_{1.00}) - mean(y_{1.10}) - mean(y_{1.01})
+$$
+
+with $mean(y_{1.ij}) = \sum y_{1.ij} / n_{ij}$. 
+
+Check this. First generate a dataset with a strong interaction
+
+```{r}
+set.seed(sapply(l, function(x) x$amod$F[2]) %>% which.max)
+dat <- gendat(1000)
+mod1 <- lm(y1 ~ y2 + y3, dat)
+mod2 <- lm(y1 ~ y2 + y3 + y2*y3, dat)
+amod <- anova(mod1, mod2)
+
+SSE1 <- sum(residuals(mod1)^2)
+SSE2 <- sum(residuals(mod2)^2)
+pchisq((SSE1 - SSE2) / (SSE2 / 996), 1, low=F)
+pf((SSE1 - SSE2) / (SSE2 / 996), 1, 996, low=F)
+```
+
+Now create one with a weak interaction:
+
+```{r}
+set.seed(sapply(l, function(x) x$amod$F[2]) %>% which.min)
+datw <- gendat(1000)
+modw1 <- lm(y1 ~ y2 + y3, datw)
+modw2 <- lm(y1 ~ y2 + y3 + y2*y3, datw)
+amodw <- anova(modw1, modw2)
+```
+
+Test for interaction:
+
+```{r}
+est_delta <- function(dat)
+{
+	n <- nrow(dat)
+	obs = table(dat$y1, dat$y2) / nrow(dat) %>% c	
+	tab <- with(dat, tapply(y1, list(y2, y3), mean)) %>% c
+	return(tibble(
+		y1.00 = tab[1],
+		y1.10 = tab[2],
+		y1.01 = tab[3],
+		y1.11 = tab[4],
+		delta = y1.00 + y1.11 - y1.10 - y1.01,
+		p1 = mean(dat$y1),
+		p2 = mean(dat$y2),
+		p3 = mean(dat$y3),
+		p00 = obs[1],
+		p10 = obs[2],
+		p01 = obs[3],
+		p11 = obs[4],
+		D = obs[4] - mean(dat$y1) * mean(dat$y2)
+	))
+}
+
+# strong interaction
+est_delta(dat)
+
+# weak interaction
+est_delta(datw)
+```
+
+In the linear model the error variance is assumed to be the same in each cell of the 2 x 2 table and a pooled estimate is used. 
+
+Variance of $\delta$ can be calculated from the allele and haplotype frequencies and compared to its variance under a linear model (LM). Summarise each of 1000 simulations for cis-trans and trans-trans examples:
+
+```{r}
+# cis-trans
+run_sim3 <- function(i, n=1000)
+{
+	set.seed(i)
+	dat <- gendat(n)
+	return(est_delta(dat))
+}
+m <- lapply(1:1000, function(i) run_sim3(i)) %>% bind_rows()
+
+# trans-trans
+run_sim4 <- function(i, n=1000)
+{
+	set.seed(i)
+	dat <- tibble(
+		y1=rbinom(n, 1, 0.5),
+		y2=rbinom(n, 1, 0.5),
+		y3=rbinom(n, 1, 0.5)
+	)
+	return(est_delta(dat))
+}
+m2 <- lapply(1:1000, function(i) run_sim4(i)) %>% bind_rows()
+```
+
+From the given haplotype frequencies:
+
+$$
+\begin{aligned}
+E(y_{1.11}) = E(y_{1.10}) &= p(y_1 = 1 | y_2 = 1) \\
+                          &= p_{11} / p2 \\
+                          &= p_1 + D / p_2
+\end{aligned}
+$$
+
+Check:
+
+```{r}
+mean(m$y1.11)
+mean(m$y1.10)
+(m$p11/m$p2)[1]
+(m$p1 + m$D/m$p2)[1]
+```
+
+and similarly
+
+$$
+\begin{aligned}
+E(y_{1.00}) = E(y_{1.01}) &= p(y_1 = 0 | y_2 = 0) \\
+                          &= p_{00} / p2 \\
+                          &= p_1 - D/(1 - p_2)
+\end{aligned}
+$$
+
+
+Check:
+
+```{r}
+mean(m$y1.00)
+mean(m$y1.01)
+(m$p1 - m$D/(1-m$p2))[1]
+```
+
+Each of the terms has a binomial variance
+
+$$
+var(mean(y_{1.ij})) = E(y_{1.ij})(1 - E(y1.ij)) / n_{ij}
+$$
+
+Putting all the terms together gives the exact variance of the test statistic as 
+
+
+$$
+var(\delta) = 
+\frac{p_1(1-p_1) + \frac{(1-2p_1)(1-2p_2)D}{p2(1-p2)} - \frac{D^2(1-3p_2(1-p_2))}{p_2^2(1-p_2])^2} }
+{n p_2(1-p_2)p_3(1-p_3)}
+$$
+
+
+
+
+Check:
+
+```{r}
+
+# Variance of mean(y_1.11)
+(sd(m$y1.11) / sqrt(nrow(m)))^2
+
+# According to the formula
+mean(m$y1.11) * (1 - mean(m$y1.11)) / mean((m$p2) * (m$p3) * 1000)
+```
+
+**Don't seem to be getting agreement here.**
+
+The general idea that the variance of each term is differentseems to be correct though, as the variance of $var(mean(y_{1.ij}))$ is not consistent over $i$ and $j$
+
+```{r}
+(sd(m$y1.11) / sqrt(nrow(m)))^2
+(sd(m$y1.10) / sqrt(nrow(m)))^2
+(sd(m$y1.01) / sqrt(nrow(m)))^2
+(sd(m$y1.00) / sqrt(nrow(m)))^2
+```
+
+
+## Other aspects
+
+### Adjusting for additive effects with varying degrees of measurement error
+
+```{r}
+gendatp <- function(n, p1, p2, p3, r1, shufprop)
+{
+	dat <- simulateGP:::simulate_haplotypes(n, r1, p1, p2) %>% as_tibble %>% dplyr::select(y1=A1, y2=B1)
+	dat$y3 <- rbinom(n, 1, p3)
+	dat$y4 <- dat$y1
+	index <- sample(1:nrow(dat), shufprop * nrow(dat), replace=FALSE)
+	dat$y4[index] <- sample(dat$y4[index])
+	return(dat)
+}
+
+run_simp <- function(param, i)
+{
+	set.seed(i*10)
+	dat <- gendatp(param$n[i], param$p1[i], param$p2[i], param$p3[i], param$r1[i], param$shufprop[i])
+	# dat$y1r <- residuals(lm(y1 ~ y4, dat))
+	x <- dat$y1 + rnorm(nrow(dat), sd=sd(dat$y1)/2)
+	mod1 <- lm(x ~ y4 + y2 + y3, dat)
+	mod2 <- lm(x ~ y4 + y2 + y3 + y2*y3, dat)
+	amod <- anova(mod1, mod2)
+	param$r2[i] <- cor(dat$y1, dat$y4)
+	param$F[i] <- amod$F[2]
+	return(param[i,])
+}
+
+
+param <- expand.grid(
+	p1=0.1,
+	p2=0.1,
+	p3=0.5,
+	p4=0.1,
+	shufprop=seq(0, 1, by=0.1),
+	n=1000,
+	r1=seq(0, 1, by=0.2),
+	sim=1:500,
+	r2=NA,
+	F=NA
+)
+
+resp <- lapply(1:nrow(param), function(x) run_simp(param, x)) %>% bind_rows()
+```
+
+Plot
+
+```{r}
+resp %>%
+group_by(r1, shufprop) %>%
+summarise(n=n(), mF=mean(F, na.rm=T), vF=var(F, na.rm=T), r2=mean(r2, na.rm=T)) %>% as.data.frame
+resp$R2 <- 1 - resp$shufprop
+ggplot(resp, aes(x=as.factor(R2), y=F)) +
+geom_boxplot(aes(fill=as.factor(r1))) +
+scale_fill_brewer(type="seq") +
+labs(y="Interaction F value", x="Measurement precision of causal additive variant", fill="LD between tagging\nvariant and causal variant")
+```
+
+
+## Point estimation
+
+
+A model where the average additive effect is different from the per-individual additive effect. The error term in the model is now a mixture of variance not explained by the SNP and heterogeneity in the effect of the SNP across the population.
+
+```{r}
+simulate_phen <- function(x, meanb, varb, r2)
+{
+	n <- length(x)
+	b <- rnorm(n, meanb, sqrt(varb))
+	yp <- x * b
+	myb <- x * meanb
+	vhet <- var(yp) - var(x * meanb)
+	r2het <- cor(myb, yp)^2
+	ve <- (var(myb) - r2 * var(myb)) / r2
+	y <- yp + rnorm(n, 0, sqrt(ve - vhet))
+	m <- try(lm(y ~ x)$coef[2])
+	m <- ifelse(class(m) == 'try-error', NA, m)
+	return(
+		list(
+			y=y,
+			info=tibble(
+				varb=varb,
+				r2=r2,
+				r2het=r2het,
+				rsqxy=cor(x,y)^2,
+				ve=ve,
+				vy=var(y),
+				vyp=var(yp),
+				vhet=vhet,
+				bhat=m
+			)
+		)	
+	)
+}
+
+x <- rbinom(10000, 1, 0.5)
+out <- expand.grid(meanb=1, varb=seq(0.0, 0.5, by=0.02), r2=seq(0.1, 1, by=0.1)) %>%
+	split(., 1:nrow(.)) %>%
+	lapply(., function(i) simulate_phen(x, i$meanb, i$varb, i$r2)$info) %>% bind_rows()
+
+plot(rsqxy ~ r2, out)
+ggplot(out, aes(x=vyp, y=ve-vhet)) +
+geom_point() +
+facet_wrap(~ r2 )
+
+```
+
+Run simulations to see how point estimation heterogeneity impacts F statistic in interaction test.
+
+
+```{r}
+run_simp2 <- function(param, i)
+{
+	set.seed(i)
+	dat <- gendatp(param$n[i], param$p1[i], param$p2[i], param$p3[i], param$r1[i], param$shufprop[i])
+	o <- simulate_phen(dat$y1, param$meanb[i], param$varb[i], param$r2add[i])
+	x <- o$y
+	info <- o$info
+	mod1 <- lm(x ~ y1 + y3, dat)
+	mod2 <- lm(x ~ y1 + y3 + y1*y3, dat)
+	amod <- anova(mod1, mod2)
+	param$r2[i] <- cor(dat$y1, x)
+	param$F[i] <- amod$F[2]
+	param$ve <- info$ve
+	param$vhet <- info$vhet
+	param$rsqxy <- info$rsqxy
+	param$vy <- info$vy
+
+	return(param[i,])
+}
+
+param <- expand.grid(
+	p1=0.1,
+	p2=0.1,
+	p3=0.5,
+	p4=0.1,
+	shufprop=0,
+	r2add=0.5,
+	meanb=1,
+	varb=seq(0, 0.4, by=0.01),
+	n=1000,
+	r1=0.5,
+	sim=1:1000,
+	r2=NA,
+	F=NA
+)
+
+res <- lapply(1:nrow(param), function(x) run_simp2(param, x)) %>% bind_rows()
+
+res %>%
+group_by(r1, varb) %>%
+summarise(
+	n=n(), 
+	mF=mean(F, na.rm=T), 
+	vF=var(F, na.rm=T), 
+	r2=mean(r2, na.rm=T), 
+	ve=mean(ve, na.rm=T), 
+	vhet=mean(vhet, na.rm=T), 
+	rsqxy=mean(rsqxy, na.rm=T),
+	vy=mean(vy, na.rm=T)
+) %>% as.data.frame
+res$vhetvy <- res$vhet/res$vy
+res$vhetvy[res$vhetvy < 0] <- 0
+res$vhetvy <- cut(res$vhetvy, breaks=10)
+ggplot(res, aes(x=varb, y=F)) +
+geom_boxplot(aes(group=as.factor(varb), fill=varb==0)) +
+scale_fill_brewer(type="seq") +
+labs(y="Interaction F value", x="Proportion of error variance due to point estimation error", fill="No inflation") +
+theme(axis.text.x=element_text(angle=90, hjust=1, vjust=0.5))
+
+```
