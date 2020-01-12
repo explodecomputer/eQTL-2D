@@ -42,8 +42,9 @@ mer <- merge(disc, repl, by="V2")
 
 estlambda <- function(x)
 {
-	da <- qchisq(x, 1, low=FALSE)
-	median(da, na.rm=TRUE)/qchisq(0.5, 1)
+	da <- qnorm(1 - x/2)
+	# da <- qchisq(x, 1, low=FALSE)
+	median(da, na.rm=TRUE)^2/qchisq(0.5, 1)
 } 
 
 res <- list()
