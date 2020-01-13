@@ -16,7 +16,7 @@
 		"name": "{rule}.{wildcards.scen}.{wildcards.sim}",
 		"output": "job_reports/{rule}.{wildcards.scen}.{wildcards.sim}.out",
 		"time": "0:10:00",
-		"mem": "3G",
+		"mem": "3G"
 	}
 }
 
