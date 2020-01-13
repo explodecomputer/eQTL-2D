@@ -6,7 +6,7 @@ args <- commandArgs(T)
 discfile <- args[1]
 replfile <- args[2]
 varexp <- as.numeric(args[3])
-i <- as.numeric(args[4])
+i <- args[4]
 sim <- as.numeric(args[5])
 cis <- args[6]
 sentinel <- args[7]

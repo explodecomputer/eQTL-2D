@@ -5,11 +5,12 @@
 # Copied across to bc4 because no mirror there yet
 
 datafile="../data/combined"
-sensnp="rs67903230"
-cissnp="rs13069559"
-nsim=1000
-minvar=0
-maxvar=0.5
+code="$1"
+IFS='_' read -r -a array <<< ${code}
+
+gene="${array[0]}"
+sensnp="${array[1]}"
+cissnp="${array[2]}"
 
 disc="../data/disc"
 rep="../data/rep"
@@ -17,7 +18,7 @@ rep="../data/rep"
 cischr=`grep -w $cissnp $disc.bim | cut -f 1`
 echo $cischr
 
-sd="../data/scratch/${sensnp}"
+sd="../data/scratch/${gene}_${sensnp}_${cissnp}"
 mkdir -p ${sd}
 
 # Create epigpu format
@@ -62,10 +63,10 @@ plink --bfile ${sd}/${sensnp}_rep --recode A --out ${sd}/${sensnp}_rep
 # Polygenic snps
 
 shuf ${datafile}.bim | head -n 1000 | awk '{print $2,$5,rand()}' > ${sd}/polygenic.txt
-cat ${rep}list.txt ${disc}list.txt > temp.txt
+cat ${rep}list.txt ${disc}list.txt > ${sd}/temp.txt
 
-plink --bfile ${datafile} --keep temp.txt --extract ${sd}/polygenic.txt --make-bed --out ${sd}/polygenic
-rm temp.txt
+plink --bfile ${datafile} --keep ${sd}/temp.txt --extract ${sd}/polygenic.txt --make-bed --out ${sd}/polygenic
+rm ${sd}/temp.txt
 
 
 

@@ -1,0 +1,22 @@
+{
+	"__default__" :
+	{
+		"name": "{rule}.{wildcards.scen}",
+		"partition": "mrcieu",
+		"nodes": "1",
+		"ncpu": "1",
+		"ntask": "1",
+		"time": "1:00:00",
+		"mem": "10G",
+		"output": "job_reports/{rule}.{wildcards.scen}.out"
+	},
+
+	"runsim" :
+	{
+		"name": "{rule}.{wildcards.scen}.{wildcards.sim}",
+		"output": "job_reports/{rule}.{wildcards.scen}.{wildcards.sim}.out",
+		"time": "0:10:00",
+		"mem": "3G",
+	}
+}
+
