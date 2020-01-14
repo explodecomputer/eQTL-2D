@@ -29,15 +29,11 @@ gene="${array[0]}"
 sensnp="${array[1]}"
 cissnp="${array[2]}"
 sim="$2"
-minvar="$3"
-maxvar="$4"
 
 echo $gene
 echo $sensnp
 echo $cissnp
 echo $sim
-echo $minvar
-echo $maxvar
 
 cischr=`grep -w $cissnp $disc.bim | cut -f 1`
 echo $cischr
@@ -45,7 +41,6 @@ echo $cischr
 sd="../data/scratch/${gene}_${sensnp}_${cissnp}"
 
 varexp=`grep -w $gene ../data/finemap.txt | grep -w $sensnp | grep -w $cissnp | head -n 1 | cut -d " " -f 3`
-# varexp=`Rscript -e "cat(runif(1, $minvar, $maxvar))"`
 echo $varexp
 
 # Create phenotypes using sentinel SNP and polygenic score
