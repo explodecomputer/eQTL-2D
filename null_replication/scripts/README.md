@@ -16,7 +16,7 @@ Use Snakemake to run simulations
 ```
 module add languages/anaconda3/5.2.0-tflow-1.11
 snakemake -prk \
--j 400 \
+-j 1000 \
 --cluster-config bc4-cluster.json \
 --cluster "sbatch \
   --job-name={cluster.name} \
