@@ -44,7 +44,8 @@ echo $cischr
 
 sd="../data/scratch/${gene}_${sensnp}_${cissnp}"
 
-varexp=`Rscript -e "cat(runif(1, $minvar, $maxvar))"`
+varexp=`grep -w $gene ../data/finemap.txt | grep -w $sensnp | grep -w $cissnp | head -n 1 | cut -d " " -f 3`
+# varexp=`Rscript -e "cat(runif(1, $minvar, $maxvar))"`
 echo $varexp
 
 # Create phenotypes using sentinel SNP and polygenic score
@@ -57,7 +58,7 @@ plink --bfile ${sd}/polygenic --keep ${rep}list.txt --score ${sd}/${sim}_score.t
 
 if (( sim % 2 ));
 then
-	polyvar=0.3
+	polyvar=0
 else
 	polyvar=0
 fi

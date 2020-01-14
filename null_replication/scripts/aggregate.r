@@ -8,8 +8,5 @@ res <- mclapply(fn, function(x) {
 	as_tibble(res)
 	}, mc.cores=10) %>% bind_rows()
 
-save(res, file="../data/aggregate.rdata")
-
-
-
+save(res, file="../data/aggregate2.rdata")
 

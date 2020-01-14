@@ -1,7 +1,7 @@
 f = open("../data/finemap.txt", "r")
 a = [x.strip().split(" ") for x in f.readlines()]
 f.close()
-SIM = list(range(200))
+SIM = list(range(50))
 scenario = [x[0] + "_" + x[1] + "_" + x[3] for x in a]
 minvar = 0
 maxvar = 0.5
@@ -10,7 +10,7 @@ rule all:
 	input:
 		expand("../data/scratch/{scen}/polygenic.bed", scen=scenario),
 		expand("../data/scratch/{scen}/{sim}.rdata", scen=scenario, sim=SIM),
-		"../data/aggregate.rdata"
+		"../data/aggregate2.rdata"
 
 
 rule create_data:
@@ -40,6 +40,6 @@ rule aggregate:
 	input:
 		expand("../data/scratch/{scen}/{sim}.rdata", scen=scenario, sim=SIM)
 	output:
-		"../data/aggregate.rdata"
+		"../data/aggregate2.rdata"
 	shell:
 		"Rscript aggregate.r"
