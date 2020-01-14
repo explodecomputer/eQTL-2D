@@ -17,6 +17,13 @@
 		"output": "job_reports/{rule}.{wildcards.scen}.{wildcards.sim}.out",
 		"time": "0:10:00",
 		"mem": "3G"
+	},
+
+	"aggregate" :
+	{
+		"ncpu": "10",
+		"name": "{rule}",
+		"output": "job_reports/{rule}.out"
 	}
 }
 
