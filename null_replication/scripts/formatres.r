@@ -14,11 +14,13 @@ outfile <- args[8]
 mapfile <- args[9]
 
 
-disc <- fread(discfile)  %>% as_tibble()
+disc <- fread(discfile)  %>% as_tibble() %>% filter(V3 == 8)
+print(nrow(disc))
 disc$p4 <- pf(disc$V6, 4, disc$V4, low=FALSE)
 disc$fdr <- p.adjust(disc$p4, "fdr")
 
-repl <- fread(replfile) %>% as_tibble()
+repl <- fread(replfile) %>% as_tibble() %>% filter(V3 == 8)
+print(nrow(repl))
 repl$p4 <- pf(repl$V6, 4, repl$V4, low=FALSE)
 repl$fdr <- p.adjust(repl$p4, "fdr")
 

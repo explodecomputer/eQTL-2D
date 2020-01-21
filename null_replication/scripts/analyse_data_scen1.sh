@@ -81,6 +81,6 @@ echo "analysing"
 Rscript formatres.r ${sd}/${sim}_disc_out ${sd}/${sim}_rep_out ${varexp} ${code} ${sim} ${cissnp} ${sensnp} ${sd}/${sim}.scen1.rdata ${sd}/${cissnp}_exclude_disc.bim.orig
 echo "done analysing"
 
-rm ${sd}/${sim}_*
+# rm ${sd}/${sim}_*
 
 
