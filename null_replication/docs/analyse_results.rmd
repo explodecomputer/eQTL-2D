@@ -47,14 +47,45 @@ As in the original paper, only interactions between SNP pairs that had all 9 gen
 We also added an extra variable to test. Most expression traits have a large cis effect and a complex, polygenic trans component. For half of the simulations we also created a polygenic component that explained 30% of the variance, which was composed of 1000 SNPs which each had an effect sampled from a normal distribution.
 
 ```{r}
-load("../data/rs67903230.rdata")
-res$polygenic <- res$i %% 2 == 0
+l <- list()
+# load("../data/rs67903230.rdata")
+# res$polygenic <- res$sim %% 2 == 0
+# res$median_p_disc <- pchisq(res$lambda_disc * qchisq(0.5, 1), 1, low=FALSE)
+# res$median_p_repl <- pchisq(res$lambda_repl * qchisq(0.5, 1), 1, low=FALSE)
+# res$lambda_disc <- pnorm(1 - res$median_p_disc / 2)^2 / qchisq(0.5, 1)
+# res$lambda_repl <- pnorm(1 - res$median_p_repl / 2)^2 / qchisq(0.5, 1)
+# res$gene <- "MBNL1"
+# res$i <- paste(res$gene, res$sentinel, res$cis, sep="_")
+# res$scenario <- 1
+
+load("../data/aggregate1.rdata")
+res$polygenic <- res$sim %% 2 == 0
+res$gene <- sapply(res$i, function(x) strsplit(x, "_")[[1]][1])
+res$scenario <- 1
+l[[1]] <- res
+
+load("../data/aggregate.rdata")
+res$polygenic <- res$sim %% 2 == 0
+res$gene <- sapply(res$i, function(x) strsplit(x, "_")[[1]][1])
+res$scenario <- 2
+l[[2]] <- res
+
+load("../data/aggregate2.rdata")
+res$polygenic <- res$sim %% 2 == 0
+res$gene <- sapply(res$i, function(x) strsplit(x, "_")[[1]][1])
+res$scenario <- 3
+l[[3]] <- res
+
+res <- bind_rows(l)
+
 ```
 
 We performed `r nrow(res)` simulations, where the variance explained by the causal variant was sampled uniformly between 0% and 50%
 
 ```{r}
-hist(res$varexp)
+ggplot(res, aes(x=varexp)) +
+geom_histogram() +
+facet_grid(scenario ~ .)
 ```
 
 The lambdaGC value for the genome wide interaction effects were recorded for each simulation from the discovery and replication datasets
@@ -63,21 +94,18 @@ The lambdaGC value for the genome wide interaction effects were recorded for eac
 ```{r}
 ggplot(res, aes(y=lambda_repl, x=lambda_disc)) +
 geom_point() +
-labs(x = "Genomic inflation (discovery)", y = "Genomic inflation (replication)")
+labs(x = "Genomic inflation (discovery)", y = "Genomic inflation (replication)") +
+facet_grid(scenario ~ .)
 ```
 
 And the lambdaGC value was strongly related to the variance explained by the causal variant
 
 ```{r}
 ggplot(res, aes(x=varexp, y=lambda_disc)) +
-geom_point(aes(colour=polygenic)) +
-geom_smooth(aes(colour=polygenic))
-```
-
-```{r}
-ggplot(res, aes(x=varexp, y=lambda_disc)) +
-geom_point() +
-labs(x="Additive variance explained", y="Genomic inflation")
+geom_point(size=0.03, alpha=0.1) +
+labs(x="Additive variance explained", y="Genomic inflation") +
+facet_grid(scenario ~ .) +
+theme_bw()
 ```
 
 
@@ -86,7 +114,8 @@ The number of significant hits at a Bonferroni threshold (p < 0.05 / 500k):
 
 ```{r}
 ggplot(res, aes(x=nsig_disc_bonf)) +
-geom_histogram(aes(fill=polygenic), position="dodge")
+geom_histogram(aes(fill=polygenic), position="dodge") +
+facet_grid(scenario ~ .)
 ```
 
 And the number significant at the threshold used in the paper pf p < 1e-16:
@@ -106,7 +135,8 @@ res$varexp_bin <- Hmisc::cut2(res$varexp, g=30)
 ggplot(res, aes(x=varexp_bin, y=nsig_disc_bonf)) +
 geom_boxplot() +
 theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
-labs(x="Additive variance explained", y="Mean number of discovery hits")
+labs(x="Additive variance explained", y="Mean number of discovery hits") +
+facet_grid(scenario ~ .)
 ```
 
 The average correlation of F statistics from the discovery and replication analyses (without thresholding) was `r mean(res$fstat_cor, na.rm=TRUE)`
@@ -118,8 +148,8 @@ hist(res$fstat_cor)
 ```{r}
 ggplot(res, aes(x=fstat_cor)) +
 geom_histogram(fill="white", colour="black") +
-labs(x="Correlation of F statistics between discovery and replication")
-
+labs(x="Correlation of F statistics between discovery and replication") +
+facet_grid(scenario ~ ., scale="free_y")
 ```
 
 The larger the causal variant effect, the larger the F statistic correlation
@@ -132,11 +162,20 @@ Here's a look at the average number of discovery hits per simulation, binned by 
 
 ```{r}
 res$lambda_disc_bin <- Hmisc::cut2(res$lambda_disc, g=30)
+res$varexp_bin <- Hmisc::cut2(res$varexp, g=30)
 res %>% 
 ggplot(aes(x=lambda_disc_bin, y=nsig_disc_bonf)) +
 geom_boxplot() +
 theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
-labs(x="Genomic inflation of simulation", y="Mean number of discovery hits")
+labs(x="Genomic inflation of simulation", y="Mean number of discovery hits") +
+facet_grid(scenario ~ .)
+
+res %>% 
+ggplot(aes(x=varexp_bin, y=nsig_disc_bonf)) +
+geom_boxplot() +
+theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
+labs(x="Variance explained by cis causal variant", y="Mean number of discovery hits") +
+facet_grid(scenario ~ .)
 ```
 
 
@@ -151,21 +190,23 @@ We can attempt to replicate at
 * experiment threshold (within one simulation, how many discovery associations replicated at p < 0.05/501, the threshold used in the paper)
 
 
-```{r}
+```{r, fig.width=12}
 res$bonf_bonf_rr <- res$cond_bonf_bonf / res$nsig_disc_bonf
 res$bonf_fdr_rr <- res$cond_bonf_fdr / res$nsig_disc_bonf
 res$bonf_bonf2_rr <- res$cond_bonf_bonf2 / res$nsig_disc_bonf
 
 repl_rate <- bind_rows(
-	group_by(res, lambda_disc_bin) %>% summarise(m=mean(bonf_bonf_rr, na.rm=T)) %>% mutate(threshold="Bonferroni"),
-	group_by(res, lambda_disc_bin) %>% summarise(m=mean(bonf_fdr_rr, na.rm=T)) %>% mutate(threshold="FDR"),
-	group_by(res, lambda_disc_bin) %>% summarise(m=mean(bonf_bonf2_rr, na.rm=T)) %>% mutate(threshold="Experiment")
+	group_by(res, varexp_bin, scenario) %>% summarise(m=mean(bonf_bonf_rr, na.rm=T)) %>% mutate(threshold="Bonferroni"),
+	group_by(res, varexp_bin, scenario) %>% summarise(m=mean(bonf_fdr_rr, na.rm=T)) %>% mutate(threshold="FDR"),
+	group_by(res, varexp_bin, scenario) %>% summarise(m=mean(bonf_bonf2_rr, na.rm=T)) %>% mutate(threshold="Experiment")
 )
-repl_rate %>% ggplot(aes(x=lambda_disc_bin, y=m, group=threshold)) +
+repl_rate %>% ggplot(aes(x=varexp_bin, y=m, group=threshold)) +
 geom_line(aes(colour=threshold)) +
 scale_colour_brewer(type="qual") +
 theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
-labs(x="Genomic inflation factor", y="Replication rate")
+labs(x="Variance explained by cis additive variant", y="Replication rate") +
+facet_grid(. ~ scenario) +
+ylim(c(0,0.3))
 ```
 
 Overall, using FDR there is a reasonably high replication rate which doesn't correspond to discovery lambda. But the experiment wide threshold can only be met when the discovery lambda is very high, but even then the replication rate is extremely low.
