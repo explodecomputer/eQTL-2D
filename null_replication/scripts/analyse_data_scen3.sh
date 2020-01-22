@@ -74,7 +74,7 @@ cat ${sd}/${sim}_rep_out[0-9]* > ${sd}/${sim}_rep_out
 rm ${sd}/${sim}_rep_out[0-9]*
 
 echo "analysing"
-Rscript formatres.r ${sd}/${sim}_disc_out ${sd}/${sim}_rep_out ${varexp} ${code} ${sim} ${cissnp} ${sensnp} ${sd}/${sim}.rdata ${sd}/${cissnp}_exclude_disc.bim.orig
+Rscript formatres.r ${sd}/${sim}_disc_out ${sd}/${sim}_rep_out ${varexp} ${code} ${sim} ${cissnp} ${sensnp} ${sd}/${sim}.scen3.rdata ${sd}/${cissnp}_exclude_disc.bim.orig
 echo "done analysing"
 
 rm ${sd}/${sim}_*
