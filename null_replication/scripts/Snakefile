@@ -1,9 +1,10 @@
 f = open("../data/finemap.txt", "r")
 a = [x.strip().split(" ") for x in f.readlines()]
 f.close()
-SIM1 = list(range(10000))
+SIM1 = list(range(40000))
 SIM2 = list(range(200))
 SIM3 = list(range(100))
+SIM4 = list(range(50))
 scenario = [x[0] + "_" + x[1] + "_" + x[3] for x in a]
 scen0 = "MBNL1_rs67903230_rs13069559"
 minvar = 0
@@ -16,9 +17,11 @@ rule all:
 		expand("../data/scratch/{scen0}/{sim1}.scen1.rdata", scen0=scen0, sim1=SIM1),
 		expand("../data/scratch/{scen}/{sim2}.scen2.rdata", scen=scenario, sim2=SIM2),
 		expand("../data/scratch/{scen}/{sim3}.scen3.rdata", scen=scenario, sim3=SIM3),
+		expand("../data/scratch/{scen}/{sim4}.scen4.rdata", scen=scenario, sim4=SIM4),
 		"../data/aggregate1.rdata",
 		"../data/aggregate2.rdata",
-		"../data/aggregate3.rdata"
+		"../data/aggregate3.rdata",
+		"../data/aggregate4.rdata"
 
 
 rule create_data:
@@ -93,3 +96,25 @@ rule aggregate3:
 		"../data/aggregate3.rdata"
 	shell:
 		"Rscript aggregate.r scen3.rdata ../data/aggregate3.rdata"
+
+
+rule runsim4:
+	input:
+		"../data/disc.bed",
+		"../data/rep.bed",
+		"../data/finemap.txt",
+		"../data/scratch/{scen}/polygenic.bed"
+	output:
+		"../data/scratch/{scen}/{sim4}.scen4.rdata"
+	shell:
+		"./analyse_data_scen4.sh {wildcards.scen} {wildcards.sim4}"
+
+
+rule aggregate4:
+	input:
+		expand("../data/scratch/{scen}/{sim4}.scen4.rdata", scen=scenario, sim4=SIM4)
+	output:
+		"../data/aggregate4.rdata"
+	shell:
+		"Rscript aggregate.r scen4.rdata ../data/aggregate4.rdata"
+
