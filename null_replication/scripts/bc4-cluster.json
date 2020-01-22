@@ -45,8 +45,8 @@
 
 	"runsim3" :
 	{
-		"name": "{rule}.{wildcards.scen}.{wildcards.sim3}",
-		"output": "job_reports/{rule}.{wildcards.scen}.{wildcards.sim3}.out",
+		"name": "scen3.{wildcards.scen}.{wildcards.sim3}",
+		"output": "job_reports/scen3.{wildcards.scen}.{wildcards.sim3}.out",
 		"time": "0:10:00",
 		"mem": "3G"
 	},
