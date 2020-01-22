@@ -54,6 +54,19 @@
 	"aggregate3" :
 	{
 		"ncpu": "10"
+	},
+
+	"runsim4" :
+	{
+		"name": "scen4.{wildcards.scen}.{wildcards.sim4}",
+		"output": "job_reports/scen4.{wildcards.scen}.{wildcards.sim4}.out",
+		"time": "0:10:00",
+		"mem": "3G"
+	},
+
+	"aggregate4" :
+	{
+		"ncpu": "10"
 	}
 }
 
