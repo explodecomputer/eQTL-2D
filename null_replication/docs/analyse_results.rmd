@@ -64,13 +64,13 @@ res$gene <- sapply(res$i, function(x) strsplit(x, "_")[[1]][1])
 res$scenario <- 1
 l[[1]] <- res
 
-load("../data/aggregate.rdata")
+load("../data/aggregate2.rdata")
 res$polygenic <- res$sim %% 2 == 0
 res$gene <- sapply(res$i, function(x) strsplit(x, "_")[[1]][1])
 res$scenario <- 2
 l[[2]] <- res
 
-load("../data/aggregate2.rdata")
+load("../data/aggregate3.rdata")
 res$polygenic <- res$sim %% 2 == 0
 res$gene <- sapply(res$i, function(x) strsplit(x, "_")[[1]][1])
 res$scenario <- 3
@@ -205,10 +205,34 @@ geom_line(aes(colour=threshold)) +
 scale_colour_brewer(type="qual") +
 theme(axis.text.x=element_text(angle=90, hjust=0.5, vjust=0.5)) +
 labs(x="Variance explained by cis additive variant", y="Replication rate") +
-facet_grid(. ~ scenario) +
-ylim(c(0,0.3))
+facet_grid(. ~ scenario)
 ```
 
 Overall, using FDR there is a reasonably high replication rate which doesn't correspond to discovery lambda. But the experiment wide threshold can only be met when the discovery lambda is very high, but even then the replication rate is extremely low.
 
+
+## Replication rate of MBNL1
+
+Analysing the MBNL1 locus - what is the discovery and replication rate?
+
+There are 40000 simulations, where the cis-additive variant explains some amount of the variance in the phenotype (ranging from 0% to 50%). If a signal is found to be significant then it is tested for replication. In this plot, the x axis shows how many independent associations found to be significant for a simulations, and the y axis is the proportion of those that replicate at p < 0.05/501. The simulations are binned based on the simulated additive variance (columns of plots). The blue dots are from the simulations, and the red dot is the empirical result for MBNL1. Note that the cis-additive variant explains 10.5% of the variance of MBNL1, so the relevent boxes for comparison against the simulations are the second and third from the left. There are very few discovered loci here, and the replication rate of those is always zero. When the additive locus explains more variance, then the number of discovered hits increases and the replication rate increases.
+
+```{r, fig.width=12}
+temp <- subset(res, scenario == 1)
+
+temp$vbin <- cut(temp$varexp, breaks=10)
+o <- group_by(temp, vbin, cond_bonf_bonf2, nsig_disc_bonf) %>%
+summarise(n=n())
+o$what <- "simulation"
+
+e <- tibble(cond_bonf_bonf2=5, nsig_disc_bonf=11, n=1, what="empirical", vbin = unique(temp$vbin))
+oe <- bind_rows(o,e)
+oe$rr <- oe$cond_bonf_bonf2 / oe$nsig_disc_bonf
+oe$rr[is.na(oe$rr)] <- 0
+
+ggplot(oe, aes(x=nsig_disc_bonf, y=rr)) +
+geom_point(aes(color=what, size=n)) +
+labs(x="Number discovered", y="Proportion replicated") +
+facet_grid(. ~ vbin)
+```
 
