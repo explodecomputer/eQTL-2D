@@ -35,6 +35,8 @@ repl$pos <- map$V4[repl$V2]
 
 
 mer <- merge(disc, repl, by="V2")
+print(head(mer))
+print(dim(mer))
 
 # Nsig significant in disc
 # Lambda in disc
@@ -49,6 +51,11 @@ estlambda <- function(x)
 	median(da, na.rm=TRUE)^2/qchisq(0.5, 1)
 } 
 
+estlambda2 <- function(F)
+{
+	median(F, na.rm=TRUE)/qchisq(0.5, 4) * 4
+} 
+
 res <- list()
 
 res$cis <- cis
@@ -59,6 +66,8 @@ res$sim <- sim
 
 res$lambda_disc <- estlambda(disc$p4)
 res$lambda_repl <- estlambda(repl$p4)
+res$lambda_disc2 <- estlambda2(disc$V6)
+res$lambda_repl2 <- estlambda2(repl$V6)
 
 disc_bonf <- subset(disc, V3 == 8 & p4 < (0.05/nrow(disc))) %>%
 arrange(p4) %>% 
