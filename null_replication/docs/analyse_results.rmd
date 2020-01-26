@@ -46,17 +46,43 @@ As in the original paper, only interactions between SNP pairs that had all 9 gen
 
 We also added an extra variable to test. Most expression traits have a large cis effect and a complex, polygenic trans component. For half of the simulations we also created a polygenic component that explained 30% of the variance, which was composed of 1000 SNPs which each had an effect sampled from a normal distribution.
 
+
+First check the distribution under the null.
+
+```{r}
+library(dplyr)
+load("../data/aggregate4.rdata")
+
+hist(res$lambda_disc, breaks=40)
+hist(res$lambda_disc2, breaks=40)
+
+# chi(1) version of lambda
+mean(res$lambda_disc)
+sd(res$lambda_disc) / sqrt(nrow(res))
+
+# chi(4) version of lambda
+mean(res$lambda_disc2)
+sd(res$lambda_disc2) / sqrt(nrow(res))
+```
+
+Can I convert the chi(1) lambda to the chi(4) lambda?
+
+```{r}
+res$lambda_disc
+
+res$median_p_disc <- pchisq(res$lambda_disc * qchisq(0.5, 1), 1, low=FALSE)
+res$median_f4_disc <- qf(res$median_p_disc, 4, 840, low=FALSE)
+res$lambda_disc2_2 <- res$median_f4_disc / qchisq(0.5, 4, low=FALSE) * 4
+
+plot(lambda_disc ~ lambda_disc2, res)
+plot(lambda_disc2_2 ~ lambda_disc2, res)
+```
+
+
+Read in main results
+
 ```{r}
 l <- list()
-# load("../data/rs67903230.rdata")
-# res$polygenic <- res$sim %% 2 == 0
-# res$median_p_disc <- pchisq(res$lambda_disc * qchisq(0.5, 1), 1, low=FALSE)
-# res$median_p_repl <- pchisq(res$lambda_repl * qchisq(0.5, 1), 1, low=FALSE)
-# res$lambda_disc <- pnorm(1 - res$median_p_disc / 2)^2 / qchisq(0.5, 1)
-# res$lambda_repl <- pnorm(1 - res$median_p_repl / 2)^2 / qchisq(0.5, 1)
-# res$gene <- "MBNL1"
-# res$i <- paste(res$gene, res$sentinel, res$cis, sep="_")
-# res$scenario <- 1
 
 load("../data/aggregate1.rdata")
 res$polygenic <- res$sim %% 2 == 0
@@ -77,6 +103,13 @@ res$scenario <- 3
 l[[3]] <- res
 
 res <- bind_rows(l)
+res$median_p_disc <- pchisq(res$lambda_disc * qchisq(0.5, 1), 1, low=FALSE)
+res$median_f4_disc <- qf(res$median_p_disc, 4, 840, low=FALSE)
+res$lambda_disc <- res$median_f4_disc / qchisq(0.5, 4, low=FALSE) * 4
+res$median_p_repl <- pchisq(res$lambda_repl * qchisq(0.5, 1), 1, low=FALSE)
+res$median_f4_repl <- qf(res$median_p_repl, 4, 2112, low=FALSE)
+res$lambda_repl <- res$median_f4_repl / qchisq(0.5, 4, low=FALSE) * 4
+
 
 ```
 
