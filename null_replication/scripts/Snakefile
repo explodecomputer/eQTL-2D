@@ -1,10 +1,10 @@
 f = open("../data/finemap.txt", "r")
 a = [x.strip().split(" ") for x in f.readlines()]
 f.close()
-SIM1 = list(range(40000))
-SIM2 = list(range(200))
-SIM3 = list(range(100))
-SIM4 = list(range(50))
+SIM1 = list(range(4))
+SIM2 = list(range(2))
+SIM3 = list(range(1))
+SIM4 = list(range(10))
 scenario = [x[0] + "_" + x[1] + "_" + x[3] for x in a]
 scen0 = "MBNL1_rs67903230_rs13069559"
 minvar = 0
