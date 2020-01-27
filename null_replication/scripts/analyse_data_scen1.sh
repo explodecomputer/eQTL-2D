@@ -24,7 +24,7 @@ disc="../data/disc"
 rep="../data/rep"
 
 code="MBNL1_rs67903230_rs13069559"
-IFS='_' read -r -a array <<< ${code}
+IFS='_' read -r -a array <<< "$code"
 gene="${array[0]}"
 sensnp="${array[1]}"
 cissnp="${array[2]}"

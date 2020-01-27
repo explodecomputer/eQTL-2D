@@ -24,7 +24,7 @@ disc="../data/disc"
 rep="../data/rep"
 
 code="$1"
-IFS='_' read -r -a array <<< ${code}
+IFS='_' read -r -a array <<< "$code"
 gene="${array[0]}"
 sensnp="${array[1]}"
 cissnp="${array[2]}"
@@ -77,6 +77,6 @@ echo "analysing"
 Rscript formatres.r ${sd}/${sim}_disc_out ${sd}/${sim}_rep_out ${varexp} ${code} ${sim} ${cissnp} ${sensnp} ${sd}/${sim}.scen4.rdata ${sd}/${cissnp}_exclude_disc.bim.orig
 echo "done analysing"
 
-rm ${sd}/${sim}_*
+# rm ${sd}/${sim}_*
 
 

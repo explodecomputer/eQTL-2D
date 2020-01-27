@@ -6,7 +6,7 @@
 
 datafile="../data/combined"
 code="$1"
-IFS='_' read -r -a array <<< ${code}
+IFS='_' read -r -a array <<< "$code"
 
 gene="${array[0]}"
 sensnp="${array[1]}"

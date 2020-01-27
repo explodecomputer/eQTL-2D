@@ -1,0 +1,95 @@
+---
+title: Example output from simulations for MBNL1 where Va = 0
+---
+
+Perform 4df test of rs13069559 against 500k SNPs
+
+```{r}
+suppressPackageStartupMessages(suppressWarnings({
+	library(dplyr)
+	library(data.table)
+	library(parallel)
+	library(knitr)
+}))
+opts_chunk$set(cache=TRUE)
+```
+
+
+```{r}
+a <- fread("../data/scratch/MBNL1_rs67903230_rs13069559/18778_disc_out")
+names(a) <- c("snp1", "snp2", "df1", "df2", "fast_f8", "fast_f4")
+
+b <- subset(a, df1 == 8)
+b$fast_p4 <- pf(b$fast_f4, 4, b$df2, low=FALSE)
+hist(b$fast_p4)
+```
+
+Replicate using native R statistical tests
+
+```{r}
+map <- fread("temp.map")
+snplist <- c(map$V2[1], map$V2[-1][b$snp2])
+write.table(snplist, file="snplist8df.txt", row=F, col=F, qu=F)
+```
+
+
+```{r engine="bash"}
+episcan -De temp.ped temp.map ../data/scratch/MBNL1_rs67903230_rs13069559/rs13069559_merge_disc.egu
+plink --file temp --extract snplist8df.txt --recode A --out temp
+```
+
+Read in the data, calculate the 4df F values
+
+```{r}
+ped <- fread("temp.raw", he=T)
+fam <- fread("../data/scratch/MBNL1_rs67903230_rs13069559/18778_disc.fam")
+mat <- ped[,-c(1:6)] %>% as.data.frame()
+
+out <- mclapply(2:ncol(mat), function(x)
+{
+	mod <- anova(
+		lm(fam$V6 ~ as.factor(mat[,1]) + as.factor(mat[,x])),
+		lm(fam$V6 ~ as.factor(mat[,1]) : as.factor(mat[,x]))
+	)
+	return(mod$F[2])
+
+}, mc.cores=16)
+
+b$r_f4 <- unlist(out)
+b$r_p4 <- pf(b$r_f4, 4, b$df2, low=FALSE)
+```
+
+Distribution of p-values from R version of F test
+
+```{r}
+hist(b$r_p4)
+```
+
+Correlation between fast F test and R version
+
+```{r}
+cor(b$fast_f4, b$r_f4)
+```
+
+Correlation between fast and R versions of the p-values
+
+```{r}
+cor(b$fast_f4, b$r_f4)
+```
+
+Range of p-values
+
+```{r}
+range(b$fast_p4)
+range(b$r_p4)
+```
+
+Lambda values
+
+```{r}
+median(b$fast_f4) / qchisq(0.5, 4) * 4
+median(b$r_f4) / qchisq(0.5, 4) * 4
+```
+
+The fast version looks a bit more conservative. This is probably because when LD isn't accounted for between the two variants in the fast model, it slightly overestimates the additive variance and the residual non-additive variance is smaller.
+
