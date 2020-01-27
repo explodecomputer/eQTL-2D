@@ -93,3 +93,50 @@ median(b$r_f4) / qchisq(0.5, 4) * 4
 
 The fast version looks a bit more conservative. This is probably because when LD isn't accounted for between the two variants in the fast model, it slightly overestimates the additive variance and the residual non-additive variance is smaller.
 
+
+## Other plots
+
+Histograms of F values for fast and R versions
+
+```{r}
+hist(b$r_f4)
+hist(b$fast_f4)
+```
+
+Is the rs13069559 more correlated with the rest of the genome than expected by chance?
+
+Summary of rs13069559
+
+```{r}
+r_rs13069559 <- cor(mat[,1], mat[,-1])
+median(r_rs13069559)
+hist(r_rs13069559)
+```
+
+Choose some random snps, get median LD r of each SNP against all other SNPs
+
+```{r}
+set.seed(1)
+snps <- sample(1:ncol(mat), 32, replace=FALSE)
+
+rval <- mclapply(1:length(snps), function(x)
+{
+	r_rand <- cor(mat[,snps[x]], mat[,-snps[x]])
+	return(median(r_rand))
+}, mc.cores=16)
+```
+
+Plot median r values
+
+```{r}
+library(ggplot2)
+o <- data.frame(what = c("rs13069559", rep("random", length(snps))), median_r = c(median(r_rs13069559), unlist(rval))) %>%
+	arrange(median_r) %>%
+	mutate(ord = 1:n()) 
+
+ggplot(o, aes(x=ord, y=median_r)) +
+geom_point(aes(colour=what))
+```
+
+Looks like the median LD across the genome of rs13069559 is pretty high.
+
