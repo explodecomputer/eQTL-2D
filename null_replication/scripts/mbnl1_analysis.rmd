@@ -44,6 +44,15 @@ Read in the data, calculate the 4df F values
 ped <- fread("temp.raw", he=T)
 fam <- fread("../data/scratch/MBNL1_rs67903230_rs13069559/18778_disc.fam")
 mat <- ped[,-c(1:6)] %>% as.data.frame()
+```
+
+Allele frequency of rs13069559:
+
+```{r}
+sum(mat[,1], na.rm=T) / (2 * sum(!is.na(mat[,1])))
+```
+
+```{r}
 
 out <- mclapply(2:ncol(mat), function(x)
 {
@@ -140,3 +149,42 @@ geom_point(aes(colour=what))
 
 Looks like the median LD across the genome of rs13069559 is pretty high.
 
+
+## Restricting tests based on minimum cell count
+
+Find pairs where minimum cell number is 5 or more, as was used in the original paper
+
+```{r}
+getcells <- function(mincount)
+{
+	cells <- mclapply(2:ncol(mat), function(x)
+	{
+		tab <- table(mat[,1], mat[,x])
+		return(length(tab) == 9 & min(tab) >= mincount)
+	}, mc.cores=16)
+
+	cells <- unlist(cells)
+	return(cells)
+}
+
+cells5 <- getcells(5)
+cells3 <- getcells(3)
+table(cells5)
+table(cells3)
+```
+
+So, this drastically reduces the number of variants remaining in the analysis
+
+```{r}
+estlambda <- function(fval)
+{
+	median(fval) / qchisq(0.5, 4) * 4
+}
+
+estlambda(b$fast_f4)
+estlambda(b$r_f4)
+estlambda(b$fast_f4[cells3])
+estlambda(b$r_f4[cells3])
+estlambda(b$fast_f4[cells5])
+estlambda(b$r_f4[cells5])
+```
