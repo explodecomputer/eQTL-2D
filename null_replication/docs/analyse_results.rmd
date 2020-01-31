@@ -63,7 +63,22 @@ sd(res$lambda_disc) / sqrt(nrow(res))
 # chi(4) version of lambda
 mean(res$lambda_disc2)
 sd(res$lambda_disc2) / sqrt(nrow(res))
+
+group_by(res, cis, sentinel, i) %>%
+summarise(m=mean(lambda_disc2), v=sd(lambda_disc2)) %>%
+plot(m ~ v, .)
+
+
+library(ggplot2)
+ggplot(res, aes(y=lambda_disc2, x=paste(i, sentinel, cis))) +
+geom_boxplot()
+
+
+
 ```
+
+
+
 
 Can I convert the chi(1) lambda to the chi(4) lambda?
 
