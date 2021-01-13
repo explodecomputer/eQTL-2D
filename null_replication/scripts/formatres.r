@@ -12,7 +12,8 @@ cis <- args[6]
 sentinel <- args[7]
 outfile <- args[8]
 mapfile <- args[9]
-
+famfile <- args[10]
+signrepout <- args[11]
 
 disc <- fread(discfile)  %>% as_tibble() %>% filter(V3 == 8)
 print(nrow(disc))
@@ -126,3 +127,23 @@ res$fstat_cor <- cor(mer$V6.x, mer$V6.y, use="pair")
 
 print(res)
 save(res, file=outfile)
+
+
+if(is.null(famfile))
+{
+	q()
+}
+
+if(nrow(disc_bonf) == 0)
+{
+	q()
+}
+
+# Do sign replication analysis if there are some significant hits
+
+# extract data from discovery and replication
+
+# perform noia on discovery and replication
+# save decompositions for discovery and replication datasets
+
+

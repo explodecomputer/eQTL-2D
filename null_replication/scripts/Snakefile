@@ -34,7 +34,7 @@ rule create_data:
 	shell:
 		"./create_data.sh {wildcards.scen}"
 
-
+# Only run for MBNL1 locus across a range of additive effect sizes
 rule runsim1:
 	input:
 		"../data/disc.bed",
@@ -55,7 +55,7 @@ rule aggregate1:
 	shell:
 		"Rscript aggregate.r scen1.rdata ../data/aggregate1.rdata"
 
-
+# Run across all 501 loci using randomly sampled additive effect sizes
 rule runsim2:
 	input:
 		"../data/disc.bed",
@@ -67,7 +67,6 @@ rule runsim2:
 	shell:
 		"./analyse_data_scen2.sh {wildcards.scen} {wildcards.sim2} {minvar} {maxvar}"
 
-
 rule aggregate2:
 	input:
 		expand("../data/scratch/{scen}/{sim2}.scen2.rdata", scen=scenario, sim2=SIM2)
@@ -77,6 +76,7 @@ rule aggregate2:
 		"Rscript aggregate.r scen2.rdata ../data/aggregate2.rdata"
 
 
+# Run across all 501 loci using actual fine-mapped additive effects
 rule runsim3:
 	input:
 		"../data/disc.bed",
@@ -97,7 +97,7 @@ rule aggregate3:
 	shell:
 		"Rscript aggregate.r scen3.rdata ../data/aggregate3.rdata"
 
-
+# All 501 loci, no cis-effect, large polygenic effic
 rule runsim4:
 	input:
 		"../data/disc.bed",
